@@ -103,3 +103,12 @@ test('mergeIssue: makale sırası değişince order baştan hesaplanır', () => 
   assert.deepEqual(report.reordered, ['other/p1', 'paper/p1', 'paper/img', 'paper/cap']);
   assert.deepEqual(report.updated, []);
 });
+
+test('mergeIssue: yığın üyeliği korunur', () => {
+  const first = mergeIssue({ spreads: [], blocks: [] }, build([article]).blocks).data;
+  Object.assign(first.blocks[0], placed, { stack_id: 'stack-1', stack_index: 0 });
+  const changed = structuredClone(article);
+  changed.blocks[0].content = 'Bir, uzadı.';
+  const { data } = mergeIssue(first, build([changed]).blocks);
+  assert.deepEqual([data.blocks[0].stack_id, data.blocks[0].stack_index], ['stack-1', 0]);
+});

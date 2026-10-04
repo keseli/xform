@@ -1,11 +1,12 @@
-// Sağ panel: seçili bloğun bilgileri ve işlemleri; seçim yoksa spread ayarları.
-// Altta her zaman bu spread'in uyarıları.
+// Sağ panel: seçili bloğun, yığının ya da çoklu seçimin bilgileri ve
+// işlemleri; seçim yoksa spread ayarları. Altta her zaman bu spread'in uyarıları.
 import { isPlaced, blocksOnSpread } from '../model.js';
 import { escapeHtml as esc } from '../inline.js';
 import { computeWarnings } from './warnings.js';
 import { kindLabel, pageLabel, snippet } from './labels.js';
 import { isCropped } from './focal.js';
 import { CELL } from '../config.js';
+import { childrenOf, stackBounds, stackById } from '../stacks.js';
 
 export function createInspector(el, store, actions) {
   const { state } = store;
@@ -13,8 +14,16 @@ export function createInspector(el, store, actions) {
   function render() {
     const { data } = state;
     const warnings = computeWarnings(data);
-    const selected = data.blocks.find((b) => b.id === state.selectedId);
-    el.innerHTML = (selected ? blockPanel(selected, warnings) : spreadPanel()) + warningsPanel(warnings);
+    const spreadId = data.spreads[state.spreadIndex].id;
+    const ids = state.selectedIds;
+    const stack = ids.length === 1 ? stackById(data, ids[0]) : null;
+    const selected = ids.length === 1 ? data.blocks.find((b) => b.id === ids[0]) : null;
+    let panel;
+    if (ids.length > 1) panel = multiPanel(ids, spreadId);
+    else if (stack) panel = stackPanel(stack);
+    else if (selected) panel = blockPanel(selected, warnings);
+    else panel = spreadPanel();
+    el.innerHTML = panel + warningsPanel(warnings);
   }
 
   function spreadName(spreadId) {
@@ -31,7 +40,19 @@ export function createInspector(el, store, actions) {
           .join('')}</dl>`
       : '<p class="muted">Tepside. Yerleştirmek için tepsiden spread’e sürükle.</p>';
 
-    const spreadSelect = placed
+    const stack = b.stack_id ? stackById(state.data, b.stack_id) : null;
+    const inStack = stack
+      ? `<div class="field">Auto layout
+          <div class="focal-row">
+            <span class="focal-values">${stack.direction === 'vertical' ? 'Dikey' : 'Yatay'} yığında ${b.stack_index + 1}. sırada</span>
+            <button data-action="select" data-id="${esc(stack.id)}">Yığını seç</button>
+            <button data-action="detach">Çıkar</button>
+          </div>
+          <span class="muted">Konum yığından gelir. Sürükleyerek ya da ok tuşlarıyla sırasını değiştir.</span>
+        </div>`
+      : '';
+
+    const spreadSelect = placed && !stack
       ? `<label class="field">Spread
           <select data-action="move-spread">${state.data.spreads
             .map(
@@ -72,6 +93,7 @@ export function createInspector(el, store, actions) {
       <div class="block-id">${esc(b.id)}</div>
       <p class="snippet">${esc(snippet(b, 140))}</p>
       ${metrics}
+      ${inStack}
       ${spreadSelect}
       ${relations}
       ${lock}
@@ -82,6 +104,69 @@ export function createInspector(el, store, actions) {
         <button data-action="unplace" class="danger"${placed ? '' : ' disabled'}>Tepsiye gönder <kbd>Del</kbd></button>
       </div>
       ${own.length ? `<ul class="warnings">${own.map((w) => `<li class="warn--${w.kind}">${esc(w.message)}</li>`).join('')}</ul>` : ''}
+    </section>`;
+  }
+
+  function spreadOptions(selectedId) {
+    return state.data.spreads
+      .map(
+        (s, i) =>
+          `<option value="${esc(s.id)}"${s.id === selectedId ? ' selected' : ''}>${i + 1} · ${pageLabel(
+            state.data.issue,
+            i,
+          )} · ${esc(s.section ?? '')}</option>`,
+      )
+      .join('');
+  }
+
+  function stackPanel(st) {
+    const kids = childrenOf(state.data, st.id);
+    const r = stackBounds(state.data, st);
+    return `<section class="panel">
+      <div class="panel-head">Auto layout <span class="count">${kids.length} blok</span></div>
+      <dl class="metrics">${[['x', r.x], ['y', r.y], ['w', r.w], ['h', r.h], ['gap', st.gap]]
+        .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`)
+        .join('')}</dl>
+      <div class="field-row">
+        <label class="field">Yön
+          <select data-action="stack-direction">
+            <option value="vertical"${st.direction === 'vertical' ? ' selected' : ''}>Dikey ↓</option>
+            <option value="horizontal"${st.direction === 'horizontal' ? ' selected' : ''}>Yatay →</option>
+          </select>
+        </label>
+        <label class="field">Boşluk (hücre)
+          <input type="number" min="0" step="1" data-action="stack-gap" value="${st.gap}">
+        </label>
+      </div>
+      <label class="field">Spread
+        <select data-action="move-spread">${spreadOptions(st.spread_id)}</select>
+      </label>
+      <div class="field">Sıra
+        <ol class="stack-list">${kids
+          .map(
+            (b) => `<li><button data-action="select" data-id="${esc(b.id)}"><span class="tray-order">${b.order}</span>
+              ${esc(kindLabel(b))} <span class="muted">${esc(snippet(b, 40))}</span></button></li>`,
+          )
+          .join('')}</ol>
+        <span class="muted">Çift tık ya da listeden seç: içindeki bloğa gir.</span>
+      </div>
+      <div class="buttons">
+        <button data-action="remove-stack">Auto layout’u kaldır <kbd>Alt⇧A</kbd></button>
+        <button data-action="unplace" class="danger">Tepsiye gönder <kbd>Del</kbd></button>
+      </div>
+    </section>`;
+  }
+
+  function multiPanel(ids, spreadId) {
+    const here = ids.filter((id) => (stackById(state.data, id) ?? state.data.blocks.find((b) => b.id === id))?.spread_id === spreadId);
+    const free = here.filter((id) => state.data.blocks.find((b) => b.id === id)?.stack_id == null && !stackById(state.data, id));
+    return `<section class="panel">
+      <div class="panel-head">Çoklu seçim <span class="count">${here.length} öğe</span></div>
+      <p class="muted">Birlikte taşı (sürükle ya da ok tuşları). Shift+tık seçime ekler ya da çıkarır.</p>
+      <div class="buttons">
+        <button data-action="auto-layout"${free.length ? '' : ' disabled'}>Auto layout <kbd>⇧A</kbd></button>
+        <button data-action="unplace-all" class="danger">Tepsiye gönder <kbd>Del</kbd></button>
+      </div>
     </section>`;
   }
 
@@ -174,6 +259,14 @@ export function createInspector(el, store, actions) {
         return actions.unplace(id);
       case 'remove-spread':
         return actions.removeSpread();
+      case 'detach':
+        return actions.detachFromStack(id);
+      case 'remove-stack':
+        return actions.removeAutoLayout();
+      case 'auto-layout':
+        return actions.autoLayout();
+      case 'unplace-all':
+        return actions.unplace(state.selectedIds);
       case 'focal-mode':
         return actions.toggleFocal(id);
       case 'focal-center':
@@ -188,6 +281,12 @@ export function createInspector(el, store, actions) {
         return actions.moveToSpread(state.selectedId, t.value);
       case 'lock':
         return actions.setLock(t.checked);
+      case 'stack-direction':
+        return actions.updateStack(state.selectedId, { direction: t.value });
+      case 'stack-gap': {
+        const gap = Math.max(0, Math.round(Number(t.value)));
+        return Number.isFinite(gap) ? actions.updateStack(state.selectedId, { gap }) : render();
+      }
       case 'section':
         return actions.updateSpread({ section: t.value.trim() });
       case 'chrome-left':

@@ -14,6 +14,8 @@
   --related: #13917f;
   --warn: #c97a00;
   --danger: #cf3f33;
+  --stack: #7c4dff;
+  --guide: #f2368e;
 }
 
 body.editor {
@@ -596,6 +598,112 @@ body.editor {
   height: 18px;
   margin: -9px 0 0 -3px;
   border-radius: 3px;
+}
+
+/* Çoklu seçim, auto layout, akıllı kılavuzlar */
+
+.selection--member {
+  outline-width: calc(1px / var(--scale));
+}
+
+.selection--group {
+  outline-style: dashed;
+  outline-offset: calc(4px / var(--scale));
+}
+
+.selection--stack {
+  outline-color: var(--stack);
+  outline-width: calc(2px / var(--scale));
+}
+
+.selection--child {
+  outline-style: solid;
+}
+
+.stack-outline {
+  position: absolute;
+  outline: calc(1px / var(--scale)) dashed rgb(124 77 255 / 0.45);
+  outline-offset: calc(3px / var(--scale));
+}
+
+.guide-line {
+  position: absolute;
+  background: var(--guide);
+}
+
+.guide-line--x {
+  width: calc(1px / var(--scale));
+  margin-left: calc(-0.5px / var(--scale));
+}
+
+.guide-line--y {
+  height: calc(1px / var(--scale));
+  margin-top: calc(-0.5px / var(--scale));
+}
+
+.insert-marker {
+  position: absolute;
+  background: var(--stack);
+  border-radius: calc(2px / var(--scale));
+}
+
+.insert-marker--h {
+  height: calc(3px / var(--scale)) !important;
+  margin-top: calc(-1.5px / var(--scale));
+}
+
+.insert-marker--v {
+  width: calc(3px / var(--scale)) !important;
+  margin-left: calc(-1.5px / var(--scale));
+}
+
+.marquee {
+  position: absolute;
+  background: rgb(47 111 222 / 0.08);
+  outline: calc(1px / var(--scale)) solid rgb(47 111 222 / 0.7);
+}
+
+.frame--editor .blocks > .block.is-dragging {
+  opacity: 0.75;
+  z-index: 99999 !important;
+  pointer-events: none;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.stack-list li {
+  min-width: 0;
+}
+
+.stack-list .tray-order {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.stack-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.stack-list button {
+  display: block;
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid var(--ui-line);
+  border-radius: 4px;
+  background: #fff;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 /* Odak modu */

@@ -18,7 +18,11 @@ npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini say
 
 | | |
 | --- | --- |
-| Tepsiden sürükle | Bloğu spread'e yerleştirir (varsayılan genişlik, görselde doğal oran) |
+| Tepsiden sürükle | Bloğu spread'e yerleştirir (varsayılan genişlik, görselde doğal oran); bir yığının üstüne bırakılırsa yığına girer |
+| Tık / **Shift+tık** / boş alanda sürükle | Seç / seçime ekle-çıkar / alan seçimi. Seçilenler birlikte taşınır |
+| Akıllı kılavuzlar | Taşırken ve resize ederken diğer blokların kenar/merkezlerine ve sayfa çizgilerine (kenar boşlukları, sayfa ortaları, kat) yakalar; pembe çizgi. **Ctrl/⌘** basılıyken kapalı |
+| **Shift+A** | Auto layout: seçili serbest bloklardan dikey ya da yatay yığın (yön dizilişten, boşluk mevcut aralıklardan) |
+| **Alt+Shift+A** | Auto layout'u kaldır; bloklar yerinde serbest kalır |
 | Sürükle | Taşı; snap 2 hücre, **Alt** ile 1 hücre. Blok frame'e taşabilir ama her eksende en az 8 hücresi (`KEEP_IN_FRAME`) içeride kalır |
 | Tutamaçlar | Metin/çizgi: yalnız genişlik. Görsel: 8 yön, oran kilidi **L** (Shift geçici tersine çevirir) |
 | **← ↑ → ↓** | Seçili bloğu snap adımı kadar kaydır (**Alt** ile 1) |
@@ -27,7 +31,7 @@ npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini say
 | Çift tık / **F** | Seçili görselde odak modu: kutu içinde sürüklemek görseli kaydırır (`focal_point`), kırpılan kısım soluk görünür. **Esc** çıkar |
 | **Ctrl+Z** / **Ctrl+Shift+Z** | Geri al / yinele (Mac'te ⌘; Ctrl+Y de yineler). Sürükleme tek adımdır, geçmiş 100 adım |
 | **G** | Izgara ve kılavuzlar |
-| **Esc** | Seçimi bırak / sürüklemeyi iptal et |
+| **Esc** | Sürüklemeyi iptal et / odak modundan çık / yığın içindeki bloktan yığına çık / seçimi bırak |
 
 Uyarılar engellemez, rozet, sekme ve listede gösterilir:
 - daha büyük `order`'lı blok daha küçük `order`'lı bir bloktan önceki spread'de,
@@ -35,6 +39,12 @@ Uyarılar engellemez, rozet, sekme ve listede gösterilir:
 - blok frame dışına taşıyor.
 
 Görsel seçilince `relates_to` paragrafları tuvalde ve tepside vurgulanır.
+
+**Auto layout.** Yığın (`stacks`) çocuklarının konumu yığından gelir: yön boyunca art arda,
+aralarında `gap`, çapraz eksende başa hizalı. Bir paragraf uzarsa (düzenleme ya da içe
+aktarma) alttakiler kayar; okuma görünümü de aynı hesabı yapar. Tık yığını, çift tık
+içindeki bloğu seçer. İçteki blok seçiliyken sürüklemek ya da ok tuşları sırasını
+değiştirir; yığından uzağa sürüklenirse çıkar. Yön ve boşluk sağ panelden.
 
 ## İçerik girişi
 
@@ -123,7 +133,8 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `src/config.js` | Frame ölçüsü ve hücre boyu (tek kaynak), kenar kılavuzları, caption ölçüleri |
 | `src/model.js` | Blok/spread şeması, doğrulama, yardımcılar |
 | `src/render/` | Spread, chrome ve blok çizimi; akış tiplerinde yükseklik ölçümü |
-| `src/editor/` | Editör: tuval, tepsi, inspector, durum; `geometry.js`, `focal.js` ve `warnings.js` DOM'suz |
+| `src/stacks.js` | Auto layout hesabı (editör ve okuma görünümü ortak, DOM'suz) |
+| `src/editor/` | Editör: tuval, tepsi, inspector, durum; `geometry.js`, `snapping.js`, `focal.js` ve `warnings.js` DOM'suz |
 | `styles/main.css` | Renkler ve tipografi; `--lh-*` satır yükseklikleri hücrenin katı olmalı |
 | `src/content/merge.js` | İçe aktarma kuralları (DOM'suz, dosya sistemsiz) |
 | `scripts/import.mjs` | İçe aktarma komutu |

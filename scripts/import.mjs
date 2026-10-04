@@ -7,7 +7,7 @@
 // Görseller assets/<issue>/<slug>/ altına kopyalanır; sayı data/<issue>.json'a yazılır.
 import { copyFile, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
-import { buildIncoming, emptyIssue, mergeIssue } from '../src/content/merge.js';
+import { buildIncoming, emptyIssue, mergeIssue, normalizeBlock } from '../src/content/merge.js';
 import { validate } from '../src/model.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
@@ -87,7 +87,8 @@ async function main() {
     if (!(await sameBytes(from, to))) copies.push({ from, to, name: `${slug}/${file}` });
   }
 
-  const changed = JSON.stringify(data.blocks) !== JSON.stringify(existing.blocks);
+  // Editörün yazdığı alan sırası farklı olabilir; karşılaştırma normalize edilmiş haliyle.
+  const changed = JSON.stringify(data.blocks) !== JSON.stringify(existing.blocks.map(normalizeBlock));
   const list = (ids) => (ids.length > 6 ? `${ids.slice(0, 6).join(', ')} … (+${ids.length - 6})` : ids.join(', '));
   console.log(`${issue} ← ${manifestPath} (${articles.length} makale, ${blocks.length} blok)`);
   const rows = [

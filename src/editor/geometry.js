@@ -32,24 +32,27 @@ export function moveBox(start, delta, step) {
 
 /**
  * Resize. dir: tutamaç yönü, { x: -1|0|1, y: -1|0|1 }.
+ * step: sayı ya da eksen başına { x, y } (kılavuza yakalanan kenar 1 hücreyle gelir).
  * widthOnly: akış tipleri ve divider (yükseklik içerikten/sabit).
  * lock: oran kilidi; başlangıç kutusunun oranı korunur, karşı köşe sabit kalır.
  */
 export function resizeBox(start, dir, delta, { step, lock = false, widthOnly = false }) {
+  const sx = typeof step === 'object' ? step.x : step;
+  const sy = typeof step === 'object' ? step.y : step;
   let { x, y, w, h } = start;
   const right = start.x + start.w;
   const bottom = start.y + start.h;
 
-  if (dir.x === 1) w = Math.max(MIN_SIZE, snap(right + delta.x, step) - start.x);
+  if (dir.x === 1) w = Math.max(MIN_SIZE, snap(right + delta.x, sx) - start.x);
   if (dir.x === -1) {
-    x = Math.min(snap(start.x + delta.x, step), right - MIN_SIZE);
+    x = Math.min(snap(start.x + delta.x, sx), right - MIN_SIZE);
     w = right - x;
   }
   if (widthOnly) return { x, y: start.y, w, h: start.h };
 
-  if (dir.y === 1) h = Math.max(MIN_SIZE, snap(bottom + delta.y, step) - start.y);
+  if (dir.y === 1) h = Math.max(MIN_SIZE, snap(bottom + delta.y, sy) - start.y);
   if (dir.y === -1) {
-    y = Math.min(snap(start.y + delta.y, step), bottom - MIN_SIZE);
+    y = Math.min(snap(start.y + delta.y, sy), bottom - MIN_SIZE);
     h = bottom - y;
   }
 

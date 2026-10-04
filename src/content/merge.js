@@ -5,7 +5,8 @@
 // - id = "<slug>/<key>"; relates_to key'leri aynı makaleye göre çözülür,
 //   "/" içeren değerler tam id kabul edilir.
 // - order baştan hesaplanır: manifest'teki makale sırası, sonra makale içindeki sıra.
-// - Hattan gelen alanlar güncellenir; yerleşim alanları ve tone editöre aittir.
+// - Hattan gelen alanlar güncellenir; yerleşim alanları (yığın üyeliği dahil) ve
+//   tone editöre aittir.
 //   focal_point yalnız yeni görsellerde hattan alınır.
 // - Paketten çıkan blok tepsideyse silinir; yerleşikse korunur ve
 //   removed_from_content ile işaretlenir.
@@ -95,6 +96,10 @@ export function normalizeBlock(b) {
     relates_to: b.relates_to ?? [],
   };
   for (const k of LAYOUT_KEYS) out[k] = b[k] ?? null;
+  if (b.stack_id != null) {
+    out.stack_id = b.stack_id;
+    out.stack_index = b.stack_index;
+  }
   out.tone = b.tone ?? 'dark';
   if (b.label != null) out.label = b.label;
   if (b.type === 'image') {

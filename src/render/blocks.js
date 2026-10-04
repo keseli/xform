@@ -11,9 +11,7 @@ export function renderBlock(block) {
   el.classList.add(`tone--${block.tone ?? 'dark'}`);
   el.dataset.id = block.id;
 
-  el.style.left = px(block.x);
-  el.style.top = px(block.y);
-  el.style.width = px(block.w);
+  placeElement(el, block);
   el.style.zIndex = String(block.z ?? 0);
 
   if (FLOW_TYPES.has(block.type)) {
@@ -27,6 +25,13 @@ export function renderBlock(block) {
 
   RENDERERS[block.type](el, block);
   return el;
+}
+
+/** Elemanın konumunu ve genişliğini veriyle eşitler (yükseklik ayrı yönetilir). */
+export function placeElement(el, block) {
+  el.style.left = px(block.x);
+  el.style.top = px(block.y);
+  el.style.width = px(block.w);
 }
 
 const RENDERERS = {

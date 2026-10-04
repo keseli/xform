@@ -1,4 +1,5 @@
-// Editör durumu. Tek bir nesne; değişiklikler commit() ile yayınlanır ve
+// Editör durumu. Seçim state.selectedIds'tedir (blok ya da yığın id'leri);
+// state.selectedId son seçilene (birincil) bakan bir kısayoldur. Tek bir nesne; değişiklikler commit() ile yayınlanır ve
 // gecikmeli olarak kaydedilir. emit nedeni dinleyicilerin ne kadarını yeniden
 // çizeceğini belirler:
 //   'all'       veri değişti (canvas tamamen yeniden çizilir, kayıt planlanır)
@@ -24,10 +25,14 @@ export function createStore(state, save) {
 
   const snapshot = () => ({ data: structuredClone(state.data), spreadIndex: state.spreadIndex });
 
+  const exists = (id) =>
+    state.data.blocks.some((b) => b.id === id) || (state.data.stacks ?? []).some((s) => s.id === id);
+
   function restore(snap) {
     state.data = snap.data;
     state.spreadIndex = Math.min(snap.spreadIndex, state.data.spreads.length - 1);
-    if (!state.data.blocks.some((b) => b.id === state.selectedId)) state.selectedId = null;
+    state.selectedIds = state.selectedIds.filter(exists);
+    if (state.focalId && !exists(state.focalId)) state.focalId = null;
   }
 
   function changed() {
@@ -97,10 +102,24 @@ export function createStore(state, save) {
       return redoStack.length > 0;
     },
 
+    /** Tek öğe seç (null: seçimi temizle). */
     select(id) {
-      if (state.selectedId === id) return;
-      state.selectedId = id;
-      if (state.focalId !== id) state.focalId = null;
+      const ids = id ? [id] : [];
+      if (ids.join() === state.selectedIds.join()) return;
+      store.setSelection(ids);
+    },
+
+    /** Shift+tık: seçime ekle ya da çıkar. */
+    toggle(id) {
+      const ids = state.selectedIds.includes(id)
+        ? state.selectedIds.filter((x) => x !== id)
+        : [...state.selectedIds, id];
+      store.setSelection(ids);
+    },
+
+    setSelection(ids) {
+      state.selectedIds = [...new Set(ids)];
+      if (state.focalId !== state.selectedId || state.selectedIds.length !== 1) state.focalId = null;
       store.emit('selection');
     },
 

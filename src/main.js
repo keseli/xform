@@ -2,7 +2,8 @@
 import { FRAME, CELL } from './config.js';
 import { loadIssue } from './data.js';
 import { renderSpread } from './render/spread.js';
-import { settleHeights } from './render/blocks.js';
+import { placeElement, settleHeights } from './render/blocks.js';
+import { layoutStacks } from './stacks.js';
 import { fitFrame } from './render/fit.js';
 import { checkLineHeights } from './render/type.js';
 
@@ -42,6 +43,12 @@ async function draw() {
   await document.fonts.ready;
   const heights = settleHeights(frame);
   for (const b of data.blocks) if (b.id in heights) b.h = heights[b.id];
+  // Auto layout: ölçülen yüksekliklerle yığınları yeniden diz.
+  layoutStacks(data);
+  for (const b of data.blocks) {
+    const el = b.stack_id != null && frame.querySelector(`.block[data-id="${CSS.escape(b.id)}"]`);
+    if (el) placeElement(el, b);
+  }
   window.__xform = { data, heights };
   fit();
   document.body.dataset.ready = '';

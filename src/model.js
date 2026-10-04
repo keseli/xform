@@ -5,6 +5,7 @@
 //   issue:   { title, month, year, number, first_page }
 //   spreads: [{ id, section, chrome_left, chrome_right }]   // dizideki sıra = spread sırası
 //   blocks:  [Block]
+//   stacks:  [{ id, spread_id, direction, x, y, gap }]     // auto layout (src/stacks.js), isteğe bağlı
 // }
 
 /**
@@ -25,6 +26,8 @@
  * @property {number|null} z
  * @property {'dark'|'light'} tone
  * @property {string|null} [label]  Örn. "01". Caption'da metnin üstünde, notta solda asılı.
+ * @property {string} [stack_id]     Auto layout yığını; x/y yığından türetilir
+ * @property {number} [stack_index]  Yığın içindeki sıra
  * @property {true} [removed_from_content]  İçe aktarma: paketten çıktı ama yerleşik olduğu için korundu.
  *
  * Görsellere özgü:
@@ -100,6 +103,20 @@ export function validate(data) {
     if (b.spread_id != null && !spreadIds.has(b.spread_id)) {
       problems.push(`${b.id}: bilinmeyen spread ${b.spread_id}`);
     }
+  }
+
+  const stacks = new Map((data.stacks ?? []).map((s) => [s.id, s]));
+  for (const s of stacks.values()) {
+    if (!spreadIds.has(s.spread_id)) problems.push(`yığın ${s.id}: bilinmeyen spread ${s.spread_id}`);
+    if (!['vertical', 'horizontal'].includes(s.direction)) problems.push(`yığın ${s.id}: direction geçersiz`);
+    if (!Number.isInteger(s.gap) || s.gap < 0) problems.push(`yığın ${s.id}: gap 0 ya da pozitif tam sayı olmalı`);
+  }
+  for (const b of data.blocks) {
+    if (b.stack_id == null) continue;
+    const s = stacks.get(b.stack_id);
+    if (!s) problems.push(`${b.id}: bilinmeyen yığın ${b.stack_id}`);
+    else if (b.spread_id !== s.spread_id) problems.push(`${b.id}: yığınıyla aynı spread'de değil`);
+    if (!Number.isInteger(b.stack_index)) problems.push(`${b.id}: stack_index eksik`);
   }
 
   const byId = new Map(data.blocks.map((b) => [b.id, b]));
