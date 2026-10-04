@@ -74,6 +74,26 @@ body.editor {
   margin-left: 4px;
 }
 
+.history {
+  display: flex;
+  gap: 2px;
+}
+
+.history button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--ui-line);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.history button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .tabs {
   display: flex;
   gap: 4px;

@@ -24,6 +24,10 @@ export const MARGINS = { top: 20, bottom: 20, outer: 14, inner: 12 };
 // Editörde taşıma/resize snap adımı (hücre). fine: değiştirici tuşla.
 export const SNAP = { step: 2, fine: 1 };
 
+// Blok frame'e taşabilir ama tamamen çıkamaz: her eksende en az bu kadar hücresi
+// (blok daha darsa tamamı) frame içinde kalır.
+export const KEEP_IN_FRAME = 8;
+
 // Yüksekliği içerikten türeyen tipler (resize'da yalnızca genişlik değişir).
 export const FLOW_TYPES = new Set(['text', 'heading', 'quote', 'note']);
 

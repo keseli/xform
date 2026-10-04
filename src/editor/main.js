@@ -9,7 +9,7 @@ import { createCanvas } from './canvas.js';
 import { createTray } from './tray.js';
 import { createInspector } from './inspector.js';
 import { computeWarnings } from './warnings.js';
-import { normalizeZ } from './geometry.js';
+import { keepInFrame, normalizeZ } from './geometry.js';
 import { pageLabel } from './labels.js';
 
 const params = new URLSearchParams(location.search);
@@ -94,8 +94,7 @@ async function boot() {
     nudge(id, dx, dy) {
       store.commit(() => {
         const b = block(id);
-        b.x += dx;
-        b.y += dy;
+        Object.assign(b, keepInFrame({ ...b, x: b.x + dx, y: b.y + dy }));
       });
     },
     moveToSpread(id, spreadId) {
@@ -175,6 +174,10 @@ async function boot() {
       .join('');
     topbar.innerHTML = `
       <div class="brand">XFORM <span>editör</span></div>
+      <div class="history">
+        <button data-cmd="undo"${store.canUndo ? '' : ' disabled'} title="Geri al (Ctrl+Z)">↶</button>
+        <button data-cmd="redo"${store.canRedo ? '' : ' disabled'} title="Yinele (Ctrl+Shift+Z)">↷</button>
+      </div>
       <nav class="tabs">${tabs}<button class="tab tab--add" data-cmd="add-spread" title="Yeni spread">+ Spread</button></nav>
       <div class="tools">
         <button class="toggle" data-cmd="grid" aria-pressed="${state.showGrid}">Izgara <kbd>G</kbd></button>
@@ -205,6 +208,8 @@ async function boot() {
     const tab = e.target.closest('[data-tab]');
     if (tab) return actions.goToSpread(Number(tab.dataset.tab));
     const cmd = e.target.closest('[data-cmd]')?.dataset.cmd;
+    if (cmd === 'undo') store.undo();
+    if (cmd === 'redo') store.redo();
     if (cmd === 'add-spread') actions.addSpread();
     if (cmd === 'grid') actions.toggleGrid();
     if (cmd === 'lock') actions.setLock(!state.lockAspect);
@@ -224,7 +229,16 @@ async function boot() {
 
   addEventListener('resize', () => canvas.fit());
   addEventListener('keydown', (e) => {
-    if (e.target.closest?.('input, select, textarea') || e.metaKey || e.ctrlKey) return;
+    // Metin alanında tarayıcının kendi geri alması çalışsın.
+    if (e.target.closest?.('input, select, textarea')) return;
+    if (e.metaKey || e.ctrlKey) {
+      const key = e.key.toLowerCase();
+      if (key === 'z' && !e.shiftKey) store.undo();
+      else if ((key === 'z' && e.shiftKey) || key === 'y') store.redo();
+      else return;
+      e.preventDefault();
+      return;
+    }
     const id = state.selectedId;
     const placed = id && block(id)?.spread_id === currentSpread().id;
     const step = e.altKey ? SNAP.fine : SNAP.step;

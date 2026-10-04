@@ -1,12 +1,33 @@
 // Editörün hücre hesapları. DOM'a dokunmaz; tüm değerler hücre cinsinden.
+import { COLS, ROWS, KEEP_IN_FRAME } from '../config.js';
 
 export const MIN_SIZE = 2;
 
 export const snap = (value, step) => Math.round(value / step) * step;
 
-/** Taşıma: başlangıç kutusu + işaretçi farkı, mutlak ızgaraya snap. */
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+/**
+ * Konumu, kutunun her eksende en az KEEP_IN_FRAME hücresi (kutu daha küçükse
+ * tamamı) frame içinde kalacak şekilde sınırlar. Kenar boyunca kaydırır.
+ */
+export function keepInFrame({ x, y, w, h }) {
+  const kx = Math.min(KEEP_IN_FRAME, w);
+  const ky = Math.min(KEEP_IN_FRAME, h);
+  return { x: clamp(x, kx - w, COLS - kx), y: clamp(y, ky - h, ROWS - ky) };
+}
+
+/** Kutunun frame içinde yeterince kalıp kalmadığı (resize adımlarını süzmek için). */
+export function staysInFrame(box) {
+  const kept = keepInFrame(box);
+  return kept.x === box.x && kept.y === box.y;
+}
+
+/** Taşıma: başlangıç kutusu + işaretçi farkı, mutlak ızgaraya snap, frame sınırı. */
 export function moveBox(start, delta, step) {
-  return { x: snap(start.x + delta.x, step), y: snap(start.y + delta.y, step) };
+  const x = snap(start.x + delta.x, step);
+  const y = snap(start.y + delta.y, step);
+  return keepInFrame({ x, y, w: start.w, h: start.h });
 }
 
 /**

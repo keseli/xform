@@ -17,11 +17,12 @@ npm test           # node:test, DOM'suz modüller (geometri, uyarılar)
 | | |
 | --- | --- |
 | Tepsiden sürükle | Bloğu spread'e yerleştirir (varsayılan genişlik, görselde doğal oran) |
-| Sürükle | Taşı; snap 2 hücre, **Alt** ile 1 hücre |
+| Sürükle | Taşı; snap 2 hücre, **Alt** ile 1 hücre. Blok frame'e taşabilir ama her eksende en az 8 hücresi (`KEEP_IN_FRAME`) içeride kalır |
 | Tutamaçlar | Metin/çizgi: yalnız genişlik. Görsel: 8 yön, oran kilidi **L** (Shift geçici tersine çevirir) |
 | **← ↑ → ↓** | Seçili bloğu snap adımı kadar kaydır (**Alt** ile 1) |
 | **]** / **[** | Öne getir / arkaya gönder |
 | **Delete** | Bloğu tepsiye geri gönder |
+| **Ctrl+Z** / **Ctrl+Shift+Z** | Geri al / yinele (Mac'te ⌘; Ctrl+Y de yineler). Sürükleme tek adımdır, geçmiş 100 adım |
 | **G** | Izgara ve kılavuzlar |
 | **Esc** | Seçimi bırak / sürüklemeyi iptal et |
 

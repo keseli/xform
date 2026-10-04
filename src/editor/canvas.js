@@ -6,7 +6,7 @@ import { renderSpread } from '../render/spread.js';
 import { renderBlock, settleHeight, settleHeights } from '../render/blocks.js';
 import { fitFrame } from '../render/fit.js';
 import { computeWarnings } from './warnings.js';
-import { defaultWidth, heightForRatio, moveBox, resizeBox, snap } from './geometry.js';
+import { defaultWidth, heightForRatio, keepInFrame, moveBox, resizeBox, snap, staysInFrame } from './geometry.js';
 import { kindLabel } from './labels.js';
 
 const DRAG_THRESHOLD = 3; // ekran pikseli
@@ -143,12 +143,13 @@ export function createCanvas(container, store) {
   function startMove(e, id) {
     const b = blockById(id);
     store.select(id);
-    const start = { x: b.x, y: b.y };
+    const start = { x: b.x, y: b.y, w: b.w, h: b.h };
     const p0 = toCells(e);
     let moved = false;
     drag(e, {
       move(ev) {
         if (!moved && Math.hypot(ev.clientX - e.clientX, ev.clientY - e.clientY) < DRAG_THRESHOLD) return;
+        if (!moved) store.checkpoint();
         moved = true;
         const p = toCells(ev);
         Object.assign(b, moveBox(start, { x: p.x - p0.x, y: p.y - p0.y }, stepOf(ev)));
@@ -159,6 +160,7 @@ export function createCanvas(container, store) {
         if (moved) store.commit();
       },
       cancel() {
+        store.discard();
         Object.assign(b, start);
         applyBox(b);
         drawOverlay();
@@ -171,6 +173,7 @@ export function createCanvas(container, store) {
     if (!b) return;
     const start = { x: b.x, y: b.y, w: b.w, h: b.h };
     const p0 = toCells(e);
+    store.checkpoint();
     drag(e, {
       move(ev) {
         const p = toCells(ev);
@@ -180,6 +183,8 @@ export function createCanvas(container, store) {
           lock: b.type === 'image' && state.lockAspect !== ev.shiftKey,
           widthOnly: b.type !== 'image',
         });
+        // Bloğu frame dışına çıkaracak adım uygulanmaz; son geçerli kutu kalır.
+        if (!staysInFrame(box)) return;
         Object.assign(b, box);
         applyBox(b);
         drawOverlay();
@@ -188,6 +193,7 @@ export function createCanvas(container, store) {
         store.commit();
       },
       cancel() {
+        store.discard();
         Object.assign(b, start);
         applyBox(b);
         drawOverlay();
@@ -241,8 +247,7 @@ export function createCanvas(container, store) {
         if (over) {
           const p = toCells(ev);
           const step = stepOf(ev);
-          temp.x = snap(p.x, step);
-          temp.y = snap(p.y, step);
+          Object.assign(temp, keepInFrame({ x: snap(p.x, step), y: snap(p.y, step), w: temp.w, h: temp.h }));
           preview.style.left = px(temp.x);
           preview.style.top = px(temp.y);
           target = { x: temp.x, y: temp.y };

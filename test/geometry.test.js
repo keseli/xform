@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { moveBox, resizeBox, snap, normalizeZ, heightForRatio } from '../src/editor/geometry.js';
+import {
+  moveBox, resizeBox, snap, normalizeZ, heightForRatio, keepInFrame, staysInFrame,
+} from '../src/editor/geometry.js';
 
 test('snap: mutlak ızgaraya yuvarlar', () => {
   assert.equal(snap(101, 2), 102);
@@ -9,8 +11,24 @@ test('snap: mutlak ızgaraya yuvarlar', () => {
 });
 
 test('moveBox: adım 2 ve 1', () => {
-  assert.deepEqual(moveBox({ x: 101, y: 34 }, { x: 3.2, y: -1.4 }, 2), { x: 104, y: 32 });
-  assert.deepEqual(moveBox({ x: 101, y: 34 }, { x: 3.2, y: -1.4 }, 1), { x: 104, y: 33 });
+  const start = { x: 101, y: 34, w: 40, h: 20 };
+  assert.deepEqual(moveBox(start, { x: 3.2, y: -1.4 }, 2), { x: 104, y: 32 });
+  assert.deepEqual(moveBox(start, { x: 3.2, y: -1.4 }, 1), { x: 104, y: 33 });
+});
+
+test('keepInFrame: en az 8 hücre frame içinde kalır, kenar boyunca kayar', () => {
+  // 384x256 hücrelik frame
+  assert.deepEqual(keepInFrame({ x: 500, y: -90, w: 40, h: 20 }), { x: 376, y: -12 });
+  assert.deepEqual(keepInFrame({ x: -60, y: 300, w: 40, h: 20 }), { x: -32, y: 248 });
+  // 8 hücreden küçük blok tamamen içeride kalır
+  assert.deepEqual(keepInFrame({ x: -3, y: 255, w: 4, h: 1 }), { x: 0, y: 255 });
+  assert.deepEqual(moveBox({ x: 300, y: 10, w: 80, h: 30 }, { x: 200, y: 0 }, 2), { x: 376, y: 10 });
+});
+
+test('staysInFrame: resize adımlarını süzer', () => {
+  assert.ok(staysInFrame({ x: -32, y: 0, w: 40, h: 20 }));
+  assert.ok(!staysInFrame({ x: -34, y: 0, w: 40, h: 20 }));
+  assert.ok(!staysInFrame({ x: 377, y: 0, w: 40, h: 20 }));
 });
 
 test('resizeBox: metin yalnızca genişlik değiştirir', () => {
