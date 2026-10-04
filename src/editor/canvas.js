@@ -1,5 +1,7 @@
 // Editör tuvali: spread'i çizer, üstüne rozet/seçim katmanı koyar, taşıma,
-// resize ve tepsiden bırakma etkileşimlerini yönetir.
+// resize, tepsiden bırakma ve görsel odak (focal_point) etkileşimlerini yönetir.
+// Odak modu (state.focalId): seçili görselde kutu içinde sürüklemek bloğu değil
+// görseli kaydırır; kırpılan kısım kutunun dışında soluk görünür.
 import { CELL, DIVIDER_ROWS, FLOW_TYPES, SNAP } from '../config.js';
 import { blocksOnSpread } from '../model.js';
 import { renderSpread } from '../render/spread.js';
@@ -8,6 +10,9 @@ import { fitFrame } from '../render/fit.js';
 import { computeWarnings } from './warnings.js';
 import { defaultWidth, heightForRatio, keepInFrame, moveBox, resizeBox, snap, staysInFrame } from './geometry.js';
 import { kindLabel } from './labels.js';
+import { imageRect, panFocal } from './focal.js';
+
+const DEFAULT_FOCAL = { x: 0.5, y: 0.5 };
 
 const DRAG_THRESHOLD = 3; // ekran pikseli
 const PAD = 56;
@@ -34,6 +39,42 @@ export function createCanvas(container, store) {
   const spread = () => state.data.spreads[state.spreadIndex];
   const blockById = (id) => state.data.blocks.find((b) => b.id === id);
   const elementOf = (id) => frame?.querySelector(`.blocks > .block[data-id="${CSS.escape(id)}"]`);
+  const boxOf = (b) => ({ width: b.w * CELL, height: b.h * CELL });
+
+  // Görsellerin doğal boyutu, kaynağa göre. Yeniden çizimde yeni <img> henüz
+  // yüklenmemiş olabilir; ölçü buradan okunur.
+  const naturals = new Map();
+
+  function rememberNatural(img) {
+    const src = img.getAttribute('src');
+    if (naturals.has(src)) return;
+    const onLoad = () => {
+      naturals.set(src, { width: img.naturalWidth, height: img.naturalHeight });
+      // Seçili görselin ölçüsü ilk kez geldiyse panel ve katman güncellensin.
+      if (blockById(state.selectedId)?.source === src) store.emit('selection');
+    };
+    if (img.complete && img.naturalWidth) naturals.set(src, { width: img.naturalWidth, height: img.naturalHeight });
+    else img.addEventListener('load', onLoad, { once: true });
+  }
+
+  /** Görselin doğal boyutu; henüz yüklenmediyse null. */
+  function naturalSize(id) {
+    const b = blockById(id);
+    return (b?.source && naturals.get(b.source)) || null;
+  }
+
+  /** Odak modundaki görsel, bu spread'de ve çizilebilir durumdaysa. */
+  function focalBlock() {
+    const b = state.focalId ? blockById(state.focalId) : null;
+    return b?.type === 'image' && b.source && b.spread_id === spread().id ? b : null;
+  }
+
+  function setFocalMode(id) {
+    const b = id ? blockById(id) : null;
+    state.focalId = b?.type === 'image' && b.source && b.spread_id === spread().id ? id : null;
+    if (state.focalId) state.selectedId = id;
+    store.emit('selection');
+  }
 
   function render() {
     frame = renderSpread(state.data, spread().id, { guides: state.showGrid, editor: true });
@@ -48,6 +89,7 @@ export function createCanvas(container, store) {
 
     // Akış bloklarının yüksekliği her çizimde içerikten yeniden türetilir.
     for (const [id, h] of Object.entries(settleHeights(frame))) blockById(id).h = h;
+    for (const img of frame.querySelectorAll('.blocks > .block--image img')) rememberNatural(img);
     fit();
     drawOverlay();
   }
@@ -86,7 +128,55 @@ export function createCanvas(container, store) {
       overlay.append(badge);
     }
 
-    if (selected?.spread_id === spread().id) overlay.append(selectionBox(selected));
+    const focal = focalBlock();
+    for (const el of frame.querySelectorAll('.block.is-focal')) el.classList.remove('is-focal');
+    if (focal) {
+      elementOf(focal.id)?.classList.add('is-focal');
+      overlay.append(focalLayer(focal));
+    } else if (selected?.spread_id === spread().id) {
+      overlay.append(selectionBox(selected));
+    }
+  }
+
+  /** Kırpılan kısmın soluk önizlemesi, odak işareti ve kesikli çerçeve. */
+  function focalLayer(b) {
+    const wrap = document.createElement('div');
+    wrap.className = 'focal';
+    wrap.style.left = px(b.x);
+    wrap.style.top = px(b.y);
+    wrap.style.width = px(b.w);
+    wrap.style.height = px(b.h);
+
+    const natural = naturalSize(b.id);
+    if (natural) {
+      const focal = b.focal_point ?? DEFAULT_FOCAL;
+      const r = imageRect(focal, boxOf(b), natural);
+      const ghost = document.createElement('img');
+      ghost.className = 'focal-ghost';
+      ghost.src = b.source;
+      ghost.alt = '';
+      Object.assign(ghost.style, {
+        left: `${r.x}px`,
+        top: `${r.y}px`,
+        width: `${r.width}px`,
+        height: `${r.height}px`,
+      });
+      const mark = document.createElement('div');
+      mark.className = 'focal-mark';
+      mark.style.left = `${focal.x * 100}%`;
+      mark.style.top = `${focal.y * 100}%`;
+      wrap.append(ghost, mark);
+    }
+    const frameEl = document.createElement('div');
+    frameEl.className = 'selection selection--focal';
+    wrap.append(frameEl);
+    return wrap;
+  }
+
+  function applyFocal(b) {
+    const img = elementOf(b.id)?.querySelector('img');
+    const f = b.focal_point ?? DEFAULT_FOCAL;
+    if (img) img.style.objectPosition = `${f.x * 100}% ${f.y * 100}%`;
   }
 
   function selectionBox(b) {
@@ -133,12 +223,54 @@ export function createCanvas(container, store) {
   container.addEventListener('pointerdown', (e) => {
     if (e.button !== 0 || !frame) return;
     document.activeElement?.blur?.();
+    const focal = focalBlock();
+    if (focal) {
+      const hit = e.target.closest('.blocks > .block[data-id]');
+      if (hit?.dataset.id === focal.id) return startFocal(e, focal);
+      // Kutu dışına tıklama odak modundan çıkar ve normal işler.
+      state.focalId = null;
+      store.emit('selection');
+    }
     const handle = e.target.closest('.handle');
     if (handle) return startResize(e, handle.dataset.dir);
     const target = e.target.closest('[data-id]');
     if (target && frame.contains(target)) return startMove(e, target.dataset.id);
     store.select(null);
   });
+
+  container.addEventListener('dblclick', (e) => {
+    const target = e.target.closest('.blocks > .block[data-id]');
+    if (target && blockById(target.dataset.id)?.type === 'image') setFocalMode(target.dataset.id);
+  });
+
+  function startFocal(e, b) {
+    const natural = naturalSize(b.id);
+    if (!natural) return;
+    const start = { ...(b.focal_point ?? DEFAULT_FOCAL) };
+    const box = boxOf(b);
+    const p0 = toCells(e);
+    let moved = false;
+    drag(e, {
+      move(ev) {
+        if (!moved && Math.hypot(ev.clientX - e.clientX, ev.clientY - e.clientY) < DRAG_THRESHOLD) return;
+        if (!moved) store.checkpoint();
+        moved = true;
+        const p = toCells(ev);
+        b.focal_point = panFocal(start, { x: (p.x - p0.x) * CELL, y: (p.y - p0.y) * CELL }, box, natural);
+        applyFocal(b);
+        drawOverlay();
+      },
+      end() {
+        if (moved) store.commit();
+      },
+      cancel() {
+        store.discard();
+        b.focal_point = start;
+        applyFocal(b);
+        drawOverlay();
+      },
+    });
+  }
 
   function startMove(e, id) {
     const b = blockById(id);
@@ -270,7 +402,15 @@ export function createCanvas(container, store) {
     });
   }
 
-  return { render, drawOverlay, fit, beginPlace };
+  return {
+    render,
+    drawOverlay,
+    fit,
+    beginPlace,
+    naturalSize,
+    toggleFocal: (id) => setFocalMode(state.focalId === id ? null : id),
+    exitFocal: () => setFocalMode(null),
+  };
 }
 
 /** Pencere düzeyinde sürükleme; Escape iptal eder. */

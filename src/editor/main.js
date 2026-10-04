@@ -50,6 +50,7 @@ async function boot() {
     notice: null,
     spreadIndex: Math.max(0, data.spreads.findIndex((s) => s.id === wanted)),
     selectedId: null,
+    focalId: null, // odak modundaki görsel (yalnız arayüz durumu)
     showGrid: pref('grid', true),
     lockAspect: pref('lock', true),
     saveStatus: 'saved',
@@ -196,6 +197,15 @@ async function boot() {
         if (b?.spread_id && b.spread_id !== s.data.spreads[i].id) s.selectedId = null;
       });
     },
+    setFocal(id, focal) {
+      store.commit(() => (block(id).focal_point = focal));
+    },
+    toggleFocal(id) {
+      canvas.toggleFocal(id);
+    },
+    naturalSize(id) {
+      return canvas.naturalSize(id);
+    },
     setLock(on) {
       setPref('lock', on);
       store.view((s) => (s.lockAspect = on));
@@ -303,8 +313,10 @@ async function boot() {
 
     if (e.key === 'g') actions.toggleGrid();
     else if (e.key === 'l') actions.setLock(!state.lockAspect);
-    else if (e.key === 'Escape') store.select(null);
+    else if (e.key === 'Escape') state.focalId ? canvas.exitFocal() : store.select(null);
     else if (!placed) return;
+    else if (e.key === 'f' && block(id).type === 'image') actions.toggleFocal(id);
+    else if (state.focalId) return; // odak modunda taşıma/silme kısayolları kapalı
     else if (e.key === 'Delete' || e.key === 'Backspace') actions.unplace(id);
     else if (e.key === ']') actions.front(id);
     else if (e.key === '[') actions.back(id);

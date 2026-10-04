@@ -100,6 +100,7 @@ export function createStore(state, save) {
     select(id) {
       if (state.selectedId === id) return;
       state.selectedId = id;
+      if (state.focalId !== id) state.focalId = null;
       store.emit('selection');
     },
 

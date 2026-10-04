@@ -4,6 +4,8 @@ import { isPlaced, blocksOnSpread } from '../model.js';
 import { escapeHtml as esc } from '../inline.js';
 import { computeWarnings } from './warnings.js';
 import { kindLabel, pageLabel, snippet } from './labels.js';
+import { isCropped } from './focal.js';
+import { CELL } from '../config.js';
 
 export function createInspector(el, store, actions) {
   const { state } = store;
@@ -55,6 +57,8 @@ export function createInspector(el, store, actions) {
           .join('')}</div></div>`
       : '';
 
+    const focal = b.type === 'image' && placed && b.source ? focalPanel(b) : '';
+
     const lock =
       b.type === 'image'
         ? `<label class="check"><input type="checkbox" data-action="lock"${
@@ -71,6 +75,7 @@ export function createInspector(el, store, actions) {
       ${spreadSelect}
       ${relations}
       ${lock}
+      ${focal}
       <div class="buttons">
         <button data-action="front"${placed ? '' : ' disabled'}>Öne getir <kbd>]</kbd></button>
         <button data-action="back"${placed ? '' : ' disabled'}>Arkaya gönder <kbd>[</kbd></button>
@@ -78,6 +83,27 @@ export function createInspector(el, store, actions) {
       </div>
       ${own.length ? `<ul class="warnings">${own.map((w) => `<li class="warn--${w.kind}">${esc(w.message)}</li>`).join('')}</ul>` : ''}
     </section>`;
+  }
+
+  function focalPanel(b) {
+    const f = b.focal_point ?? { x: 0.5, y: 0.5 };
+    const natural = actions.naturalSize(b.id);
+    const cropped = natural ? isCropped({ width: b.w * CELL, height: b.h * CELL }, natural) : true;
+    const on = state.focalId === b.id;
+    return `<div class="field">Odak noktası
+      <div class="focal-row">
+        <span class="focal-values">x ${f.x.toFixed(2)} · y ${f.y.toFixed(2)}</span>
+        <button data-action="focal-mode" aria-pressed="${on}">Kaydır <kbd>F</kbd></button>
+        <button data-action="focal-center"${f.x === 0.5 && f.y === 0.5 ? ' disabled' : ''}>Ortala</button>
+      </div>
+      <span class="muted">${
+        !cropped
+          ? 'Kutu görselle aynı oranda; kırpma yok.'
+          : on
+            ? 'Görseli kutu içinde sürükle. Esc ya da kutu dışına tıkla: çık.'
+            : 'Çift tık ya da F: görseli kutu içinde kaydır.'
+      }</span>
+    </div>`;
   }
 
   function spreadPanel() {
@@ -148,6 +174,10 @@ export function createInspector(el, store, actions) {
         return actions.unplace(id);
       case 'remove-spread':
         return actions.removeSpread();
+      case 'focal-mode':
+        return actions.toggleFocal(id);
+      case 'focal-center':
+        return actions.setFocal(id, { x: 0.5, y: 0.5 });
     }
   });
 
