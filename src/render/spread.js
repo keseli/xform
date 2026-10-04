@@ -7,9 +7,10 @@ const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', '
 
 /**
  * Bir spread'in frame'ini çizer (ölçeklenmemiş, tasarım biriminde).
- * options.guides: ızgara ve kenar boşluğu kılavuzlarını göster.
+ * options.guides: ızgara ve kenar boşluğu kılavuzlarını göster (yalnız editör).
+ * options.editor: taşmalar görünür, chrome tıklamaları engellemez.
  */
-export function renderSpread(data, spreadId, { guides = false } = {}) {
+export function renderSpread(data, spreadId, { guides = false, editor = false } = {}) {
   const index = data.spreads.findIndex((s) => s.id === spreadId);
   const spread = data.spreads[index];
   if (!spread) throw new Error(`spread bulunamadı: ${spreadId}`);
@@ -19,6 +20,8 @@ export function renderSpread(data, spreadId, { guides = false } = {}) {
   frame.style.width = `${FRAME.width}px`;
   frame.style.height = `${FRAME.height}px`;
   frame.dataset.spread = spread.id;
+  frame.classList.toggle('frame--editor', editor);
+  frame.classList.toggle('frame--guides', guides);
 
   if (guides) frame.append(renderGuides());
 

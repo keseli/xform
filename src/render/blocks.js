@@ -86,10 +86,15 @@ const RENDERERS = {
 export function settleHeights(root) {
   const heights = {};
   for (const el of root.querySelectorAll('.block[data-flow]')) {
-    el.style.height = '';
-    const rows = Math.max(1, Math.ceil(el.offsetHeight / CELL - 1e-6));
-    el.style.height = px(rows);
-    heights[el.dataset.id] = rows;
+    heights[el.dataset.id] = settleHeight(el);
   }
   return heights;
+}
+
+/** Tek bir akış bloğunu ölçer, yüksekliğini hücreye yuvarlar ve hücre sayısını döner. */
+export function settleHeight(el) {
+  el.style.height = '';
+  const rows = Math.max(1, Math.ceil(el.offsetHeight / CELL - 1e-6));
+  el.style.height = px(rows);
+  return rows;
 }

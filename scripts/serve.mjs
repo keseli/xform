@@ -1,7 +1,8 @@
-// Bağımlılıksız statik geliştirme sunucusu. ES modülleri ve fetch() file:// altında
-// çalışmadığı için gerekli.
+// Bağımlılıksız geliştirme sunucusu. ES modülleri ve fetch() file:// altında
+// çalışmadığı için gerekli. Editör kayıtları için tek bir yazma ucu var:
+//   PUT /api/data/<issue>  →  data/<issue>.json
 import { createServer } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, rename, stat, writeFile } from 'node:fs/promises';
 import { extname, join, normalize, resolve } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
@@ -20,8 +21,54 @@ const TYPES = {
   '.webp': 'image/webp',
 };
 
+const MAX_BODY = 5 * 1024 * 1024;
+
+async function saveIssue(req, res, name) {
+  if (!/^[a-z0-9-]+$/.test(name)) {
+    res.writeHead(400).end('Geçersiz ad');
+    return;
+  }
+  let size = 0;
+  const chunks = [];
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > MAX_BODY) {
+      res.writeHead(413).end();
+      return;
+    }
+    chunks.push(chunk);
+  }
+  let data;
+  try {
+    data = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+  } catch {
+    res.writeHead(400).end('JSON okunamadı');
+    return;
+  }
+  if (!data || !Array.isArray(data.spreads) || !Array.isArray(data.blocks) || !data.issue) {
+    res.writeHead(400).end('Beklenen yapı: { issue, spreads, blocks }');
+    return;
+  }
+  const file = join(ROOT, 'data', `${name}.json`);
+  const tmp = `${file}.tmp`;
+  await writeFile(tmp, JSON.stringify(data, null, 2) + '\n');
+  await rename(tmp, file);
+  res.writeHead(204).end();
+}
+
 createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
+  if (url.pathname.startsWith('/api/data/')) {
+    if (req.method !== 'PUT') {
+      res.writeHead(405).end();
+      return;
+    }
+    await saveIssue(req, res, url.pathname.slice('/api/data/'.length)).catch((err) => {
+      console.error(err);
+      if (!res.headersSent) res.writeHead(500).end();
+    });
+    return;
+  }
   let path = normalize(join(ROOT, decodeURIComponent(url.pathname)));
   if (!path.startsWith(ROOT)) {
     res.writeHead(403).end();

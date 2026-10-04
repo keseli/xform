@@ -428,6 +428,381 @@
       "z": 1,
       "tone": "dark",
       "label": "03"
+    },
+    {
+      "id": "i-kicker",
+      "type": "heading",
+      "variant": "kicker",
+      "content": "Interlude",
+      "order": 25,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-readtime",
+      "type": "heading",
+      "variant": "kicker",
+      "content": "3 min read",
+      "order": 26,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-title",
+      "type": "heading",
+      "variant": "title",
+      "content": "A Strange Document",
+      "order": 27,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-deck",
+      "type": "text",
+      "variant": "deck",
+      "content": "A real 18th-century request to the Ottoman government — and what it tells us about everyday bureaucracy.",
+      "order": 28,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-rule-deck",
+      "type": "divider",
+      "variant": null,
+      "content": null,
+      "order": 29,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-img-salonica",
+      "type": "image",
+      "variant": null,
+      "content": null,
+      "order": 30,
+      "relates_to": [
+        "i-p1"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "source": "assets/placeholders/salonica.svg",
+      "credit": null,
+      "alt": "A harbour town with a minaret and waterfront houses below mountains."
+    },
+    {
+      "id": "i-cap-salonica",
+      "type": "text",
+      "variant": "caption",
+      "content": "Salonica, late 18th century. A port city where petitions, trade and daily life met.",
+      "order": 31,
+      "relates_to": [
+        "i-img-salonica"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "label": "01"
+    },
+    {
+      "id": "i-img-petition",
+      "type": "image",
+      "variant": null,
+      "content": null,
+      "order": 32,
+      "relates_to": [
+        "i-p1"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "source": "assets/placeholders/petition.svg",
+      "credit": null,
+      "alt": "A long handwritten Ottoman petition with seals."
+    },
+    {
+      "id": "i-cap-petition",
+      "type": "text",
+      "variant": "caption",
+      "content": "Petition from a resident of Salonica, 1765. A request regarding the repair of a local road and tax exemptions.",
+      "order": 33,
+      "relates_to": [
+        "i-img-petition"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "label": "02"
+    },
+    {
+      "id": "i-sub-says",
+      "type": "heading",
+      "variant": "subhead",
+      "content": "What does it say?",
+      "order": 34,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-p1",
+      "type": "text",
+      "variant": "body",
+      "content": "A group of local residents petition the governor to repair a road that had become impassable. They argue that the damage was hurting trade, increasing prices, and making it difficult to bring goods to the city. In return, they request a temporary tax exemption to cover the costs.",
+      "order": 35,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-rule-quote",
+      "type": "divider",
+      "variant": null,
+      "content": null,
+      "order": 36,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-quote",
+      "type": "quote",
+      "variant": null,
+      "content": "“The road is broken, the goods cannot pass, the prices have risen. If the road is repaired, trade will revive and the people will benefit.”",
+      "order": 37,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-img-seal",
+      "type": "image",
+      "variant": null,
+      "content": null,
+      "order": 38,
+      "relates_to": [
+        "i-p1"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "source": "assets/placeholders/seal.svg",
+      "credit": null,
+      "alt": "A wax seal on folded documents."
+    },
+    {
+      "id": "i-cap-seal",
+      "type": "text",
+      "variant": "caption",
+      "content": "Seal of the provincial administration. Used to validate the document.",
+      "order": 39,
+      "relates_to": [
+        "i-img-seal"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "label": "03"
+    },
+    {
+      "id": "i-img-petitions",
+      "type": "image",
+      "variant": null,
+      "content": null,
+      "order": 40,
+      "relates_to": [
+        "i-p2"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "source": "assets/placeholders/petitions.svg",
+      "credit": null,
+      "alt": "Stacks of old bound petitions."
+    },
+    {
+      "id": "i-cap-petitions",
+      "type": "text",
+      "variant": "caption",
+      "content": "Similar petitions, 18th century. Provincial archives, Istanbul.",
+      "order": 41,
+      "relates_to": [
+        "i-img-petitions"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "label": "04"
+    },
+    {
+      "id": "i-sub-matters",
+      "type": "heading",
+      "variant": "subhead",
+      "content": "Why it matters",
+      "order": 42,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-p2",
+      "type": "text",
+      "variant": "body",
+      "content": "This is not an imperial decree or a story of war. It is an ordinary request from ordinary people. And yet, it shows how empires functioned: through continuous negotiation, documentation and local initiative. Paper made it possible for distant voices to reach the center — and to leave a trace.",
+      "order": 43,
+      "relates_to": [],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark"
+    },
+    {
+      "id": "i-img-road",
+      "type": "image",
+      "variant": null,
+      "content": null,
+      "order": 44,
+      "relates_to": [
+        "i-p1"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "source": "assets/placeholders/road-map.svg",
+      "credit": null,
+      "alt": "A sketched plan of a coastal town and its road."
+    },
+    {
+      "id": "i-cap-road",
+      "type": "text",
+      "variant": "caption",
+      "content": "A section of the road mentioned in the petition (modern reconstruction).",
+      "order": 45,
+      "relates_to": [
+        "i-img-road"
+      ],
+      "spread_id": null,
+      "x": null,
+      "y": null,
+      "w": null,
+      "h": null,
+      "z": null,
+      "tone": "dark",
+      "label": "05"
     }
   ]
 }
