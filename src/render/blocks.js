@@ -1,4 +1,4 @@
-import { CELL, CAPTION, DIVIDER_ROWS, FLOW_TYPES } from '../config.js';
+import { CELL, DIVIDER_ROWS, FLOW_TYPES } from '../config.js';
 import { escapeHtml, inlineHtml } from '../inline.js';
 
 const px = (cells) => `${cells * CELL}px`;
@@ -35,7 +35,9 @@ const RENDERERS = {
   },
 
   text(el, b) {
-    el.innerHTML = `<p class="flow">${inlineHtml(b.content)}</p>`;
+    const label =
+      b.variant === 'caption' && b.label ? `<span class="caption-label">${escapeHtml(b.label)}</span>` : '';
+    el.innerHTML = `<p class="flow">${label}${inlineHtml(b.content)}</p>`;
   },
 
   quote(el, b) {
@@ -48,13 +50,10 @@ const RENDERERS = {
   },
 
   divider(el) {
-    el.innerHTML = '<hr>';
+    el.innerHTML = '<div class="rule"></div>';
   },
 
   image(el, b) {
-    const fx = (b.focal_point?.x ?? 0.5) * 100;
-    const fy = (b.focal_point?.y ?? 0.5) * 100;
-
     const frame = document.createElement('div');
     frame.className = 'image-frame';
     if (b.source) {
@@ -63,29 +62,17 @@ const RENDERERS = {
       img.alt = b.alt ?? '';
       img.draggable = false;
       // Kutu oranı görselden farklıysa focal_point'e göre kırpılır.
+      const fx = (b.focal_point?.x ?? 0.5) * 100;
+      const fy = (b.focal_point?.y ?? 0.5) * 100;
       img.style.objectPosition = `${fx}% ${fy}%`;
       frame.append(img);
     }
     el.append(frame);
-
-    const pos = b.caption_position ?? 'none';
-    if (pos !== 'none' && (b.caption || b.label || b.credit)) {
-      const cap = document.createElement('figcaption');
-      cap.className = `caption caption--${pos}`;
-      if (pos === 'right') {
-        cap.style.left = `calc(100% + ${px(CAPTION.gap)})`;
-        cap.style.width = px(CAPTION.rightWidth);
-      } else {
-        cap.style.top = `calc(100% + ${px(CAPTION.gap)})`;
-      }
-      cap.innerHTML = [
-        b.label && `<span class="caption-label">${escapeHtml(b.label)}</span>`,
-        b.caption && `<span class="caption-text">${inlineHtml(b.caption)}</span>`,
-        b.credit && `<span class="caption-credit">${inlineHtml(b.credit)}</span>`,
-      ]
-        .filter(Boolean)
-        .join('');
-      el.append(cap);
+    if (b.credit) {
+      const credit = document.createElement('span');
+      credit.className = 'image-credit';
+      credit.innerHTML = inlineHtml(b.credit);
+      el.append(credit);
     }
   },
 };

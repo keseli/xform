@@ -22,9 +22,12 @@ npm run dev        # http://localhost:5173 — bağımlılık yok, Node 20+
 
 ## Kurallar
 
-- Konumlar hücre cinsinden; `x` spread'in sol kenarından sayılır (0–191).
+- Hücre 4 birim, ızgara 384×256. Konumlar hücre cinsinden; `x` spread'in sol
+  kenarından sayılır (0–383). Editör snap adımı 2 hücre, değiştirici tuşla 1 (`SNAP`).
+- Tüm `--lh-*` satır yükseklikleri 4'ün katı; gövde 14.5/20.
 - `text`, `heading`, `quote`, `note` yüksekliği içerikten ölçülür ve bir üst hücreye
   yuvarlanır; saklanan `h` önbellektir.
-- Görselde `x, y, w, h` görselin kutusudur; caption kutunun dışında (alt/sağ) durur.
+- Caption bağımsız bir bloktur (`text` / `caption`): genişliği blokta tutulur, `label`
+  metnin üstünde görünür, `relates_to` ile görsele bağlanır. Görselde caption alanı yok.
 - Satır içi işaretleme: `*italik*`, `^1^` (üst simge).
 - Okuma görünümünde frame dışına taşan kısım kesilir.

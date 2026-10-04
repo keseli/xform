@@ -5,7 +5,7 @@
 export const FRAME = {
   width: 1536, // tasarım birimi, iki sayfa yan yana
   height: 1024,
-  cell: 8, // ızgara hücresi, iki yönde aynı
+  cell: 4, // ızgara hücresi, iki yönde aynı
 };
 
 if (FRAME.width % FRAME.cell || FRAME.height % FRAME.cell || (FRAME.width / 2) % FRAME.cell) {
@@ -13,20 +13,16 @@ if (FRAME.width % FRAME.cell || FRAME.height % FRAME.cell || (FRAME.width / 2) %
 }
 
 export const CELL = FRAME.cell;
-export const COLS = FRAME.width / CELL; // 192
-export const ROWS = FRAME.height / CELL; // 128
-export const PAGE_COLS = COLS / 2; // 96
+export const COLS = FRAME.width / CELL; // 384
+export const ROWS = FRAME.height / CELL; // 256
+export const PAGE_COLS = COLS / 2; // 192
 
 // Kenar boşlukları kılavuzdur, kısıt değil. Hücre cinsinden, sayfa başına.
 // outer: sayfanın dış kenarı, inner: ortadaki kat tarafı.
-export const MARGINS = { top: 10, bottom: 10, outer: 7, inner: 6 };
+export const MARGINS = { top: 20, bottom: 20, outer: 14, inner: 12 };
 
-// Görsel altyazısının blok kutusuna göre yerleşimi (hücre).
-// Altyazı görsel kutusunun dışında durur; x, y, w, h her zaman görselin kendisidir.
-export const CAPTION = {
-  gap: 2, // görselle altyazı arası
-  rightWidth: 15, // caption_position: right için sabit genişlik
-};
+// Editörde taşıma/resize snap adımı (hücre). fine: değiştirici tuşla.
+export const SNAP = { step: 2, fine: 1 };
 
 // Yüksekliği içerikten türeyen tipler (resize'da yalnızca genişlik değişir).
 export const FLOW_TYPES = new Set(['text', 'heading', 'quote', 'note']);

@@ -12,10 +12,10 @@
  * @typedef {Object} Block
  * @property {string} id
  * @property {BlockType} type
- * @property {string|null} variant  heading: title|subhead|kicker, text: body|deck, diğerleri: null
+ * @property {string|null} variant  heading: title|subhead|kicker, text: body|deck|caption, diğerleri: null
  * @property {string|null} content  Satır içi işaretleme: *italik*, ^üst simge^
  * @property {number} order         İçerikteki okuma sırası, konumdan bağımsız
- * @property {string[]} relates_to  Görsel/notun ait olduğu paragrafların id'leri
+ * @property {string[]} relates_to  Görsel/not: ait olduğu paragraflar. Caption: ait olduğu görsel.
  * @property {string|null} spread_id   Yerleştirilmemişse null (konum alanları da null)
  * @property {number|null} x        Hücre, spread'in sol kenarından
  * @property {number|null} y        Hücre, spread'in üst kenarından
@@ -23,15 +23,13 @@
  * @property {number|null} h        Akış tiplerinde içerikten türetilir, saklanan değer önbellektir
  * @property {number|null} z
  * @property {'dark'|'light'} tone
- * @property {string|null} [label]  Örn. "01"
+ * @property {string|null} [label]  Örn. "01". Caption'da metnin üstünde, notta solda asılı.
  *
  * Görsellere özgü:
  * @property {{x:number, y:number}} [focal_point]  0–1 arası
  * @property {string|null} [source]
- * @property {string|null} [caption]
  * @property {string|null} [credit]
  * @property {string|null} [alt]
- * @property {'below'|'right'|'none'} [caption_position]
  *
  * @typedef {Object} Spread
  * @property {string} id
@@ -42,7 +40,7 @@
 
 export const VARIANTS = {
   heading: ['title', 'subhead', 'kicker'],
-  text: ['body', 'deck'],
+  text: ['body', 'deck', 'caption'],
   image: [null],
   quote: [null],
   note: [null],
@@ -100,14 +98,16 @@ export function validate(data) {
     if (b.spread_id != null && !spreadIds.has(b.spread_id)) {
       problems.push(`${b.id}: bilinmeyen spread ${b.spread_id}`);
     }
-    if (b.type === 'image' && !['below', 'right', 'none'].includes(b.caption_position)) {
-      problems.push(`${b.id}: caption_position geçersiz`);
-    }
   }
 
+  const byId = new Map(data.blocks.map((b) => [b.id, b]));
   for (const b of data.blocks) {
     for (const rel of b.relates_to ?? []) {
-      if (!ids.has(rel)) problems.push(`${b.id}: relates_to bilinmeyen id ${rel}`);
+      if (!byId.has(rel)) problems.push(`${b.id}: relates_to bilinmeyen id ${rel}`);
+    }
+    if (b.type === 'text' && b.variant === 'caption') {
+      const images = (b.relates_to ?? []).filter((id) => byId.get(id)?.type === 'image');
+      if (!images.length) problems.push(`${b.id}: caption bir görsele bağlı değil`);
     }
   }
 

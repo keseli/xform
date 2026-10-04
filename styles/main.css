@@ -4,13 +4,14 @@
    kontrol eder ve uymayanları konsola yazar. */
 
 :root {
-  --cell: 8px;
+  --cell: 4px;
+  --hairline: 1px; /* main.js ölçeğe göre günceller */
 
   --lh-title: 56px;
-  --lh-deck: 32px;
-  --lh-body: 24px;
-  --lh-quote: 32px;
-  --lh-subhead: 24px;
+  --lh-deck: 28px;
+  --lh-body: 20px;
+  --lh-quote: 28px;
+  --lh-subhead: 20px;
   --lh-small: 16px; /* kicker, note, caption */
 
   --paper: #eeeadf;
@@ -18,7 +19,7 @@
   --ink: #1c1a17;
   --ink-soft: #3a3631;
   --muted: #6d675d;
-  --rule: #b7b0a2;
+  --rule: #8f8778;
   --light-ink: #f3efe6;
 
   --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
@@ -94,12 +95,12 @@ body {
 
 .chrome {
   position: absolute;
-  top: calc(var(--cell) * 4);
-  height: calc(var(--cell) * 3);
+  top: 32px;
+  height: 24px;
   z-index: 9500;
   display: grid;
   align-items: center;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: var(--hairline) solid var(--rule);
   font-family: var(--sans);
   font-size: 9.5px;
   letter-spacing: 0.16em;
@@ -200,6 +201,26 @@ body {
   line-height: var(--lh-deck);
 }
 
+.block--text-caption {
+  font-family: var(--serif);
+  font-size: 11px;
+  font-variation-settings: 'opsz' 8;
+  line-height: var(--lh-small);
+  color: var(--ink-soft);
+}
+
+.block--text-caption.tone--light {
+  color: var(--light-ink);
+}
+
+.caption-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
 sup {
   font-size: 0.6em;
   line-height: 0;
@@ -244,16 +265,15 @@ sup {
   font-family: var(--sans);
   font-size: 8.5px;
   font-weight: 600;
-  min-width: calc(var(--cell) * 2);
-  padding-right: var(--cell);
+  min-width: calc(var(--cell) * 4);
+  padding-right: calc(var(--cell) * 2);
 }
 
 /* divider: çizgi bloğun üst kenarında, ızgara çizgisine oturur */
 
-.block--divider hr {
-  margin: 0;
-  border: 0;
-  border-top: 1px solid var(--rule);
+.block--divider .rule {
+  height: var(--hairline);
+  background: var(--rule);
 }
 
 /* image */
@@ -271,39 +291,19 @@ sup {
   object-fit: cover; /* şeffaf PNG'de arka plan boyanmaz */
 }
 
-.caption {
+.image-credit {
   position: absolute;
-  font-family: var(--serif);
-  font-size: 11px;
-  font-variation-settings: 'opsz' 8;
-  line-height: var(--lh-small);
-  color: var(--ink-soft);
-}
-
-.caption--below {
-  left: 0;
-  width: 100%;
-}
-
-.caption--right {
-  top: 0;
-}
-
-.tone--light .caption {
+  right: calc(var(--cell) * 2);
+  bottom: calc(var(--cell) * 2);
+  font-family: var(--sans);
+  font-size: 7.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--light-ink);
 }
 
-.caption-label {
-  display: block;
-  font-family: var(--sans);
-  font-size: 8.5px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-}
-
-.caption-credit {
-  color: var(--muted);
-  margin-left: 0.4em;
+.tone--dark .image-credit {
+  color: var(--ink-soft);
 }
 
 /* ---------- Kılavuzlar (g tuşu) ---------- */
@@ -314,26 +314,23 @@ sup {
   pointer-events: none;
   z-index: 9800;
   background-image:
-    linear-gradient(to right, rgb(200 60 40 / 0.16) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(200 60 40 / 0.16) 1px, transparent 1px),
-    linear-gradient(to right, rgb(200 60 40 / 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(200 60 40 / 0.06) 1px, transparent 1px);
+    linear-gradient(to right, rgb(200 60 40 / 0.2) var(--hairline), transparent var(--hairline)),
+    linear-gradient(to bottom, rgb(200 60 40 / 0.2) var(--hairline), transparent var(--hairline)),
+    linear-gradient(to right, rgb(200 60 40 / 0.07) var(--hairline), transparent var(--hairline)),
+    linear-gradient(to bottom, rgb(200 60 40 / 0.07) var(--hairline), transparent var(--hairline));
+  /* ince çizgi = snap adımı (2 hücre), kalın çizgi = 16 hücre */
   background-size:
-    calc(var(--cell) * 8) calc(var(--cell) * 8),
-    calc(var(--cell) * 8) calc(var(--cell) * 8),
-    var(--cell) var(--cell),
-    var(--cell) var(--cell);
+    calc(var(--cell) * 16) calc(var(--cell) * 16),
+    calc(var(--cell) * 16) calc(var(--cell) * 16),
+    calc(var(--cell) * 2) calc(var(--cell) * 2),
+    calc(var(--cell) * 2) calc(var(--cell) * 2);
 }
 
 .guides-margin {
   position: absolute;
-  outline: 1px solid rgb(60 110 210 / 0.55);
+  outline: var(--hairline) solid rgb(60 110 210 / 0.55);
 }
 
 .frame--guides .block {
-  outline: 1px dashed rgb(60 110 210 / 0.45);
-}
-
-.frame--guides .caption {
-  outline: 1px dotted rgb(60 110 210 / 0.35);
+  outline: var(--hairline) dashed rgb(60 110 210 / 0.45);
 }

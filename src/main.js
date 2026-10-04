@@ -70,6 +70,8 @@ function fit() {
   holder.style.width = `${FRAME.width * s}px`;
   holder.style.height = `${FRAME.height * s}px`;
   holder.firstChild.style.transform = `scale(${s})`;
+  // İnce çizgiler ölçeklenince 1 ekran pikselinin altına düşüp kaybolmasın.
+  root.style.setProperty('--hairline', `${Math.max(1, 1 / s)}px`);
 }
 
 function onKey(e) {
