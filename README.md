@@ -4,12 +4,14 @@ Kişisel dergi için spread renderer'ı (ve ileride elle yerleşim editörü).
 
 ```
 npm run dev        # http://localhost:5173 — bağımlılık yok, Node 20+
-npm test           # node:test, DOM'suz modüller (geometri, uyarılar)
+npm test           # node:test, DOM'suz modüller (geometri, uyarılar, içe aktarma)
+npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini sayıya aktar
 ```
 
 - **Okuma görünümü** `index.html`: **← / →** spread'ler arası, **e** editöre geçer.
 - **Editör** `editor.html`: değişiklikler `data/<issue>.json` dosyasına otomatik
-  kaydedilir (dev sunucusundaki `PUT /api/data/<issue>` ucu).
+  kaydedilir (dev sunucusundaki `PUT /api/data/<issue>` ucu). Dosya dışarıda
+  değişirse (içe aktarma, başka sekme) editör birkaç saniye içinde yeniden yükler.
 - `?issue=issue-001&spread=s-tablets`: dosya ve spread seçimi (iki görünümde de).
 
 ### Editör
@@ -33,6 +35,32 @@ Uyarılar engellemez, rozet, sekme ve listede gösterilir:
 
 Görsel seçilince `relates_to` paragrafları tuvalde ve tepside vurgulanır.
 
+## İçerik girişi
+
+İçerik hattı makale başına bir paket üretir; içe aktarma blokları tepsiye düşürür.
+
+```
+content/
+  issue-001.json                 { "issue": "issue-001", "meta": {…}, "articles": ["empire-of-paper", …] }
+  empire-of-paper/
+    article.json                 { "slug", "section", "blocks": [ { "key", "type", "variant", … } ] }
+    tablet.svg                   görseller paketle aynı klasörde
+```
+
+- **Blok:** `key` (makale içinde benzersiz: küçük harf, rakam, `-`), `type`, `variant`,
+  `content`, `label`, `relates_to` (aynı makalenin key'leri ya da `diger-slug/key`).
+  Görselde `file`, `alt`, `credit`, `focal_point`; `file` yoksa düz kutu görünür.
+- **id** = `slug/key`. **order** yazılmaz: manifest'teki makale sırası ve makale içindeki
+  sıradan her aktarmada baştan hesaplanır.
+- Görseller `assets/<issue>/<slug>/` altına kopyalanır.
+- Tekrar aktarmada içerik alanları güncellenir; yerleşim, `tone` ve mevcut görsellerin
+  `focal_point`'i korunur. Paketten çıkan blok tepsideyse silinir, yerleşikse korunur ve
+  editörde "içerikte yok" uyarısı alır.
+- Hatalı paket (çözülemeyen `relates_to`, yinelenen key, eksik dosya…) hiçbir şey yazmaz.
+
+`data/<issue>.json` içindeki `revision` her yazmada artar. Sunucu eski revizyondan gelen
+kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
+
 ## Yapı
 
 | Dosya | İçerik |
@@ -42,7 +70,10 @@ Görsel seçilince `relates_to` paragrafları tuvalde ve tepside vurgulanır.
 | `src/render/` | Spread, chrome ve blok çizimi; akış tiplerinde yükseklik ölçümü |
 | `src/editor/` | Editör: tuval, tepsi, inspector, durum; `geometry.js` ve `warnings.js` DOM'suz |
 | `styles/main.css` | Renkler ve tipografi; `--lh-*` satır yükseklikleri hücrenin katı olmalı |
-| `data/issue-001.json` | Örnek sayı |
+| `src/content/merge.js` | İçe aktarma kuralları (DOM'suz, dosya sistemsiz) |
+| `scripts/import.mjs` | İçe aktarma komutu |
+| `content/` | İçerik paketleri (hattın çıktısı); örnek sayının kaynağı |
+| `data/issue-001.json` | Sayı: bloklar ve yerleşim |
 
 ## Kurallar
 

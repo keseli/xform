@@ -4,7 +4,7 @@ import { COLS, ROWS } from '../config.js';
 import { isPlaced } from '../model.js';
 
 /**
- * @returns {Map<string, {kind: 'order'|'relation'|'overflow', message: string, ref?: string}[]>}
+ * @returns {Map<string, {kind: 'order'|'relation'|'overflow'|'removed', message: string, ref?: string}[]>}
  */
 export function computeWarnings(data) {
   const out = new Map();
@@ -50,6 +50,13 @@ export function computeWarnings(data) {
         message: `İlişkili blokların hiçbiri bu spread'de değil (${related.join(', ')}).`,
         ref: related[0],
       });
+    }
+  }
+
+  // İçerik paketinden çıkarılmış ama yerleşik (içe aktarma korudu).
+  for (const b of placed) {
+    if (b.removed_from_content) {
+      add(b, { kind: 'removed', message: 'İçerik paketinde artık yok. Tepsiye gönderirsen bir sonraki içe aktarmada silinir.' });
     }
   }
 

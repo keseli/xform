@@ -1,0 +1,197 @@
+{
+  "slug": "empire-of-paper",
+  "section": "The Empire of Paper",
+  "blocks": [
+    {
+      "key": "kicker",
+      "type": "heading",
+      "variant": "kicker",
+      "content": "History"
+    },
+    {
+      "key": "title",
+      "type": "heading",
+      "variant": "title",
+      "content": "From Tablets to Empires"
+    },
+    {
+      "key": "deck",
+      "type": "text",
+      "variant": "deck",
+      "content": "Recording, counting and governing in the ancient world."
+    },
+    {
+      "key": "rule-deck",
+      "type": "divider"
+    },
+    {
+      "key": "p1",
+      "type": "text",
+      "variant": "body",
+      "content": "In the beginning, there was no bureaucracy. Only people, memory and obligation. Early societies kept track of what mattered — land, grain, debts, people — through oral traditions and simple marks. But as communities grew, memory became fragile. What one person knew could not easily be passed to another, and with distance, time and scale, forgetting was inevitable."
+    },
+    {
+      "key": "p2",
+      "type": "text",
+      "variant": "body",
+      "content": "The first administrative systems emerged not from a desire to control, but from a practical need: to remember. Clay tablets in Mesopotamia, inscriptions in Egypt, and later imperial archives in Rome and China, all show the same pattern. Writing began as a tool for accounting — a way to make absence governable.^1^"
+    },
+    {
+      "key": "img-tablet",
+      "type": "image",
+      "file": "tablet.svg",
+      "alt": "A cuneiform clay tablet photographed at an angle.",
+      "credit": null,
+      "focal_point": {
+        "x": 0.45,
+        "y": 0.6
+      },
+      "relates_to": [
+        "p1",
+        "p2"
+      ]
+    },
+    {
+      "key": "cap-tablet",
+      "type": "text",
+      "variant": "caption",
+      "label": "01",
+      "content": "Clay tablets from Ur (c. 2100 BCE) show early administrative records: grain allocations, workers and deliveries.",
+      "relates_to": [
+        "img-tablet"
+      ]
+    },
+    {
+      "key": "sub-materiality",
+      "type": "heading",
+      "variant": "subhead",
+      "content": "The Materiality of Administration"
+    },
+    {
+      "key": "p3",
+      "type": "text",
+      "variant": "body",
+      "content": "Paper changed everything. Unlike stone or clay, it was cheap, light and reproducible. It allowed information to move — across cities, regions and generations. Empires could now coordinate taxation, law, and military logistics at scales that were previously impossible."
+    },
+    {
+      "key": "p4",
+      "type": "text",
+      "variant": "body",
+      "content": "But paper also introduced a new problem: too much information. As archives expanded, so did the need for systems — classification, indexing, standardization. Bureaucracy was not just about writing things down; it was about making them retrievable, comparable and actionable."
+    },
+    {
+      "key": "rule-fn",
+      "type": "divider"
+    },
+    {
+      "key": "fn1",
+      "type": "note",
+      "label": "1",
+      "content": "Van De Mieroop, M. (2015). *A History of the Ancient Near East.* Wiley.",
+      "relates_to": [
+        "p2"
+      ]
+    },
+    {
+      "key": "img-map",
+      "type": "image",
+      "file": "ottoman-map.svg",
+      "alt": "An aged map of the eastern Mediterranean with red administrative boundaries.",
+      "credit": null,
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "relates_to": [
+        "p5"
+      ]
+    },
+    {
+      "key": "cap-map",
+      "type": "text",
+      "variant": "caption",
+      "label": "02",
+      "content": "A 17th-century Ottoman map showing administrative regions and postal routes. Maps were a form of bureaucratic infrastructure — turning space into something that could be governed.",
+      "relates_to": [
+        "img-map"
+      ]
+    },
+    {
+      "key": "sub-infrastructure",
+      "type": "heading",
+      "variant": "subhead",
+      "content": "Paper as Infrastructure"
+    },
+    {
+      "key": "p5",
+      "type": "text",
+      "variant": "body",
+      "content": "By the time of the Ottoman Empire, paperwork connected provinces, carried orders, recorded taxes, and mediated between the center and local powers. Documents moved along postal routes, through scribes, and into archives where they could be consulted years later. This was not just record-keeping; it was a communication system, a memory machine, and a tool of legitimacy.^2^"
+    },
+    {
+      "key": "p6",
+      "type": "text",
+      "variant": "body",
+      "content": "Every document fixed a moment in time — a decision, a transaction, a dispute. But more importantly, it created a trace. These traces allowed states to operate beyond the presence of individuals. Authority no longer depended on personal memory; it was embedded in systems, routines and paper."
+    },
+    {
+      "key": "img-tax",
+      "type": "image",
+      "file": "tax-record.svg",
+      "alt": "A handwritten Ottoman tax register in columns.",
+      "credit": null,
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "relates_to": [
+        "p4",
+        "p5"
+      ]
+    },
+    {
+      "key": "cap-tax",
+      "type": "text",
+      "variant": "caption",
+      "label": "04",
+      "content": "A tax record from Anatolia, 1763. Standardized formats allowed distant regions to be integrated into a single administrative system.",
+      "relates_to": [
+        "img-tax"
+      ]
+    },
+    {
+      "key": "quote-empires",
+      "type": "quote",
+      "content": "“Empires are not held together by force alone, but by the ability to record, copy and retrieve information across time and space.”"
+    },
+    {
+      "key": "rule-quote",
+      "type": "divider"
+    },
+    {
+      "key": "img-archive",
+      "type": "image",
+      "file": "archive.svg",
+      "alt": "An engraving of scribes working at long tables in a vaulted archive.",
+      "credit": null,
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "relates_to": [
+        "p5",
+        "p6"
+      ]
+    },
+    {
+      "key": "cap-archive",
+      "type": "text",
+      "variant": "caption",
+      "label": "03",
+      "content": "An imagined Ottoman archive, 18th century. Scribes organized documents by subject, region and date.",
+      "relates_to": [
+        "img-archive"
+      ]
+    }
+  ]
+}

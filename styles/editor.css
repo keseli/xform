@@ -175,6 +175,16 @@ body.editor {
   color: var(--danger);
 }
 
+.save--notice {
+  max-width: 420px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #fbf3e4;
+  color: #7a4c00;
+}
+
 .save--saved::before {
   content: '● ';
   color: var(--related);
@@ -300,6 +310,15 @@ body.editor {
 .tray-label {
   color: var(--ui-muted);
   font-weight: 400;
+}
+
+.tray-removed {
+  margin-left: auto;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: #fbeceb;
+  color: var(--danger);
+  font-weight: 500;
 }
 
 .tray-item img {

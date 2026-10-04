@@ -1,0 +1,187 @@
+{
+  "slug": "strange-document",
+  "section": "Interlude",
+  "blocks": [
+    {
+      "key": "kicker",
+      "type": "heading",
+      "variant": "kicker",
+      "content": "Interlude"
+    },
+    {
+      "key": "readtime",
+      "type": "heading",
+      "variant": "kicker",
+      "content": "3 min read"
+    },
+    {
+      "key": "title",
+      "type": "heading",
+      "variant": "title",
+      "content": "A Strange Document"
+    },
+    {
+      "key": "deck",
+      "type": "text",
+      "variant": "deck",
+      "content": "A real 18th-century request to the Ottoman government — and what it tells us about everyday bureaucracy."
+    },
+    {
+      "key": "rule-deck",
+      "type": "divider"
+    },
+    {
+      "key": "img-salonica",
+      "type": "image",
+      "file": "salonica.svg",
+      "alt": "A harbour town with a minaret and waterfront houses below mountains.",
+      "credit": null,
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "relates_to": [
+        "p1"
+      ]
+    },
+    {
+      "key": "cap-salonica",
+      "type": "text",
+      "variant": "caption",
+      "label": "01",
+      "content": "Salonica, late 18th century. A port city where petitions, trade and daily life met.",
+      "relates_to": [
+        "img-salonica"
+      ]
+    },
+    {
+      "key": "img-petition",
+      "type": "image",
+      "file": "petition.svg",
+      "alt": "A long handwritten Ottoman petition with seals.",
+      "credit": null,
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "relates_to": [
+        "p1"
+      ]
+    },
+    {
+      "key": "cap-petition",
+      "type": "text",
+      "variant": "caption",
+      "label": "02",
+      "content": "Petition from a resident of Salonica, 1765. A request regarding the repair of a local road and tax exemptions.",
+      "relates_to": [
+        "img-petition"
+      ]
+    },
+    {
+      "key": "sub-says",
+      "type": "heading",
+      "variant": "subhead",
+      "content": "What does it say?"
+    },
+    {
+      "key": "p1",
+      "type": "text",
+      "variant": "body",
+      "content": "A group of local residents petition the governor to repair a road that had become impassable. They argue that the damage was hurting trade, increasing prices, and making it difficult to bring goods to the city. In return, they request a temporary tax exemption to cover the costs."
+    },
+    {
+      "key": "rule-quote",
+      "type": "divider"
+    },
+    {
+      "key": "quote",
+      "type": "quote",
+      "content": "“The road is broken, the goods cannot pass, the prices have risen. If the road is repaired, trade will revive and the people will benefit.”"
+    },
+    {
+      "key": "img-seal",
+      "type": "image",
+      "file": "seal.svg",
+      "alt": "A wax seal on folded documents.",
+      "credit": null,
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "relates_to": [
+        "p1"
+      ]
+    },
+    {
+      "key": "cap-seal",
+      "type": "text",
+      "variant": "caption",
+      "label": "03",
+      "content": "Seal of the provincial administration. Used to validate the document.",
+      "relates_to": [
+        "img-seal"
+      ]
+    },
+    {
+      "key": "img-petitions",
+      "type": "image",
+      "file": "petitions.svg",
+      "alt": "Stacks of old bound petitions.",
+      "credit": null,
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "relates_to": [
+        "p2"
+      ]
+    },
+    {
+      "key": "cap-petitions",
+      "type": "text",
+      "variant": "caption",
+      "label": "04",
+      "content": "Similar petitions, 18th century. Provincial archives, Istanbul.",
+      "relates_to": [
+        "img-petitions"
+      ]
+    },
+    {
+      "key": "sub-matters",
+      "type": "heading",
+      "variant": "subhead",
+      "content": "Why it matters"
+    },
+    {
+      "key": "p2",
+      "type": "text",
+      "variant": "body",
+      "content": "This is not an imperial decree or a story of war. It is an ordinary request from ordinary people. And yet, it shows how empires functioned: through continuous negotiation, documentation and local initiative. Paper made it possible for distant voices to reach the center — and to leave a trace."
+    },
+    {
+      "key": "img-road",
+      "type": "image",
+      "file": "road-map.svg",
+      "alt": "A sketched plan of a coastal town and its road.",
+      "credit": null,
+      "focal_point": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "relates_to": [
+        "p1"
+      ]
+    },
+    {
+      "key": "cap-road",
+      "type": "text",
+      "variant": "caption",
+      "label": "05",
+      "content": "A section of the road mentioned in the petition (modern reconstruction).",
+      "relates_to": [
+        "img-road"
+      ]
+    }
+  ]
+}

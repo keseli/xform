@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/serve.mjs",
+    "import": "node scripts/import.mjs",
     "test": "node --test test/*.test.js"
   }
 }

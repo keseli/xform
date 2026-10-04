@@ -1,0 +1,14 @@
+{
+  "issue": "issue-001",
+  "meta": {
+    "title": "XFORM",
+    "month": 10,
+    "year": 2026,
+    "number": "001",
+    "first_page": 2
+  },
+  "articles": [
+    "empire-of-paper",
+    "strange-document"
+  ]
+}

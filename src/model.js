@@ -1,6 +1,7 @@
 // Veri modeli. Dosya biçimi: data/<issue>.json
 //
 // {
+//   revision: number                                   // her yazmada +1 (scripts/serve.mjs, scripts/import.mjs)
 //   issue:   { title, month, year, number, first_page }
 //   spreads: [{ id, section, chrome_left, chrome_right }]   // dizideki sıra = spread sırası
 //   blocks:  [Block]
@@ -24,6 +25,7 @@
  * @property {number|null} z
  * @property {'dark'|'light'} tone
  * @property {string|null} [label]  Örn. "01". Caption'da metnin üstünde, notta solda asılı.
+ * @property {true} [removed_from_content]  İçe aktarma: paketten çıktı ama yerleşik olduğu için korundu.
  *
  * Görsellere özgü:
  * @property {{x:number, y:number}} [focal_point]  0–1 arası

@@ -8,12 +8,30 @@ export async function loadIssue(name) {
   return data;
 }
 
-/** Dev sunucusundaki yazma ucuna kaydeder (scripts/serve.mjs). */
-export async function saveIssue(name, data) {
+export class ConflictError extends Error {
+  constructor(revision) {
+    super(`dosya dışarıda değişti (revision ${revision})`);
+    this.revision = revision;
+  }
+}
+
+/**
+ * Dev sunucusundaki yazma ucuna kaydeder (scripts/serve.mjs). Dosyadaki
+ * revision gönderilenle aynı değilse ConflictError fırlatır. Yeni revision'ı döner.
+ */
+export async function saveIssue(name, data, revision) {
   const res = await fetch(`api/data/${name}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ revision, ...data }),
   });
+  if (res.status === 409) throw new ConflictError((await res.json()).revision);
   if (!res.ok) throw new Error(`kaydedilemedi (${res.status})`);
+  return (await res.json()).revision;
+}
+
+export async function fetchRevision(name) {
+  const res = await fetch(`api/revision/${name}`, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`revision okunamadı (${res.status})`);
+  return (await res.json()).revision;
 }

@@ -1,7 +1,7 @@
 // Editör girişi: durum, işlemler, üst çubuk ve klavye kısayolları.
 import { FRAME, CELL, SNAP } from '../config.js';
 import { blocksOnSpread } from '../model.js';
-import { loadIssue, saveIssue } from '../data.js';
+import { ConflictError, fetchRevision, loadIssue, saveIssue } from '../data.js';
 import { escapeHtml as esc } from '../inline.js';
 import { checkLineHeights } from '../render/type.js';
 import { createStore } from './store.js';
@@ -15,6 +15,8 @@ import { pageLabel } from './labels.js';
 const params = new URLSearchParams(location.search);
 const ISSUE = params.get('issue') ?? 'issue-001';
 const POSITION_KEYS = ['spread_id', 'x', 'y', 'w', 'h', 'z'];
+const POLL_MS = 4000;
+const NOTICE_MS = 8000;
 
 const root = document.documentElement;
 root.style.setProperty('--cell', `${CELL}px`);
@@ -38,16 +40,70 @@ function setPref(key, value) {
 
 async function boot() {
   const data = await loadIssue(ISSUE);
+  // revision yalnız kayıt protokolüne ait; geri alma kopyalarına girmesin.
+  const revision = data.revision ?? 0;
+  delete data.revision;
   const wanted = params.get('spread');
   const state = {
     data,
+    revision,
+    notice: null,
     spreadIndex: Math.max(0, data.spreads.findIndex((s) => s.id === wanted)),
     selectedId: null,
     showGrid: pref('grid', true),
     lockAspect: pref('lock', true),
     saveStatus: 'saved',
   };
-  const store = createStore(state, (d) => saveIssue(ISSUE, d));
+  const store = createStore(state, async (d) => {
+    try {
+      state.revision = await saveIssue(ISSUE, d, state.revision);
+    } catch (err) {
+      if (!(err instanceof ConflictError)) throw err;
+      await reload('Dosya dışarıda değişti; son değişikliğin kaydedilmedi, güncel sürüm yüklendi.');
+    }
+  });
+
+  let noticeTimer = null;
+  function notify(text) {
+    state.notice = text;
+    renderSave();
+    clearTimeout(noticeTimer);
+    noticeTimer = setTimeout(() => {
+      state.notice = null;
+      renderSave();
+    }, NOTICE_MS);
+  }
+
+  /** Dosyayı yeniden okur; geri alma geçmişi sıfırlanır. */
+  async function reload(message) {
+    const fresh = await loadIssue(ISSUE);
+    state.revision = fresh.revision ?? 0;
+    delete fresh.revision;
+    store.replace(fresh);
+    notify(message);
+  }
+
+  // İçe aktarma ya da başka bir sekme dosyayı değiştirdiyse, bekleyen yerel
+  // değişiklik yokken sessizce yenile. Bekleyen değişiklik varsa kayıt 409 alır
+  // ve yukarıdaki yol işler.
+  let checking = false;
+  async function checkExternal() {
+    if (checking || document.hidden || state.saveStatus !== 'saved') return;
+    checking = true;
+    try {
+      const latest = await fetchRevision(ISSUE);
+      if (latest !== state.revision && state.saveStatus === 'saved') {
+        await reload('İçerik dışarıda güncellendi, yeniden yüklendi. Geri alma geçmişi sıfırlandı.');
+      }
+    } catch (err) {
+      console.warn('[xform]', err.message);
+    } finally {
+      checking = false;
+    }
+  }
+  setInterval(checkExternal, POLL_MS);
+  addEventListener('focus', checkExternal);
+  document.addEventListener('visibilitychange', checkExternal);
 
   checkLineHeights();
   await document.fonts.ready;
@@ -200,8 +256,9 @@ async function boot() {
   function renderSave() {
     const el = topbar.querySelector('.save');
     if (!el) return;
-    el.className = `save save--${state.saveStatus}`;
-    el.textContent = SAVE_TEXT[state.saveStatus];
+    el.className = `save save--${state.notice ? 'notice' : state.saveStatus}`;
+    el.textContent = state.notice ?? SAVE_TEXT[state.saveStatus];
+    el.title = state.notice ?? '';
   }
 
   topbar.addEventListener('click', (e) => {

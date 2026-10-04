@@ -1,4 +1,5 @@
 {
+  "revision": 1,
   "issue": {
     "title": "XFORM",
     "month": 10,
@@ -16,7 +17,7 @@
   ],
   "blocks": [
     {
-      "id": "kicker",
+      "id": "empire-of-paper/kicker",
       "type": "heading",
       "variant": "kicker",
       "content": "History",
@@ -31,7 +32,7 @@
       "tone": "dark"
     },
     {
-      "id": "title",
+      "id": "empire-of-paper/title",
       "type": "heading",
       "variant": "title",
       "content": "From Tablets to Empires",
@@ -46,7 +47,7 @@
       "tone": "dark"
     },
     {
-      "id": "deck",
+      "id": "empire-of-paper/deck",
       "type": "text",
       "variant": "deck",
       "content": "Recording, counting and governing in the ancient world.",
@@ -61,7 +62,7 @@
       "tone": "dark"
     },
     {
-      "id": "rule-deck",
+      "id": "empire-of-paper/rule-deck",
       "type": "divider",
       "variant": null,
       "content": null,
@@ -76,7 +77,7 @@
       "tone": "dark"
     },
     {
-      "id": "p1",
+      "id": "empire-of-paper/p1",
       "type": "text",
       "variant": "body",
       "content": "In the beginning, there was no bureaucracy. Only people, memory and obligation. Early societies kept track of what mattered — land, grain, debts, people — through oral traditions and simple marks. But as communities grew, memory became fragile. What one person knew could not easily be passed to another, and with distance, time and scale, forgetting was inevitable.",
@@ -91,7 +92,7 @@
       "tone": "dark"
     },
     {
-      "id": "p2",
+      "id": "empire-of-paper/p2",
       "type": "text",
       "variant": "body",
       "content": "The first administrative systems emerged not from a desire to control, but from a practical need: to remember. Clay tablets in Mesopotamia, inscriptions in Egypt, and later imperial archives in Rome and China, all show the same pattern. Writing began as a tool for accounting — a way to make absence governable.^1^",
@@ -106,14 +107,14 @@
       "tone": "dark"
     },
     {
-      "id": "img-tablet",
+      "id": "empire-of-paper/img-tablet",
       "type": "image",
       "variant": null,
       "content": null,
       "order": 7,
       "relates_to": [
-        "p1",
-        "p2"
+        "empire-of-paper/p1",
+        "empire-of-paper/p2"
       ],
       "spread_id": "s-tablets",
       "x": 9,
@@ -126,18 +127,18 @@
         "x": 0.45,
         "y": 0.6
       },
-      "source": "assets/placeholders/tablet.svg",
+      "source": "assets/issue-001/empire-of-paper/tablet.svg",
       "credit": null,
       "alt": "A cuneiform clay tablet photographed at an angle."
     },
     {
-      "id": "cap-tablet",
+      "id": "empire-of-paper/cap-tablet",
       "type": "text",
       "variant": "caption",
       "content": "Clay tablets from Ur (c. 2100 BCE) show early administrative records: grain allocations, workers and deliveries.",
       "order": 8,
       "relates_to": [
-        "img-tablet"
+        "empire-of-paper/img-tablet"
       ],
       "spread_id": "s-tablets",
       "x": 9,
@@ -149,7 +150,7 @@
       "label": "01"
     },
     {
-      "id": "sub-materiality",
+      "id": "empire-of-paper/sub-materiality",
       "type": "heading",
       "variant": "subhead",
       "content": "The Materiality of Administration",
@@ -164,7 +165,7 @@
       "tone": "dark"
     },
     {
-      "id": "p3",
+      "id": "empire-of-paper/p3",
       "type": "text",
       "variant": "body",
       "content": "Paper changed everything. Unlike stone or clay, it was cheap, light and reproducible. It allowed information to move — across cities, regions and generations. Empires could now coordinate taxation, law, and military logistics at scales that were previously impossible.",
@@ -179,7 +180,7 @@
       "tone": "dark"
     },
     {
-      "id": "p4",
+      "id": "empire-of-paper/p4",
       "type": "text",
       "variant": "body",
       "content": "But paper also introduced a new problem: too much information. As archives expanded, so did the need for systems — classification, indexing, standardization. Bureaucracy was not just about writing things down; it was about making them retrievable, comparable and actionable.",
@@ -194,7 +195,7 @@
       "tone": "dark"
     },
     {
-      "id": "rule-fn",
+      "id": "empire-of-paper/rule-fn",
       "type": "divider",
       "variant": null,
       "content": null,
@@ -209,13 +210,13 @@
       "tone": "dark"
     },
     {
-      "id": "fn1",
+      "id": "empire-of-paper/fn1",
       "type": "note",
       "variant": null,
       "content": "Van De Mieroop, M. (2015). *A History of the Ancient Near East.* Wiley.",
       "order": 13,
       "relates_to": [
-        "p2"
+        "empire-of-paper/p2"
       ],
       "spread_id": "s-tablets",
       "x": 101,
@@ -227,13 +228,13 @@
       "label": "1"
     },
     {
-      "id": "img-map",
+      "id": "empire-of-paper/img-map",
       "type": "image",
       "variant": null,
       "content": null,
       "order": 14,
       "relates_to": [
-        "p5"
+        "empire-of-paper/p5"
       ],
       "spread_id": "s-tablets",
       "x": 202,
@@ -246,18 +247,18 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": "assets/placeholders/ottoman-map.svg",
+      "source": "assets/issue-001/empire-of-paper/ottoman-map.svg",
       "credit": null,
       "alt": "An aged map of the eastern Mediterranean with red administrative boundaries."
     },
     {
-      "id": "cap-map",
+      "id": "empire-of-paper/cap-map",
       "type": "text",
       "variant": "caption",
       "content": "A 17th-century Ottoman map showing administrative regions and postal routes. Maps were a form of bureaucratic infrastructure — turning space into something that could be governed.",
       "order": 15,
       "relates_to": [
-        "img-map"
+        "empire-of-paper/img-map"
       ],
       "spread_id": "s-tablets",
       "x": 348,
@@ -269,7 +270,7 @@
       "label": "02"
     },
     {
-      "id": "sub-infrastructure",
+      "id": "empire-of-paper/sub-infrastructure",
       "type": "heading",
       "variant": "subhead",
       "content": "Paper as Infrastructure",
@@ -284,7 +285,7 @@
       "tone": "dark"
     },
     {
-      "id": "p5",
+      "id": "empire-of-paper/p5",
       "type": "text",
       "variant": "body",
       "content": "By the time of the Ottoman Empire, paperwork connected provinces, carried orders, recorded taxes, and mediated between the center and local powers. Documents moved along postal routes, through scribes, and into archives where they could be consulted years later. This was not just record-keeping; it was a communication system, a memory machine, and a tool of legitimacy.^2^",
@@ -299,7 +300,7 @@
       "tone": "dark"
     },
     {
-      "id": "p6",
+      "id": "empire-of-paper/p6",
       "type": "text",
       "variant": "body",
       "content": "Every document fixed a moment in time — a decision, a transaction, a dispute. But more importantly, it created a trace. These traces allowed states to operate beyond the presence of individuals. Authority no longer depended on personal memory; it was embedded in systems, routines and paper.",
@@ -314,14 +315,14 @@
       "tone": "dark"
     },
     {
-      "id": "img-tax",
+      "id": "empire-of-paper/img-tax",
       "type": "image",
       "variant": null,
       "content": null,
       "order": 19,
       "relates_to": [
-        "p4",
-        "p5"
+        "empire-of-paper/p4",
+        "empire-of-paper/p5"
       ],
       "spread_id": "s-tablets",
       "x": 201,
@@ -334,18 +335,18 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": "assets/placeholders/tax-record.svg",
+      "source": "assets/issue-001/empire-of-paper/tax-record.svg",
       "credit": null,
       "alt": "A handwritten Ottoman tax register in columns."
     },
     {
-      "id": "cap-tax",
+      "id": "empire-of-paper/cap-tax",
       "type": "text",
       "variant": "caption",
       "content": "A tax record from Anatolia, 1763. Standardized formats allowed distant regions to be integrated into a single administrative system.",
       "order": 20,
       "relates_to": [
-        "img-tax"
+        "empire-of-paper/img-tax"
       ],
       "spread_id": "s-tablets",
       "x": 255,
@@ -357,7 +358,7 @@
       "label": "04"
     },
     {
-      "id": "quote-empires",
+      "id": "empire-of-paper/quote-empires",
       "type": "quote",
       "variant": null,
       "content": "“Empires are not held together by force alone, but by the ability to record, copy and retrieve information across time and space.”",
@@ -372,7 +373,7 @@
       "tone": "dark"
     },
     {
-      "id": "rule-quote",
+      "id": "empire-of-paper/rule-quote",
       "type": "divider",
       "variant": null,
       "content": null,
@@ -387,14 +388,14 @@
       "tone": "dark"
     },
     {
-      "id": "img-archive",
+      "id": "empire-of-paper/img-archive",
       "type": "image",
       "variant": null,
       "content": null,
       "order": 23,
       "relates_to": [
-        "p5",
-        "p6"
+        "empire-of-paper/p5",
+        "empire-of-paper/p6"
       ],
       "spread_id": "s-tablets",
       "x": 291,
@@ -407,18 +408,18 @@
         "x": 0.5,
         "y": 0.45
       },
-      "source": "assets/placeholders/archive.svg",
+      "source": "assets/issue-001/empire-of-paper/archive.svg",
       "credit": null,
       "alt": "An engraving of scribes working at long tables in a vaulted archive."
     },
     {
-      "id": "cap-archive",
+      "id": "empire-of-paper/cap-archive",
       "type": "text",
       "variant": "caption",
       "content": "An imagined Ottoman archive, 18th century. Scribes organized documents by subject, region and date.",
       "order": 24,
       "relates_to": [
-        "img-archive"
+        "empire-of-paper/img-archive"
       ],
       "spread_id": "s-tablets",
       "x": 291,
@@ -430,7 +431,7 @@
       "label": "03"
     },
     {
-      "id": "i-kicker",
+      "id": "strange-document/kicker",
       "type": "heading",
       "variant": "kicker",
       "content": "Interlude",
@@ -445,7 +446,7 @@
       "tone": "dark"
     },
     {
-      "id": "i-readtime",
+      "id": "strange-document/readtime",
       "type": "heading",
       "variant": "kicker",
       "content": "3 min read",
@@ -460,7 +461,7 @@
       "tone": "dark"
     },
     {
-      "id": "i-title",
+      "id": "strange-document/title",
       "type": "heading",
       "variant": "title",
       "content": "A Strange Document",
@@ -475,7 +476,7 @@
       "tone": "dark"
     },
     {
-      "id": "i-deck",
+      "id": "strange-document/deck",
       "type": "text",
       "variant": "deck",
       "content": "A real 18th-century request to the Ottoman government — and what it tells us about everyday bureaucracy.",
@@ -490,7 +491,7 @@
       "tone": "dark"
     },
     {
-      "id": "i-rule-deck",
+      "id": "strange-document/rule-deck",
       "type": "divider",
       "variant": null,
       "content": null,
@@ -505,13 +506,13 @@
       "tone": "dark"
     },
     {
-      "id": "i-img-salonica",
+      "id": "strange-document/img-salonica",
       "type": "image",
       "variant": null,
       "content": null,
       "order": 30,
       "relates_to": [
-        "i-p1"
+        "strange-document/p1"
       ],
       "spread_id": null,
       "x": null,
@@ -524,18 +525,18 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": "assets/placeholders/salonica.svg",
+      "source": "assets/issue-001/strange-document/salonica.svg",
       "credit": null,
       "alt": "A harbour town with a minaret and waterfront houses below mountains."
     },
     {
-      "id": "i-cap-salonica",
+      "id": "strange-document/cap-salonica",
       "type": "text",
       "variant": "caption",
       "content": "Salonica, late 18th century. A port city where petitions, trade and daily life met.",
       "order": 31,
       "relates_to": [
-        "i-img-salonica"
+        "strange-document/img-salonica"
       ],
       "spread_id": null,
       "x": null,
@@ -547,13 +548,13 @@
       "label": "01"
     },
     {
-      "id": "i-img-petition",
+      "id": "strange-document/img-petition",
       "type": "image",
       "variant": null,
       "content": null,
       "order": 32,
       "relates_to": [
-        "i-p1"
+        "strange-document/p1"
       ],
       "spread_id": null,
       "x": null,
@@ -566,18 +567,18 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": "assets/placeholders/petition.svg",
+      "source": "assets/issue-001/strange-document/petition.svg",
       "credit": null,
       "alt": "A long handwritten Ottoman petition with seals."
     },
     {
-      "id": "i-cap-petition",
+      "id": "strange-document/cap-petition",
       "type": "text",
       "variant": "caption",
       "content": "Petition from a resident of Salonica, 1765. A request regarding the repair of a local road and tax exemptions.",
       "order": 33,
       "relates_to": [
-        "i-img-petition"
+        "strange-document/img-petition"
       ],
       "spread_id": null,
       "x": null,
@@ -589,7 +590,7 @@
       "label": "02"
     },
     {
-      "id": "i-sub-says",
+      "id": "strange-document/sub-says",
       "type": "heading",
       "variant": "subhead",
       "content": "What does it say?",
@@ -604,7 +605,7 @@
       "tone": "dark"
     },
     {
-      "id": "i-p1",
+      "id": "strange-document/p1",
       "type": "text",
       "variant": "body",
       "content": "A group of local residents petition the governor to repair a road that had become impassable. They argue that the damage was hurting trade, increasing prices, and making it difficult to bring goods to the city. In return, they request a temporary tax exemption to cover the costs.",
@@ -619,7 +620,7 @@
       "tone": "dark"
     },
     {
-      "id": "i-rule-quote",
+      "id": "strange-document/rule-quote",
       "type": "divider",
       "variant": null,
       "content": null,
@@ -634,7 +635,7 @@
       "tone": "dark"
     },
     {
-      "id": "i-quote",
+      "id": "strange-document/quote",
       "type": "quote",
       "variant": null,
       "content": "“The road is broken, the goods cannot pass, the prices have risen. If the road is repaired, trade will revive and the people will benefit.”",
@@ -649,13 +650,13 @@
       "tone": "dark"
     },
     {
-      "id": "i-img-seal",
+      "id": "strange-document/img-seal",
       "type": "image",
       "variant": null,
       "content": null,
       "order": 38,
       "relates_to": [
-        "i-p1"
+        "strange-document/p1"
       ],
       "spread_id": null,
       "x": null,
@@ -668,18 +669,18 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": "assets/placeholders/seal.svg",
+      "source": "assets/issue-001/strange-document/seal.svg",
       "credit": null,
       "alt": "A wax seal on folded documents."
     },
     {
-      "id": "i-cap-seal",
+      "id": "strange-document/cap-seal",
       "type": "text",
       "variant": "caption",
       "content": "Seal of the provincial administration. Used to validate the document.",
       "order": 39,
       "relates_to": [
-        "i-img-seal"
+        "strange-document/img-seal"
       ],
       "spread_id": null,
       "x": null,
@@ -691,13 +692,13 @@
       "label": "03"
     },
     {
-      "id": "i-img-petitions",
+      "id": "strange-document/img-petitions",
       "type": "image",
       "variant": null,
       "content": null,
       "order": 40,
       "relates_to": [
-        "i-p2"
+        "strange-document/p2"
       ],
       "spread_id": null,
       "x": null,
@@ -710,18 +711,18 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": "assets/placeholders/petitions.svg",
+      "source": "assets/issue-001/strange-document/petitions.svg",
       "credit": null,
       "alt": "Stacks of old bound petitions."
     },
     {
-      "id": "i-cap-petitions",
+      "id": "strange-document/cap-petitions",
       "type": "text",
       "variant": "caption",
       "content": "Similar petitions, 18th century. Provincial archives, Istanbul.",
       "order": 41,
       "relates_to": [
-        "i-img-petitions"
+        "strange-document/img-petitions"
       ],
       "spread_id": null,
       "x": null,
@@ -733,7 +734,7 @@
       "label": "04"
     },
     {
-      "id": "i-sub-matters",
+      "id": "strange-document/sub-matters",
       "type": "heading",
       "variant": "subhead",
       "content": "Why it matters",
@@ -748,7 +749,7 @@
       "tone": "dark"
     },
     {
-      "id": "i-p2",
+      "id": "strange-document/p2",
       "type": "text",
       "variant": "body",
       "content": "This is not an imperial decree or a story of war. It is an ordinary request from ordinary people. And yet, it shows how empires functioned: through continuous negotiation, documentation and local initiative. Paper made it possible for distant voices to reach the center — and to leave a trace.",
@@ -763,13 +764,13 @@
       "tone": "dark"
     },
     {
-      "id": "i-img-road",
+      "id": "strange-document/img-road",
       "type": "image",
       "variant": null,
       "content": null,
       "order": 44,
       "relates_to": [
-        "i-p1"
+        "strange-document/p1"
       ],
       "spread_id": null,
       "x": null,
@@ -782,18 +783,18 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": "assets/placeholders/road-map.svg",
+      "source": "assets/issue-001/strange-document/road-map.svg",
       "credit": null,
       "alt": "A sketched plan of a coastal town and its road."
     },
     {
-      "id": "i-cap-road",
+      "id": "strange-document/cap-road",
       "type": "text",
       "variant": "caption",
       "content": "A section of the road mentioned in the petition (modern reconstruction).",
       "order": 45,
       "relates_to": [
-        "i-img-road"
+        "strange-document/img-road"
       ],
       "spread_id": null,
       "x": null,

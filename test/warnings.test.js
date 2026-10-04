@@ -65,3 +65,13 @@ test('taşma: frame dışına çıkan blok', () => {
   assert.deepEqual(kinds(w, 'left'), ['overflow']);
   assert.deepEqual(kinds(w, 'bottom'), ['overflow']);
 });
+
+test('içerikte yok: içe aktarmanın koruduğu yerleşik blok', () => {
+  const data = {
+    spreads,
+    blocks: [block('a', 1, 'a', { removed_from_content: true }), block('b', 2, null, { removed_from_content: true })],
+  };
+  const w = computeWarnings(data);
+  assert.deepEqual(kinds(w, 'a'), ['removed']);
+  assert.deepEqual(kinds(w, 'b'), []);
+});

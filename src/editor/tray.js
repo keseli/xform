@@ -23,7 +23,7 @@ export function createTray(el, store, canvas) {
         return `<li class="${cls.join(' ')}" data-id="${escapeHtml(b.id)}">
           <div class="tray-meta"><span class="tray-order">${b.order}</span>${escapeHtml(kindLabel(b))}${
             b.label ? ` <span class="tray-label">${escapeHtml(b.label)}</span>` : ''
-          }</div>
+          }${b.removed_from_content ? ' <span class="tray-removed">içerikte yok</span>' : ''}</div>
           ${thumb}
           <div class="tray-text">${escapeHtml(snippet(b))}</div>
         </li>`;

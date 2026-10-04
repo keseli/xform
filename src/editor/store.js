@@ -19,6 +19,8 @@ export function createStore(state, save) {
   const redoStack = [];
   let pending = null;
   let timer = null;
+  let saving = false;
+  let again = false;
 
   const snapshot = () => ({ data: structuredClone(state.data), spreadIndex: state.spreadIndex });
 
@@ -105,9 +107,28 @@ export function createStore(state, save) {
       mutate(state);
       store.emit('view');
     },
+
+    /** Dışarıda değişen veriyi yükler: geçmiş sıfırlanır, kaydedilmez. */
+    replace(data) {
+      clearTimeout(timer);
+      again = false;
+      pending = null;
+      undoStack.length = 0;
+      redoStack.length = 0;
+      restore({ data, spreadIndex: state.spreadIndex });
+      state.saveStatus = 'saved';
+      store.emit('all');
+      store.emit('save');
+    },
   };
 
+  // Kayıtlar sırayla gider; biri sürerken gelen değişiklik bittikten sonra yazılır.
   async function flush() {
+    if (saving) {
+      again = true;
+      return;
+    }
+    saving = true;
     state.saveStatus = 'saving';
     store.emit('save');
     try {
@@ -117,7 +138,12 @@ export function createStore(state, save) {
       console.error(err);
       state.saveStatus = 'error';
     }
+    saving = false;
     store.emit('save');
+    if (again) {
+      again = false;
+      flush();
+    }
   }
 
   addEventListener('beforeunload', (e) => {
