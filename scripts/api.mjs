@@ -1,5 +1,4 @@
-// Editörün kayıt uçları. Eski sunucu (scripts/serve.mjs) ve Vite (vite.config.ts)
-// aynı uçları buradan kullanır.
+// Editörün kayıt uçları; Vite dev sunucusu (vite.config.ts) bunları kullanır.
 //   PUT /api/data/<issue>      { revision, ...issue }  →  data/<issue>.json
 //   GET /api/revision/<issue>  →  { revision }
 // Kayıt yalnız gönderilen revision dosyadakiyle aynıysa yazılır (yoksa 409);

@@ -1,6 +1,5 @@
 // Editör oturumu: durum, store, işlemler, kayıt/yeniden yükleme ve klavye
-// kısayolları (eski legacy/src/editor/main.js'in mantığı, aynen). React
-// bileşenleri yalnız bunu çizer ve işlemleri çağırır.
+// kısayolları. React bileşenleri yalnız bunu çizer ve işlemleri çağırır.
 import { SNAP } from '../config.ts';
 import { blocksOnSpread } from '../model.ts';
 import { ConflictError, fetchRevision, loadIssue, saveIssue } from '../data.ts';

@@ -1,4 +1,4 @@
-// Tuval etkileşimleri (eski legacy/src/editor/canvas.js'in mantığı, aynen):
+// Tuval etkileşimleri:
 // - taşıma (çoklu seçim dahil), resize, tepsiden bırakma — akıllı kılavuzlarla
 // - alan seçimi ve Shift+tık
 // - auto layout: yığın taşıma, içindeki bloğu sıralama/çıkarma, yığına bırakma

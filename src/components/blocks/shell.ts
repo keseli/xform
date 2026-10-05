@@ -1,5 +1,5 @@
-// Blok elemanının ortak sınıf ve konumu. Eski renderer'la (legacy/src/render/blocks.js)
-// birebir aynı: sınıf sırası, satır içi left/top/width/z-index/height.
+// Blok elemanının ortak sınıf ve konumu: sınıf sırası, satır içi
+// left/top/width/z-index/height.
 import type { CSSProperties } from 'react';
 import { CELL, DIVIDER_ROWS, FLOW_TYPES } from '../../config.ts';
 import type { PlacedBlock } from '../../types.ts';

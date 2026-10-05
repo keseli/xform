@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "legacy": "PORT=5174 node scripts/serve.mjs",
     "import": "node scripts/import.mjs",
     "test": "node --test test/*.test.ts",
     "typecheck": "tsc --noEmit",
