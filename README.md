@@ -102,13 +102,15 @@ tutucusuz yığınlar eskisi gibi boşalınca silinir.
 content/
   issue-001.json                 { "issue": "issue-001", "meta": {…}, "articles": ["empire-of-paper", …] }
   empire-of-paper/
-    article.json                 { "slug", "section", "blocks": [ { "key", "type", "variant", … } ] }
+    article.json                 { "slug", "family", "section", "blocks": [ { "key", "type", "variant", … } ] }
     tablet.svg                   görseller paketle aynı klasörde
 ```
 
 - **Blok:** `key` (makale içinde benzersiz: küçük harf, rakam, `-`), `type`, `variant`,
   `content`, `label`, `relates_to` (aynı makalenin key'leri ya da `diger-slug/key`).
   Görselde `file`, `alt`, `credit`, `focal_point`; `file` yoksa düz kutu görünür.
+- **family** (isteğe bağlı): `anchor`, `encounter`, `activity` ya da `interlude`. Yalnız
+  pakette durur, denetlenir; sayıya ve sayfaya taşınmaz.
 - **id** = `slug/key`. **order** yazılmaz: manifest'teki makale sırası ve makale içindeki
   sıradan her aktarmada baştan hesaplanır.
 - Görseller `assets/<issue>/<slug>/` altına kopyalanır.
@@ -195,6 +197,7 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `e2e/`, `playwright.config.ts` | Tarayıcı senaryoları (`npm run e2e`) |
 | `content/` | İçerik paketleri (hattın çıktısı); örnek sayının kaynağı |
 | `data/issue-001.json` | Sayı: bloklar ve yerleşim |
+| `data/issue-sample.json` | Gerçek metinli örnek sayı (`content/issue-sample.json`'dan): dört düzen; görseller henüz yok |
 | `data/templates/` | Spread şablonları |
 
 ## Kurallar

@@ -10,6 +10,8 @@
 //   focal_point yalnız yeni görsellerde hattan alınır.
 // - Paketten çıkan blok tepsideyse silinir; yerleşikse korunur ve
 //   removed_from_content ile işaretlenir.
+// - family (anchor | encounter | activity | interlude) yalnız pakette durur:
+//   denetlenir, sayıya ve sayfaya taşınmaz.
 import { VARIANTS } from '../model.ts';
 import type { Block, BlockType, FocalPoint, Issue, IssueMeta, Variant } from '../types.ts';
 
@@ -33,8 +35,12 @@ export interface PackageBlock {
   focal_point?: FocalPoint;
 }
 
+export const FAMILIES = ['anchor', 'encounter', 'activity', 'interlude'] as const;
+
 export interface Article {
   slug: string;
+  /** Parçanın türü; gizli, sayfada görünmez. */
+  family?: (typeof FAMILIES)[number];
   section?: string;
   blocks: PackageBlock[];
 }
@@ -80,6 +86,9 @@ export function buildIncoming(
     if (!Array.isArray(article.blocks)) {
       errors.push(`${article.slug}: blocks dizisi yok`);
       continue;
+    }
+    if (article.family != null && !FAMILIES.includes(article.family)) {
+      errors.push(`${article.slug}: family ${FAMILIES.join(' | ')} olmalı (${article.family})`);
     }
     article.blocks.forEach((src, i) => {
       const where = `${article.slug} #${i + 1} (${src.key ?? 'key yok'})`;

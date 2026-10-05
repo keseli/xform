@@ -42,6 +42,14 @@ test('buildIncoming: hatalar toplanır', () => {
   assert.equal(errors.length, 6, errors.join('\n'));
 });
 
+test('buildIncoming: family yalnız pakette; bilinmeyen değer hata', () => {
+  const ok = build([{ ...article, family: 'anchor' }]);
+  assert.deepEqual(ok.errors, []);
+  assert.equal('family' in ok.blocks[0], false);
+  const bad = build([{ ...article, family: 'essay' }]);
+  assert.equal(bad.errors.length, 1, bad.errors.join('\n'));
+});
+
 test('mergeIssue: yeni bloklar tepsiye düşer', () => {
   const { blocks } = build([article]);
   const { data, report } = mergeIssue({ spreads: [], blocks: [] }, blocks);

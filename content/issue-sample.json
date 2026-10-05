@@ -1,0 +1,16 @@
+{
+  "issue": "issue-sample",
+  "meta": {
+    "title": "XFORM",
+    "month": 10,
+    "year": 2026,
+    "number": "002",
+    "first_page": 2
+  },
+  "articles": [
+    "allowance-for-error",
+    "melencolia",
+    "desire-path",
+    "kilogram"
+  ]
+}

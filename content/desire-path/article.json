@@ -1,0 +1,30 @@
+{
+  "slug": "desire-path",
+  "family": "activity",
+  "section": "Activity",
+  "blocks": [
+    {
+      "key": "kicker",
+      "type": "heading",
+      "variant": "kicker",
+      "content": "ACTIVITY / 20 MINUTES / OUTDOORS"
+    },
+    {
+      "key": "prompt",
+      "type": "heading",
+      "variant": "title",
+      "content": "Find a path nobody built."
+    },
+    {
+      "key": "body",
+      "type": "text",
+      "variant": "body",
+      "content": "Go to a park, a campus, or any stretch of grass with paved walkways. Look for a strip of bare earth where people have cut the corner. Walk it. Then walk the paved route it replaces. Notice where the worn path begins and ends, how wide it is, and whether it is straight."
+    },
+    {
+      "key": "note",
+      "type": "note",
+      "content": "Nothing to write down."
+    }
+  ]
+}

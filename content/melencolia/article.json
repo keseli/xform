@@ -1,0 +1,80 @@
+{
+  "slug": "melencolia",
+  "family": "encounter",
+  "section": "Encounter",
+  "blocks": [
+    {
+      "key": "kicker",
+      "type": "heading",
+      "variant": "kicker",
+      "content": "ENCOUNTER / ENGRAVING"
+    },
+    {
+      "key": "title",
+      "type": "heading",
+      "variant": "title",
+      "content": "Melencolia I"
+    },
+    {
+      "key": "img",
+      "type": "image",
+      "file": null,
+      "alt": "Albrecht Dürer, Melencolia I, 1514. Engraving.",
+      "credit": null,
+      "relates_to": []
+    },
+    {
+      "key": "kunye",
+      "type": "text",
+      "variant": "caption",
+      "content": "Albrecht Dürer, 1514. Engraving, about 24 × 19 cm. Impressions are held by many museums.",
+      "relates_to": ["img"]
+    },
+    {
+      "key": "t1",
+      "type": "text",
+      "variant": "body",
+      "content": "A winged figure sits among the instruments of every exact art: compass, scale, plane, saw, hourglass. She is holding the compass and not using it. Nothing in the picture is broken. Everything needed for work is within reach, and no work is being done."
+    },
+    {
+      "key": "t2",
+      "type": "text",
+      "variant": "body",
+      "content": "The best known reading, Erwin Panofsky’s, takes the print as a portrait of the mind that can measure everything and still cannot reach what it wants to know. Other scholars disagree, and Dürer left no explanation."
+    },
+    {
+      "key": "t3",
+      "type": "text",
+      "variant": "body",
+      "content": "Look at it large. Give it ten minutes before reading anything else about it."
+    },
+    {
+      "key": "n1",
+      "type": "note",
+      "label": "01",
+      "content": "The square of numbers on the wall: every row, column and diagonal adds up to 34. The two middle cells of the bottom row read 15 and 14, the year.",
+      "relates_to": ["img"]
+    },
+    {
+      "key": "n2",
+      "type": "note",
+      "label": "02",
+      "content": "The large stone solid has never been conclusively explained. It is usually described as a cube stretched and then cut at two corners.",
+      "relates_to": ["img"]
+    },
+    {
+      "key": "n3",
+      "type": "note",
+      "label": "03",
+      "content": "On the ground: a plane, a saw, a ruler, nails. Carpenter’s tools, scattered rather than put away.",
+      "relates_to": ["img"]
+    },
+    {
+      "key": "n4",
+      "type": "note",
+      "label": "04",
+      "content": "The title is carried by a bat-like creature. Nobody knows what the “I” stands for.",
+      "relates_to": ["img"]
+    }
+  ]
+}

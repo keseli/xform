@@ -1,0 +1,58 @@
+{
+  "slug": "kilogram",
+  "family": "interlude",
+  "section": "Interlude",
+  "blocks": [
+    {
+      "key": "kicker",
+      "type": "heading",
+      "variant": "kicker",
+      "content": "INTERLUDE / 2 MIN READ"
+    },
+    {
+      "key": "title",
+      "type": "heading",
+      "variant": "title",
+      "content": "The Kilogram That Drifted"
+    },
+    {
+      "key": "deck",
+      "type": "text",
+      "variant": "deck",
+      "content": "For 130 years the unit of mass was a single metal cylinder in a vault near Paris. Then it stopped agreeing with its own copies."
+    },
+    {
+      "key": "img",
+      "type": "image",
+      "file": null,
+      "alt": "A national copy of the international prototype kilogram under its glass jars.",
+      "credit": null,
+      "relates_to": ["k1", "k2"]
+    },
+    {
+      "key": "cap",
+      "type": "text",
+      "variant": "caption",
+      "content": "A national copy of the prototype kilogram under its glass jars.",
+      "relates_to": ["img"]
+    },
+    {
+      "key": "k1",
+      "type": "text",
+      "variant": "body",
+      "content": "From 1889 the kilogram was defined as the mass of one object: a cylinder of platinum and iridium, about 39 millimetres tall and as wide, kept under three nested glass jars at Sèvres. Whatever happened to it, its mass was one kilogram, by definition."
+    },
+    {
+      "key": "k2",
+      "type": "text",
+      "variant": "body",
+      "content": "It was taken out only a few times, to be compared with its official copies. Over a century the comparisons showed the prototype and the copies drifting apart by roughly fifty millionths of a gram. Nobody could say which had changed. There was nothing more authoritative to ask."
+    },
+    {
+      "key": "k3",
+      "type": "text",
+      "variant": "body",
+      "content": "On 20 May 2019 the kilogram was redefined through a constant of physics. The cylinder is still in its vault. It is now an object that weighs approximately one kilogram."
+    }
+  ]
+}

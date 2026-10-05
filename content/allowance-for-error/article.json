@@ -1,0 +1,183 @@
+{
+  "slug": "allowance-for-error",
+  "family": "anchor",
+  "section": "The Allowance for Error",
+  "blocks": [
+    {
+      "key": "kicker",
+      "type": "heading",
+      "variant": "kicker",
+      "content": "ENGINEERING"
+    },
+    {
+      "key": "title",
+      "type": "heading",
+      "variant": "title",
+      "content": "The Allowance for Error"
+    },
+    {
+      "key": "deck",
+      "type": "text",
+      "variant": "deck",
+      "content": "Nothing can be made exactly. Modern industry began when someone wrote down how wrong a part was allowed to be."
+    },
+    {
+      "key": "img-line",
+      "type": "image",
+      "file": null,
+      "alt": "The moving assembly line at Ford’s Highland Park plant, 1913.",
+      "credit": null,
+      "relates_to": []
+    },
+    {
+      "key": "cap-line",
+      "type": "text",
+      "variant": "caption",
+      "content": "The moving assembly line at Ford’s Highland Park plant, 1913. The parts arrive already fitting.",
+      "relates_to": ["img-line"]
+    },
+    {
+      "key": "quote",
+      "type": "quote",
+      "content": "“Precision is not the absence of error. It is an agreement about how much error will be forgiven.”"
+    },
+    {
+      "key": "note-gauge",
+      "type": "note",
+      "label": "01",
+      "content": "A go/no-go gauge does not measure. It asks one question twice: is the part too big, is it too small."
+    },
+    {
+      "key": "img-gauge",
+      "type": "image",
+      "file": null,
+      "alt": "A go/no-go gauge.",
+      "credit": null,
+      "relates_to": ["note-gauge"]
+    },
+    {
+      "key": "note-blocks",
+      "type": "note",
+      "label": "02",
+      "content": "Johansson gauge blocks, steel slabs so flat they cling to one another. Stacked, they carry a workshop’s idea of a millimetre from bench to bench."
+    },
+    {
+      "key": "img-blocks",
+      "type": "image",
+      "file": null,
+      "alt": "Johansson gauge blocks.",
+      "credit": null,
+      "relates_to": ["note-blocks"]
+    },
+    {
+      "key": "note-thread",
+      "type": "note",
+      "label": "03",
+      "content": "Whitworth’s proposal of 1841: one thread angle, 55 degrees, for every workshop in Britain."
+    },
+    {
+      "key": "img-thread",
+      "type": "image",
+      "file": null,
+      "alt": "Drawing of the Whitworth screw thread profile.",
+      "credit": null,
+      "relates_to": ["note-thread"]
+    },
+    {
+      "key": "p1",
+      "type": "text",
+      "variant": "body",
+      "content": "Until the end of the eighteenth century, a musket was a single object in many pieces. The lock, the stock and the barrel were filed and scraped against one another until they worked together, and they worked only with each other. A broken part could not be replaced from a box. It had to be made again, by hand, to suit the particular gun it belonged to. The craftsman who did this was called a fitter, and every machine needed one."
+    },
+    {
+      "key": "p2",
+      "type": "text",
+      "variant": "body",
+      "content": "In 1785 a French gunsmith named Honoré Blanc invited visitors to his workshop and laid out the parts of fifty musket locks, sorted into bins. Thomas Jefferson, then the American minister in Paris, assembled several locks himself from pieces taken at random. They all worked. What he had seen was not better craftsmanship. It was the absence of the fitter."
+    },
+    {
+      "key": "img-lock",
+      "type": "image",
+      "file": null,
+      "alt": "The flintlock mechanism of an eighteenth-century French infantry musket.",
+      "credit": null,
+      "relates_to": ["p1", "p2"]
+    },
+    {
+      "key": "cap-lock",
+      "type": "text",
+      "variant": "caption",
+      "content": "A flintlock mechanism. Before gauges, each one fitted a single gun.",
+      "relates_to": ["img-lock"]
+    },
+    {
+      "key": "p3",
+      "type": "text",
+      "variant": "body",
+      "content": "Blanc’s method was to stop comparing parts with each other and compare them with something else: a set of hardened steel gauges. A part was finished when it passed the gauge, not when it suited its neighbour. This sounds like a small change. It moved the idea of “correct” out of the finished gun and into an object that sat in a drawer."
+    },
+    {
+      "key": "sub-limit",
+      "type": "heading",
+      "variant": "subhead",
+      "content": "THE LIMIT IS THE DESIGN"
+    },
+    {
+      "key": "p4",
+      "type": "text",
+      "variant": "body",
+      "content": "A gauge cannot ask for perfection, because no part is ever exactly the size it is meant to be. So it asks for something achievable: not smaller than this, not larger than that. The gap between the two limits is the tolerance. It is a written statement of how wrong a part is allowed to be and still count as right."
+    },
+    {
+      "key": "p5",
+      "type": "text",
+      "variant": "body",
+      "content": "Tolerances cost money. Halving the permitted error usually far more than doubles the work, since it demands better machines, slower cuts and more rejected parts. A good designer therefore does the opposite of what precision seems to mean, and makes every tolerance as loose as the job will bear. Errors also add up. Ten parts in a row, each within its limits, can together miss by ten times as much, so error has to be budgeted across a design the way money is."
+    },
+    {
+      "key": "sub-strangers",
+      "type": "heading",
+      "variant": "subhead",
+      "content": "STRANGERS WHO NEVER MEET"
+    },
+    {
+      "key": "p6",
+      "type": "text",
+      "variant": "body",
+      "content": "The idea travelled slowly. Eli Whitney promised the United States interchangeable muskets in 1798 and never truly delivered them.^1^ It took until the 1820s, at the Harpers Ferry armory, for John Hall to build rifles whose parts really could be swapped, and it took him a workshop full of special machines and gauges to do it."
+    },
+    {
+      "key": "img-hall",
+      "type": "image",
+      "file": null,
+      "alt": "John Hall’s M1819 breech-loading rifle.",
+      "credit": null,
+      "relates_to": ["p6"]
+    },
+    {
+      "key": "cap-hall",
+      "type": "text",
+      "variant": "caption",
+      "content": "John Hall’s breech-loading rifle, made at Harpers Ferry.",
+      "relates_to": ["img-hall"]
+    },
+    {
+      "key": "p7",
+      "type": "text",
+      "variant": "body",
+      "content": "The result is so ordinary now that it is hard to see. A bolt made in one country fits a nut made in another by people who will never speak. The agreement that once took place between two hands at a bench happens in advance, on paper, between strangers. The same move appears wherever separately made things must work together: timetables, contracts, software interfaces. It holds only where fit can be checked by something like a gauge. Where it cannot, we are back to fitting."
+    },
+    {
+      "key": "fn1",
+      "type": "note",
+      "label": "1",
+      "content": "Whitney’s celebrated demonstration of 1801 is now generally thought to have used specially prepared parts. See Robert S. Woodbury, “The Legend of Eli Whitney and Interchangeable Parts”, *Technology and Culture*, 1960.",
+      "relates_to": ["p6"]
+    },
+    {
+      "key": "sources",
+      "type": "note",
+      "content": "David A. Hounshell, *From the American System to Mass Production, 1800–1932* (1984). Ken Alder, *Engineering the Revolution* (1997)."
+    }
+  ]
+}
