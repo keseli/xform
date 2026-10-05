@@ -5,9 +5,10 @@
 //   issue:   { title, month, year, number, first_page }
 //   spreads: [{ id, section, chrome_left, chrome_right }]   // dizideki sıra = spread sırası
 //   blocks:  [Block]
-//   stacks:  [{ id, spread_id, direction, x, y, gap }]     // auto layout (src/stacks.ts), isteğe bağlı
+//   stacks:  [{ id, spread_id, direction, x, y, gap, w?, h? }]  // auto layout (src/stacks.ts), isteğe bağlı
+//   slots:   [{ id, spread_id, x, y, w, h, z, tone, accepts: { type, variant? } }]  // src/templates.ts, isteğe bağlı
 // }
-import type { Block, BlockType, Issue, IssueMeta, PlacedBlock, Stack, Variant } from './types.ts';
+import type { Block, BlockType, Issue, IssueMeta, PlacedBlock, Slot, Stack, Variant } from './types.ts';
 
 export const VARIANTS: Record<BlockType, (Variant | null)[]> = {
   heading: ['title', 'subhead', 'kicker'],
@@ -35,6 +36,23 @@ export function unplacedBlocks(blocks: Block[]): Block[] {
 export function pageNumbers(issue: IssueMeta, spreadIndex: number) {
   const left = issue.first_page + spreadIndex * 2;
   return { left, right: left + 1 };
+}
+
+const isSize = (v: unknown) => Number.isInteger(v) && (v as number) > 0;
+
+/** Slot alanlarının denetimi (sayı dosyasında ve şablonda ortak). */
+export function slotProblems(s: Omit<Slot, 'id' | 'spread_id'>, where: string): string[] {
+  const out: string[] = [];
+  if (![s.x, s.y, s.z].every(Number.isInteger) || !isSize(s.w) || !isSize(s.h)) {
+    out.push(`${where}: x, y, z tam sayı; w, h pozitif tam sayı olmalı`);
+  }
+  if (!['dark', 'light'].includes(s.tone)) out.push(`${where}: tone geçersiz`);
+  const type = s.accepts?.type as BlockType;
+  if (!(type in VARIANTS)) out.push(`${where}: bilinmeyen tür ${type}`);
+  else if (s.accepts.variant != null && !VARIANTS[type].includes(s.accepts.variant)) {
+    out.push(`${where}: ${type} için geçersiz variant ${s.accepts.variant}`);
+  }
+  return out;
 }
 
 /** Veri tutarlılığını kontrol eder; engellemez, sorun listesi döner. */
@@ -81,6 +99,17 @@ export function validate(data: Issue): string[] {
     if (!spreadIds.has(s.spread_id)) problems.push(`yığın ${s.id}: bilinmeyen spread ${s.spread_id}`);
     if (!['vertical', 'horizontal'].includes(s.direction)) problems.push(`yığın ${s.id}: direction geçersiz`);
     if (!Number.isInteger(s.gap) || s.gap < 0) problems.push(`yığın ${s.id}: gap 0 ya da pozitif tam sayı olmalı`);
+    if ((s.w != null || s.h != null) && !(isSize(s.w) && isSize(s.h))) {
+      problems.push(`yığın ${s.id}: yer tutucu w ve h birlikte, pozitif tam sayı olmalı`);
+    }
+  }
+
+  const slotIds = new Set<string>();
+  for (const s of data.slots ?? []) {
+    if (slotIds.has(s.id) || ids.has(s.id)) problems.push(`yinelenen id: ${s.id}`);
+    slotIds.add(s.id);
+    if (!spreadIds.has(s.spread_id)) problems.push(`slot ${s.id}: bilinmeyen spread ${s.spread_id}`);
+    problems.push(...slotProblems(s, `slot ${s.id}`));
   }
   for (const b of data.blocks) {
     if (b.stack_id == null) continue;

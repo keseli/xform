@@ -3,6 +3,8 @@
 // - alan seçimi ve Shift+tık
 // - auto layout: yığın taşıma, içindeki bloğu sıralama/çıkarma, yığına bırakma
 // - görsel odak modu (state.focalId): kutu içinde sürüklemek görseli kaydırır
+// - slotlar: tek blok uygun bir slotun üstüne bırakılınca slotu doldurur
+//   (tepsiden, tuvalden ya da yığın içinden); slot ve boş yığın tıklanınca seçilir
 //
 // Taşınabilir birim: serbest blok ya da yığın. Yığın içindeki blok tek başına
 // taşınmaz; seçiliyken sürüklemek sırasını değiştirir ya da yığından çıkarır.
@@ -18,6 +20,7 @@ import { blocksOnSpread } from '../model.ts';
 import { settleHeight } from '../render/measure.ts';
 import {
   childrenOf,
+  hasPlaceholder,
   insertIntoStack,
   insertionIndex,
   insertionMarker,
@@ -26,6 +29,7 @@ import {
   stackBounds,
   stackById,
 } from '../stacks.ts';
+import { fillSlot, slotAt } from '../templates.ts';
 import type { Block, FocalPoint, PlacedBlock, Point, Rect, Stack } from '../types.ts';
 import { defaultWidth, heightForRatio, keepInFrame, resizeBox, snap, staysInFrame, type Dir } from './geometry.ts';
 import {
@@ -86,6 +90,8 @@ export interface Layer {
   preview: PlacedBlock | null;
   /** İşaretçiyi izleyen etiket (tuval dışındayken). */
   ghost: { text: string; x: number; y: number; hidden: boolean } | null;
+  /** Sürüklenen bloğun bırakılınca dolduracağı slot. */
+  slotTarget: string | null;
 }
 
 export type Controller = ReturnType<typeof createController>;
@@ -102,6 +108,7 @@ export function createController(store: Store) {
     dragOffset: null,
     preview: null,
     ghost: null,
+    slotTarget: null,
   };
 
   const data = () => state.data;
@@ -248,6 +255,19 @@ export function createController(store: Store) {
     return null;
   }
 
+  /** İşaretçinin altındaki, bloğu kabul eden slot (Ctrl/⌘ ile kapalı). */
+  function slotUnder(p: Point, block: Pick<Block, 'type' | 'variant'>, ev: PointerEvent): string | null {
+    return noSnap(ev) ? null : (slotAt(data(), spread().id, p, block)?.id ?? null);
+  }
+
+  /** Bloksuz noktada seçilebilen: yer tutuculu yığının alanı, sonra slot. */
+  function placeholderAt(p: Point): { stackId?: string; slotId?: string } | null {
+    const st = stacksHere().find((s) => hasPlaceholder(s) && contains(stackBounds(data(), s), p));
+    if (st) return { stackId: st.id };
+    const slot = slotAt(data(), spread().id, p);
+    return slot ? { slotId: slot.id } : null;
+  }
+
   // ---------- Etkileşimler ----------
 
   function onPointerDown(e: PointerEvent) {
@@ -266,6 +286,12 @@ export function createController(store: Store) {
     if (handle) return startResize(e, handle.dataset.dir as string);
     const target = target0.closest<HTMLElement>('[data-id]');
     if (target && frame.contains(target)) return pressBlock(e, target.dataset.id as string);
+    const hit = isOverCanvas(e) ? placeholderAt(toCells(e)) : null;
+    if (hit?.stackId) return pressBlock(e, hit.stackId);
+    if (hit?.slotId) {
+      e.preventDefault();
+      return e.shiftKey ? store.toggle(hit.slotId) : store.select(hit.slotId);
+    }
     startMarquee(e);
   }
 
@@ -322,17 +348,21 @@ export function createController(store: Store) {
         const p = toCells(ev);
         const pos = placeRect(bounds, { x: p.x - p0.x, y: p.y - p0.y }, others, ev);
         apply(pos.x - bounds.x, pos.y - bounds.y);
-        into = single && !noSnap(ev) ? stackUnder(p, single.id) : null;
+        layer.slotTarget = single ? slotUnder(p, single, ev) : null;
+        into = single && !layer.slotTarget && !noSnap(ev) ? stackUnder(p, single.id) : null;
         layer.marker = into ? insertionMarker(data(), into.stackId, into.index, single!.id) : null;
-        if (into) layer.guides = [];
+        if (into || layer.slotTarget) layer.guides = [];
         refresh();
       },
       end() {
+        const slotId = layer.slotTarget;
         layer.guides = [];
         layer.marker = null;
+        layer.slotTarget = null;
         if (!moved) return refresh();
         const target = into;
-        if (target) store.commit(() => insertIntoStack(data(), single!.id, target.stackId, target.index));
+        if (slotId) store.commit(() => fillSlot(data(), slotId, single!.id));
+        else if (target) store.commit(() => insertIntoStack(data(), single!.id, target.stackId, target.index));
         else store.commit();
       },
       cancel() {
@@ -340,6 +370,7 @@ export function createController(store: Store) {
         apply(0, 0);
         layer.guides = [];
         layer.marker = null;
+        layer.slotTarget = null;
         refresh();
       },
     });
@@ -359,13 +390,18 @@ export function createController(store: Store) {
     ];
     const p0 = toCells(e);
     let moved = false;
-    let target: { kind: 'reorder'; index: number } | { kind: 'out'; x: number; y: number } | null = null;
+    let target:
+      | { kind: 'reorder'; index: number }
+      | { kind: 'out'; x: number; y: number }
+      | { kind: 'slot'; slotId: string }
+      | null = null;
 
     const reset = () => {
       layer.draggingId = null;
       layer.dragOffset = null;
       layer.guides = [];
       layer.marker = null;
+      layer.slotTarget = null;
     };
 
     drag(e, {
@@ -383,10 +419,14 @@ export function createController(store: Store) {
           layer.dragOffset = { x: d.x * CELL, y: d.y * CELL };
         } else {
           const pos = placeRect(start, d, others, ev);
-          target = { kind: 'out', x: pos.x, y: pos.y };
+          const slotId = slotUnder(p, b, ev);
+          target = slotId ? { kind: 'slot', slotId } : { kind: 'out', x: pos.x, y: pos.y };
+          layer.slotTarget = slotId;
+          if (slotId) layer.guides = [];
           layer.marker = null;
           layer.dragOffset = { x: (pos.x - start.x) * CELL, y: (pos.y - start.y) * CELL };
         }
+        if (target.kind === 'reorder') layer.slotTarget = null;
         refresh();
       },
       end() {
@@ -395,6 +435,7 @@ export function createController(store: Store) {
         if (!moved || !t) return refresh();
         store.commit(() => {
           if (t.kind === 'reorder') return moveInStack(data(), b.id, t.index);
+          if (t.kind === 'slot') return void fillSlot(data(), t.slotId, b.id);
           removeFromStack(data(), b.id);
           b.x = t.x;
           b.y = t.y;
@@ -416,6 +457,7 @@ export function createController(store: Store) {
     const texts = stackTexts(st);
     if (!texts.length) return;
     const startX = st.x;
+    const startW = st.w;
     const widths = new Map(texts.map((b) => [b.id, b.w]));
     const bounds = stackBounds(data(), st);
     const base = { x: st.x, y: bounds.y, w: textWidth(texts), h: bounds.h };
@@ -429,6 +471,8 @@ export function createController(store: Store) {
     const apply = (x: number, w: number | null) => {
       st.x = x;
       for (const b of texts) b.w = w ?? (widths.get(b.id) as number);
+      // Metin sütununun genişliği metinlerle birlikte: sonra giren blok da bunu alır.
+      if (startW != null) st.w = w ?? startW;
       refresh();
     };
 
@@ -618,13 +662,16 @@ export function createController(store: Store) {
     let started = false;
     let target: Point | null = null;
     let into: { stackId: string; index: number } | null = null;
+    let slotId: string | null = null;
     let others: Rect[] = [];
+    const freeSize = { w, h: temp.h };
 
     const cleanup = () => {
       layer.preview = null;
       layer.ghost = null;
       layer.guides = [];
       layer.marker = null;
+      layer.slotTarget = null;
       refresh();
     };
 
@@ -639,6 +686,7 @@ export function createController(store: Store) {
           // Önizleme çizildi: akış tipinde yüksekliği ölç.
           const el = frame?.querySelector<HTMLElement>('.overlay > .block.is-preview');
           if (el && FLOW_TYPES.has(temp.type)) temp.h = settleHeight(el);
+          freeSize.h = temp.h;
           others = unitsOnSpread().map(unitRect);
         }
         const over = isOverCanvas(ev);
@@ -651,15 +699,29 @@ export function createController(store: Store) {
         };
         if (over) {
           const p = toCells(ev);
-          const pos = placeRect({ x: 0, y: 0, w: temp.w, h: temp.h }, p, others, ev);
-          Object.assign(temp, pos);
-          target = pos;
-          into = noSnap(ev) ? null : stackUnder(p, block.id);
+          slotId = slotUnder(p, block, ev);
+          const slot = slotId ? (data().slots ?? []).find((x) => x.id === slotId) : null;
+          if (slot) {
+            // Önizleme slotun yerinde; görsel slotun yüksekliğini de alır.
+            Object.assign(temp, { x: slot.x, y: slot.y, w: slot.w, h: block.type === 'image' ? slot.h : temp.h });
+            target = { x: slot.x, y: slot.y };
+            into = null;
+            layer.guides = [];
+          } else {
+            Object.assign(temp, freeSize);
+            const pos = placeRect({ x: 0, y: 0, w: temp.w, h: temp.h }, p, others, ev);
+            Object.assign(temp, pos);
+            target = pos;
+            into = noSnap(ev) ? null : stackUnder(p, block.id);
+            if (into) layer.guides = [];
+          }
+          layer.slotTarget = slotId;
           layer.marker = into ? insertionMarker(data(), into.stackId, into.index, block.id) : null;
-          if (into) layer.guides = [];
         } else {
           target = null;
           into = null;
+          slotId = null;
+          layer.slotTarget = null;
           layer.guides = [];
           layer.marker = null;
         }
@@ -670,12 +732,14 @@ export function createController(store: Store) {
         if (!started) return onClick?.();
         const t = target;
         const i = into;
+        const sid = slotId;
         if (!t) return;
         store.commit((s) => {
           const all = blocksOnSpread(s.data.blocks, spread().id);
           const z = Math.max(0, ...all.map((o) => o.z ?? 0)) + 1;
-          Object.assign(block, { spread_id: spread().id, ...t, w, h: temp.h, z });
-          if (i) insertIntoStack(s.data, block.id, i.stackId, i.index);
+          Object.assign(block, { spread_id: spread().id, ...t, w, h: freeSize.h, z });
+          if (sid) fillSlot(s.data, sid, block.id);
+          else if (i) insertIntoStack(s.data, block.id, i.stackId, i.index);
           s.selectedIds = [block.id];
         });
       },

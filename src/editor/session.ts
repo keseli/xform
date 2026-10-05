@@ -2,7 +2,7 @@
 // kısayolları. React bileşenleri yalnız bunu çizer ve işlemleri çağırır.
 import { SNAP } from '../config.ts';
 import { blocksOnSpread } from '../model.ts';
-import { ConflictError, fetchRevision, loadIssue, saveIssue } from '../data.ts';
+import { ConflictError, fetchRevision, fetchTemplates, loadIssue, saveIssue, saveTemplate } from '../data.ts';
 import { checkLineHeights, loadFonts, onFontsChanged } from '../render/fonts.ts';
 import {
   childrenOf,
@@ -15,7 +15,15 @@ import {
   stackBounds,
   stackById,
 } from '../stacks.ts';
-import type { Block, FocalPoint, PlacedBlock, Rect, Spread, Stack } from '../types.ts';
+import {
+  instantiateTemplate,
+  removeSlot,
+  removeSpreadSkeleton,
+  slotById,
+  templateFromSpread,
+  templateKey,
+} from '../templates.ts';
+import type { Block, FocalPoint, PlacedBlock, Rect, Spread, Stack, Template } from '../types.ts';
 import { createStore, type EditorState } from './store.ts';
 import { createController } from './controller.ts';
 import { keepInFrame, normalizeZ } from './geometry.ts';
@@ -58,11 +66,12 @@ export async function createSession() {
       0,
       data.spreads.findIndex((s) => s.id === wanted),
     ),
-    selectedIds: [], // blok ve yığın id'leri; son eleman birincil seçim
+    selectedIds: [], // blok, yığın ve slot id'leri; son eleman birincil seçim
     focalId: null, // odak modundaki görsel (yalnız arayüz durumu)
     showGrid: pref('grid', true),
     lockAspect: pref('lock', true),
     saveStatus: 'saved',
+    templates: [],
   } as unknown as EditorState;
   // Tek seçim kullanan kod için kısayol: birincil seçim.
   Object.defineProperty(state, 'selectedId', {
@@ -127,12 +136,22 @@ export async function createSession() {
   checkLineHeights();
   await loadFonts();
 
+  async function loadTemplates() {
+    try {
+      state.templates = await fetchTemplates();
+    } catch (err) {
+      console.warn('[xform]', (err as Error).message);
+    }
+    store.emit('view');
+  }
+  await loadTemplates();
+
   const controller = createController(store);
 
   const block = (id: string | null) => state.data.blocks.find((b) => b.id === id) as PlacedBlock | undefined;
   const currentSpread = (): Spread => state.data.spreads[state.spreadIndex];
   const onSpread = (id: string, spreadId = currentSpread().id) =>
-    (stackById(state.data, id) ?? block(id))?.spread_id === spreadId;
+    (stackById(state.data, id) ?? block(id) ?? slotById(state.data, id))?.spread_id === spreadId;
   const isUnit = (id: string) => stackById(state.data, id) || (block(id) && block(id)!.stack_id == null);
   const unitRect = (id: string): Rect => {
     const st = stackById(state.data, id);
@@ -156,10 +175,14 @@ export async function createSession() {
         store.select(id);
       }
     },
-    /** Bloklar ve yığınlar tepsiye; yığın kalkar, çocukları tepsiye gider. */
+    /** Bloklar ve yığınlar tepsiye; yığın kalkar, çocukları tepsiye gider. Slot silinir. */
     unplace(ids: string | string[]) {
       store.commit((s) => {
         for (const id of ([] as string[]).concat(ids)) {
+          if (slotById(s.data, id)) {
+            removeSlot(s.data, id);
+            continue;
+          }
           const st = stackById(s.data, id);
           const targets = st ? childrenOf(s.data, id).map((b) => b.id) : [id];
           if (st) removeStack(s.data, id);
@@ -168,7 +191,7 @@ export async function createSession() {
             for (const k of POSITION_KEYS) (block(bid) as Block)[k] = null;
           }
         }
-        s.selectedIds = s.selectedIds.filter((id) => block(id) || stackById(s.data, id));
+        s.selectedIds = s.selectedIds.filter((id) => block(id) || stackById(s.data, id) || slotById(s.data, id));
       });
     },
     front(id: string) {
@@ -259,28 +282,50 @@ export async function createSession() {
     detachFromStack(id: string) {
       store.commit(() => removeFromStack(state.data, id));
     },
-    addSpread() {
+    /** Yeni spread; şablon verilirse chrome ayarları, slotlar ve boş yığınlar ondan. */
+    addSpread(template?: Template) {
       store.commit((s) => {
         const ids = new Set(s.data.spreads.map((x) => x.id));
         let n = s.data.spreads.length + 1;
         while (ids.has(`s-${n}`)) n++;
+        const id = `s-${n}`;
         s.data.spreads.push({
-          id: `s-${n}`,
+          id,
           section: currentSpread().section ?? '',
-          chrome_left: 'full',
-          chrome_right: 'full',
+          chrome_left: template?.chrome_left ?? 'full',
+          chrome_right: template?.chrome_right ?? 'full',
         });
+        if (template) instantiateTemplate(s.data, template, id);
         s.spreadIndex = s.data.spreads.length - 1;
         s.selectedId = null;
       });
     },
+    /** Bloksuz spread silinir; slotları ve boş yığınları da gider. */
     removeSpread() {
       const s = currentSpread();
       if (state.data.spreads.length === 1 || blocksOnSpread(state.data.blocks, s.id).length) return;
       store.commit((st) => {
+        removeSpreadSkeleton(st.data, s.id);
         st.data.spreads.splice(st.spreadIndex, 1);
         st.spreadIndex = Math.max(0, st.spreadIndex - 1);
       });
+    },
+    /**
+     * Açık spread'i şablon olarak kaydeder (data/templates/<ad>.json): bloklar
+     * slota, yığınlar boş yığına. Aynı adda şablon varsa onay ister.
+     */
+    async saveAsTemplate(name: string, confirmOverwrite: (name: string) => boolean) {
+      const key = templateKey(name);
+      if (!key) return notify('Şablon adı harf ya da rakam içermeli.');
+      const existing = state.templates.find((t) => t.key === key);
+      if (existing && !confirmOverwrite(existing.template.name)) return;
+      try {
+        await saveTemplate(key, templateFromSpread(state.data, currentSpread().id, name.trim()));
+        await loadTemplates();
+        notify(`Şablon kaydedildi: ${name.trim()}`);
+      } catch (err) {
+        notify((err as Error).message);
+      }
     },
     updateSpread(patch: Partial<Spread>) {
       store.commit(() => Object.assign(currentSpread(), patch));
@@ -291,7 +336,7 @@ export async function createSession() {
         s.spreadIndex = i;
         // Tepsideki seçim kalır; başka spread'de kalan seçim düşer.
         s.selectedIds = s.selectedIds.filter(
-          (id) => block(id)?.spread_id == null || onSpread(id, s.data.spreads[i].id),
+          (id) => (block(id) && block(id)!.spread_id == null) || onSpread(id, s.data.spreads[i].id),
         );
         s.focalId = null;
       });

@@ -1,4 +1,4 @@
-// Editör durumu. Seçim state.selectedIds'tedir (blok ya da yığın id'leri);
+// Editör durumu. Seçim state.selectedIds'tedir (blok, yığın ya da slot id'leri);
 // state.selectedId son seçilene (birincil) bakan bir kısayoldur. Tek bir nesne;
 // değişiklikler commit() ile yayınlanır ve gecikmeli olarak kaydedilir. emit
 // nedeni dinleyicilerin ne kadarını yeniden çizeceğini belirler:
@@ -14,7 +14,7 @@
 //
 // React'e useSyncExternalStore ile bağlanır (src/editor/useStore.ts): her emit
 // sürüm sayacını artırır.
-import type { Issue } from '../types.ts';
+import type { Issue, Template } from '../types.ts';
 
 const SAVE_DELAY = 400;
 const HISTORY_LIMIT = 100;
@@ -27,7 +27,7 @@ export interface EditorState {
   revision: number;
   notice: string | null;
   spreadIndex: number;
-  /** Blok ve yığın id'leri; son eleman birincil seçim. */
+  /** Blok, yığın ve slot id'leri; son eleman birincil seçim. */
   selectedIds: string[];
   /** Birincil seçim kısayolu (main'de selectedIds'e bağlanır). */
   selectedId: string | null;
@@ -36,6 +36,8 @@ export interface EditorState {
   showGrid: boolean;
   lockAspect: boolean;
   saveStatus: SaveStatus;
+  /** data/templates/ altındaki şablonlar (dosya adı → şablon); geri almaya girmez. */
+  templates: { key: string; template: Template }[];
 }
 
 interface Snapshot {
@@ -58,7 +60,9 @@ export function createStore(state: EditorState, save: (data: Issue) => Promise<v
   const snapshot = (): Snapshot => ({ data: structuredClone(state.data), spreadIndex: state.spreadIndex });
 
   const exists = (id: string) =>
-    state.data.blocks.some((b) => b.id === id) || (state.data.stacks ?? []).some((s) => s.id === id);
+    state.data.blocks.some((b) => b.id === id) ||
+    (state.data.stacks ?? []).some((s) => s.id === id) ||
+    (state.data.slots ?? []).some((s) => s.id === id);
 
   function restore(snap: Snapshot) {
     state.data = snap.data;

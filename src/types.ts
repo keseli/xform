@@ -79,6 +79,44 @@ export interface Stack {
   x: number;
   y: number;
   gap: number;
+  /**
+   * Yer tutucu alan (metin sütunu). Varsa yığın boşalınca silinmez, editörde
+   * bu alanla görünür; içine giren metin bloğu w genişliğini alır.
+   */
+  w?: number;
+  h?: number;
+}
+
+/** Slotun kabul ettiği blok: tür ve isteğe bağlı variant (yoksa türün hepsi). */
+export interface SlotAccepts {
+  type: BlockType;
+  variant?: Variant | null;
+}
+
+/**
+ * Spread üzerinde boş kutu (src/templates.ts). Yalnız editörde görünür; uygun
+ * blok bırakılınca blok konumu, genişliği, z ve tone'u (görselde yüksekliği
+ * de) alır ve slot silinir.
+ */
+export interface Slot {
+  id: string;
+  spread_id: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  z: number;
+  tone: Tone;
+  accepts: SlotAccepts;
+}
+
+/** Spread iskeleti: data/templates/<ad>.json. Kimlikler spread kurulurken verilir. */
+export interface Template {
+  name: string;
+  chrome_left: ChromeMode;
+  chrome_right: ChromeMode;
+  slots: Omit<Slot, 'id' | 'spread_id'>[];
+  stacks: (Omit<Stack, 'id' | 'spread_id' | 'w' | 'h'> & { w: number; h: number })[];
 }
 
 export interface IssueMeta {
@@ -97,4 +135,6 @@ export interface Issue {
   spreads: Spread[];
   blocks: Block[];
   stacks?: Stack[];
+  /** Şablondan gelen ya da kalan boş kutular (yalnız editörde görünür). */
+  slots?: Slot[];
 }

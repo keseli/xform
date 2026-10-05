@@ -1,0 +1,75 @@
+{
+  "name": "Okuma sayfası",
+  "chrome_left": "full",
+  "chrome_right": "full",
+  "slots": [
+    {
+      "x": 14,
+      "y": 20,
+      "w": 79,
+      "h": 5,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "heading",
+        "variant": "subhead"
+      }
+    },
+    {
+      "x": 291,
+      "y": 212,
+      "w": 14,
+      "h": 1,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "divider"
+      }
+    },
+    {
+      "x": 291,
+      "y": 217,
+      "w": 79,
+      "h": 12,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "note"
+      }
+    }
+  ],
+  "stacks": [
+    {
+      "direction": "vertical",
+      "x": 14,
+      "y": 28,
+      "gap": 5,
+      "w": 79,
+      "h": 208
+    },
+    {
+      "direction": "vertical",
+      "x": 101,
+      "y": 20,
+      "gap": 5,
+      "w": 79,
+      "h": 216
+    },
+    {
+      "direction": "vertical",
+      "x": 204,
+      "y": 20,
+      "gap": 5,
+      "w": 79,
+      "h": 216
+    },
+    {
+      "direction": "vertical",
+      "x": 291,
+      "y": 20,
+      "gap": 5,
+      "w": 79,
+      "h": 186
+    }
+  ]
+}

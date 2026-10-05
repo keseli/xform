@@ -8,7 +8,7 @@ npm install
 npm run dev        # http://localhost:5173 — okuma görünümü ve editör (Vite)
 npm test           # node:test, DOM'suz modüller (TypeScript doğrudan çalışır)
 npm run typecheck  # tsc --noEmit (strict)
-npm run e2e        # Playwright: dört tarayıcı senaryosu (editör, odak, yerleşim, içe aktarma)
+npm run e2e        # Playwright: tarayıcı senaryoları (editör, odak, yerleşim, içe aktarma, şablonlar)
 npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini sayıya aktar
 ```
 
@@ -18,14 +18,16 @@ npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini say
   değişirse (içe aktarma, başka sekme) editör birkaç saniye içinde yeniden yükler.
 - `?issue=issue-001&spread=s-tablets`: dosya ve spread seçimi (iki görünümde de).
 - **Tarayıcı senaryoları** `e2e/`: her senaryo `data/issue-001.json`'un geçici bir
-  kopyasında (`data/e2e-*.json`) çalışır ve bitince siler; dev sunucusu açık değilse
+  kopyasında (`data/e2e-*.json`) çalışır ve bitince siler (şablon senaryosunun
+  kaydettiği `data/templates/e2e-*.json` de); dev sunucusu açık değilse
   kendisi başlatır. İlk kurulumda `npx playwright install chromium`.
 
 ### Editör
 
 | | |
 | --- | --- |
-| Tepsiden sürükle | Bloğu spread'e yerleştirir (varsayılan genişlik, görselde doğal oran); bir yığının üstüne bırakılırsa yığına girer |
+| Tepsiden sürükle | Bloğu spread'e yerleştirir (varsayılan genişlik, görselde doğal oran); bir yığının üstüne bırakılırsa yığına girer, uygun bir slotun üstüne bırakılırsa slotu doldurur |
+| **+ Spread** | Boş spread ya da `data/templates/` altındaki bir şablon |
 | Tık / **Shift+tık** / boş alanda sürükle | Seç / seçime ekle-çıkar / alan seçimi. Seçilenler birlikte taşınır |
 | Akıllı kılavuzlar | Taşırken ve resize ederken diğer blokların kenar/merkezlerine ve sayfa çizgilerine (kenar boşlukları, sayfa ortaları, kat) yakalar; pembe çizgi. **Ctrl/⌘** basılıyken kapalı |
 | **Shift+A** | Auto layout: seçili serbest bloklardan dikey ya da yatay yığın (yön dizilişten, boşluk mevcut aralıklardan) |
@@ -34,7 +36,7 @@ npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini say
 | Tutamaçlar | Metin/çizgi: yalnız genişlik. Görsel: 8 yön, oran kilidi **L** (Shift geçici tersine çevirir) |
 | **← ↑ → ↓** | Seçili bloğu snap adımı kadar kaydır (**Alt** ile 1) |
 | **]** / **[** | Öne getir / arkaya gönder |
-| **Delete** | Bloğu tepsiye geri gönder |
+| **Delete** | Bloğu tepsiye geri gönder; seçili slotu ya da boş sütunu sil |
 | Çift tık / **F** | Seçili görselde odak modu: kutu içinde sürüklemek görseli kaydırır (`focal_point`), kırpılan kısım soluk görünür. **Esc** çıkar |
 | **Ctrl+Z** / **Ctrl+Shift+Z** | Geri al / yinele (Mac'te ⌘; Ctrl+Y de yineler). Sürükleme tek adımdır, geçmiş 100 adım |
 | **G** | Izgara ve kılavuzlar |
@@ -52,6 +54,45 @@ aralarında `gap`, çapraz eksende başa hizalı. Bir paragraf uzarsa (düzenlem
 aktarma) alttakiler kayar; okuma görünümü de aynı hesabı yapar. Tık yığını, çift tık
 içindeki bloğu seçer. İçteki blok seçiliyken sürüklemek ya da ok tuşları sırasını
 değiştirir; yığından uzağa sürüklenirse çıkar. Yön ve boşluk sağ panelden.
+
+### Şablonlar ve slotlar
+
+**Slot**, spread üzerinde boş bir kutudur (`slots`): `x, y, w, h, z, tone` ve kabul
+ettiği tür (`accepts: { type, variant? }`; variant yoksa türün hepsi). Editörde kesikli
+çerçeve ve tür etiketiyle görünür, okuma görünümünde hiç çizilmez.
+
+- Uygun blok, tepsiden ya da tuvalden imleç slotun üstündeyken bırakılınca slotun
+  konumunu, genişliğini, z ve tone değerini alır; görsel yüksekliği de alır, metnin
+  yüksekliği içerikten ölçülür. Slot kalkar. Sürüklerken uygun slot mavi vurgulanır.
+- Uymayan blok slotu görmez, normal serbest yerleşir. **Ctrl/⌘** basılıyken slot da
+  yığın gibi devre dışıdır.
+- Slot tıklanınca seçilir (panelde türü ve ölçüsü), **Delete** siler.
+
+**Metin sütunları** slot değil, boş yığındır: yer tutucu alanı (`w`, `h`) olan bir yığın.
+Boşken de mor kesikli çerçeveyle görünür ve seçilip taşınabilir. İçine giren metin
+bloğu sütunun genişliğini alır. Son bloğu çıksa da kalır; Shift+A ile kurulan, yer
+tutucusuz yığınlar eskisi gibi boşalınca silinir.
+
+**Şablon**, slotlar, boş yığınlar ve chrome ayarlarından oluşan iskelettir
+(`data/templates/<ad>.json`). Kimlikler spread kurulurken verilir.
+
+- **+ Spread** bir şablon seçtirir; **Boş spread** seçeneği de vardır.
+- Spread paneli (seçim yokken) → **Şablon olarak kaydet**: ad sorar. Yığında olmayan
+  bloklar slota (tür ve variant bloktan), yığınlar boş yığına (o anki alanıyla)
+  çevrilir. Spread'de duran slotlar da şablona girer. Aynı adda şablon varsa üzerine
+  yazmak için onay ister.
+- Başlangıç şablonları: tam görselli açılış, nesne sayfası, okuma sayfası (dört metin
+  sütunu, örnek spread'in sütunları) ve tipografik sayfa.
+
+```json
+{
+  "name": "Okuma sayfası",
+  "chrome_left": "full",
+  "chrome_right": "full",
+  "slots": [{ "x": 14, "y": 20, "w": 79, "h": 5, "z": 1, "tone": "dark", "accepts": { "type": "heading", "variant": "subhead" } }],
+  "stacks": [{ "direction": "vertical", "x": 14, "y": 28, "gap": 5, "w": 79, "h": 208 }]
+}
+```
 
 ## İçerik girişi
 
@@ -141,6 +182,7 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `src/config.ts` | Frame ölçüsü ve hücre boyu (tek kaynak), kenar kılavuzları, snap |
 | `src/model.ts` | Doğrulama, yardımcılar |
 | `src/stacks.ts` | Auto layout hesabı (editör ve okuma görünümü ortak, DOM'suz) |
+| `src/templates.ts` | Slot kabul ve doldurma, şablondan spread, spread'den şablon (DOM'suz) |
 | `src/components/` | Saf bileşenler: `Spread`, `Chrome`, `TextBlock`, `HeadingBlock`, `ImageBlock`, `QuoteBlock`, `NoteBlock`, `DividerBlock`. Yalnız veriden çizer; okuma görünümü ve editör aynısını kullanır |
 | `src/render/` | Yükseklik ölçümü, frame'i sığdırma, fontlar (DOM) |
 | `src/read/` | Okuma görünümü (`index.html`) |
@@ -148,11 +190,12 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `src/content/merge.ts` | İçe aktarma kuralları (DOM'suz, dosya sistemsiz) |
 | `styles/main.css` | Renkler ve tipografi; bütün yazı ölçüleri `:root`'taki tipografi token'larında (`--size-*`, `--lh-*`, `--track-*`, `--opsz-*`) |
 | `styles/fonts/` | Gömülü değişken fontlar (woff2) ve lisansları (SIL OFL 1.1) |
-| `scripts/api.mjs` | Kayıt ve revizyon uçları (Vite eklentisi) |
+| `scripts/api.mjs` | Kayıt, revizyon ve şablon uçları (Vite eklentisi) |
 | `scripts/import.mjs` | İçe aktarma komutu |
 | `e2e/`, `playwright.config.ts` | Tarayıcı senaryoları (`npm run e2e`) |
 | `content/` | İçerik paketleri (hattın çıktısı); örnek sayının kaynağı |
 | `data/issue-001.json` | Sayı: bloklar ve yerleşim |
+| `data/templates/` | Spread şablonları |
 
 ## Kurallar
 

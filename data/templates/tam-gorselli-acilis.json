@@ -1,0 +1,55 @@
+{
+  "name": "Tam görselli açılış",
+  "chrome_left": "none",
+  "chrome_right": "none",
+  "slots": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 384,
+      "h": 256,
+      "z": 1,
+      "tone": "light",
+      "accepts": {
+        "type": "image"
+      }
+    },
+    {
+      "x": 14,
+      "y": 172,
+      "w": 100,
+      "h": 4,
+      "z": 2,
+      "tone": "light",
+      "accepts": {
+        "type": "heading",
+        "variant": "kicker"
+      }
+    },
+    {
+      "x": 14,
+      "y": 178,
+      "w": 166,
+      "h": 32,
+      "z": 2,
+      "tone": "light",
+      "accepts": {
+        "type": "heading",
+        "variant": "title"
+      }
+    },
+    {
+      "x": 14,
+      "y": 214,
+      "w": 120,
+      "h": 14,
+      "z": 2,
+      "tone": "light",
+      "accepts": {
+        "type": "text",
+        "variant": "deck"
+      }
+    }
+  ],
+  "stacks": []
+}

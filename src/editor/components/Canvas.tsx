@@ -10,7 +10,7 @@ import type { PlacedBlock } from '../../types.ts';
 import { PAD } from '../controller.ts';
 import type { Session } from '../session.ts';
 import { computeWarnings } from '../warnings.ts';
-import { EditorLayer, GridGuides } from './EditorLayer.tsx';
+import { EditorLayer, GridGuides, SlotLayer } from './EditorLayer.tsx';
 
 export function Canvas({ session }: { session: Session }) {
   const { state, store, controller } = session;
@@ -76,7 +76,12 @@ export function Canvas({ session }: { session: Session }) {
           spreadId={spread.id}
           className={frameClass}
           blockProps={blockProps}
-          underlay={state.showGrid ? <GridGuides /> : null}
+          underlay={
+            <>
+              <SlotLayer session={session} />
+              {state.showGrid ? <GridGuides /> : null}
+            </>
+          }
           frameRef={frameRef}
         >
           <EditorLayer session={session} warnings={warnings} />

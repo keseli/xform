@@ -1,10 +1,11 @@
-// Sağ panel: seçili bloğun, yığının ya da çoklu seçimin bilgileri ve
+// Sağ panel: seçili bloğun, yığının, slotun ya da çoklu seçimin bilgileri ve
 // işlemleri; seçim yoksa spread ayarları. Altta her zaman bu spread'in uyarıları.
 import { useEffect, useRef, type InputHTMLAttributes } from 'react';
 import { CELL } from '../../config.ts';
 import { blocksOnSpread, isPlaced } from '../../model.ts';
-import { childrenOf, stackBounds, stackById } from '../../stacks.ts';
-import type { Block, Stack } from '../../types.ts';
+import { childrenOf, hasPlaceholder, stackBounds, stackById } from '../../stacks.ts';
+import { slotById, slotsOn } from '../../templates.ts';
+import type { Block, Slot, Stack } from '../../types.ts';
 import type { Session } from '../session.ts';
 import { computeWarnings, type Warning } from '../warnings.ts';
 import { kindLabel, pageLabel, snippet } from '../labels.ts';
@@ -37,6 +38,7 @@ export function Inspector({ session }: { session: Session }) {
   const spreadId = data.spreads[state.spreadIndex].id;
   const ids = state.selectedIds;
   const stack = ids.length === 1 ? stackById(data, ids[0]) : undefined;
+  const slot = ids.length === 1 ? slotById(data, ids[0]) : undefined;
   const selected = ids.length === 1 ? data.blocks.find((b) => b.id === ids[0]) : undefined;
   const id = state.selectedId as string;
 
@@ -226,6 +228,9 @@ export function Inspector({ session }: { session: Session }) {
         </label>
         <div className="field">
           Sıra
+          {!kids.length && hasPlaceholder(st) ? (
+            <p className="muted">Boş sütun: metin bloklarını tepsiden ya da tuvalden içine bırak.</p>
+          ) : null}
           <ol className="stack-list">
             {kids.map((b) => (
               <li key={b.id}>
@@ -248,7 +253,49 @@ export function Inspector({ session }: { session: Session }) {
             Auto layout’u kaldır <kbd>Alt⇧A</kbd>
           </button>
           <button data-action="unplace" className="danger" onClick={() => actions.unplace(id)}>
-            Tepsiye gönder <kbd>Del</kbd>
+            {kids.length ? 'Tepsiye gönder' : 'Sütunu sil'} <kbd>Del</kbd>
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  function slotPanel(sl: Slot) {
+    const variant = sl.accepts.variant ? ` (${sl.accepts.variant})` : ' (her variant)';
+    const needsVariant = sl.accepts.type === 'heading' || sl.accepts.type === 'text';
+    return (
+      <section className="panel">
+        <div className="panel-head">
+          Slot <span className="count">şablon</span>
+        </div>
+        <p className="field">
+          Kabul eder: <strong>{kindLabel({ type: sl.accepts.type, variant: sl.accepts.variant ?? null })}</strong>
+          {needsVariant ? <span className="muted">{variant}</span> : null}
+        </p>
+        <dl className="metrics">
+          {(
+            [
+              ['x', sl.x],
+              ['y', sl.y],
+              ['w', sl.w],
+              ['h', sl.h],
+              ['z', sl.z],
+              ['tone', sl.tone === 'light' ? 'açık' : 'koyu'],
+            ] as const
+          ).map(([k, v]) => (
+            <div key={k}>
+              <dt>{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="muted">
+          Uygun bloğu tepsiden ya da tuvalden üstüne bırak: blok konumu, genişliği, z ve tone’u
+          {sl.accepts.type === 'image' ? ', yüksekliği' : ''} alır, slot kalkar. Uymayan blok serbest yerleşir.
+        </p>
+        <div className="buttons">
+          <button data-action="remove-slot" className="danger" onClick={() => actions.unplace(sl.id)}>
+            Slotu sil <kbd>Del</kbd>
           </button>
         </div>
       </section>
@@ -350,7 +397,21 @@ export function Inspector({ session }: { session: Session }) {
           />{' '}
           Sağ sayfada chrome
         </label>
+        {slotsOn(data, s.id).length ? (
+          <p className="muted">Bu spread’de {slotsOn(data, s.id).length} boş slot var.</p>
+        ) : null}
         <div className="buttons">
+          <button
+            data-action="save-template"
+            onClick={() => {
+              const name = prompt('Şablon adı', s.section || `Spread ${i + 1}`);
+              if (name?.trim()) {
+                void actions.saveAsTemplate(name, (old) => confirm(`“${old}” şablonu var. Üzerine yazılsın mı?`));
+              }
+            }}
+          >
+            Şablon olarak kaydet
+          </button>
           <button
             data-action="remove-spread"
             className="danger"
@@ -411,6 +472,7 @@ export function Inspector({ session }: { session: Session }) {
   let panel;
   if (ids.length > 1) panel = multiPanel();
   else if (stack) panel = stackPanel(stack);
+  else if (slot) panel = slotPanel(slot);
   else if (selected) panel = blockPanel(selected);
   else panel = spreadPanel();
 
