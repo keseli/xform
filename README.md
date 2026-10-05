@@ -8,6 +8,7 @@ npm install
 npm run dev        # http://localhost:5173 — okuma görünümü ve editör (Vite)
 npm test           # node:test, DOM'suz modüller (TypeScript doğrudan çalışır)
 npm run typecheck  # tsc --noEmit (strict)
+npm run e2e        # Playwright: dört tarayıcı senaryosu (editör, odak, yerleşim, içe aktarma)
 npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini sayıya aktar
 npm run legacy     # eski (React öncesi) sürüm: http://localhost:5174/legacy/
 ```
@@ -17,6 +18,11 @@ npm run legacy     # eski (React öncesi) sürüm: http://localhost:5174/legacy/
   kaydedilir (dev sunucusundaki `PUT /api/data/<issue>` ucu). Dosya dışarıda
   değişirse (içe aktarma, başka sekme) editör birkaç saniye içinde yeniden yükler.
 - `?issue=issue-001&spread=s-tablets`: dosya ve spread seçimi (iki görünümde de).
+- **Tarayıcı senaryoları** `e2e/`: her senaryo `data/issue-001.json`'un geçici bir
+  kopyasında (`data/e2e-*.json`) çalışır ve bitince siler; dev sunucusu açık değilse
+  kendisi başlatır. İlk kurulumda `npx playwright install chromium`. Google Fonts'a
+  tarayıcıdan erişilemeyen (vekil sunuculu) ortamlarda fontları Node üzerinden
+  çekmek için: `E2E_FONTS_VIA_NODE=1 NODE_USE_ENV_PROXY=1 npm run e2e`.
 
 ### Editör
 
@@ -146,6 +152,7 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `styles/main.css` | Renkler ve tipografi; `--lh-*` satır yükseklikleri hücrenin katı olmalı |
 | `scripts/api.mjs` | Kayıt ve revizyon uçları (Vite eklentisi ve eski sunucu ortak) |
 | `scripts/import.mjs` | İçe aktarma komutu |
+| `e2e/`, `playwright.config.ts` | Tarayıcı senaryoları (`npm run e2e`) |
 | `content/` | İçerik paketleri (hattın çıktısı); örnek sayının kaynağı |
 | `data/issue-001.json` | Sayı: bloklar ve yerleşim |
 | `legacy/` | React öncesi sürüm; parite karşılaştırması bitince silinecek |

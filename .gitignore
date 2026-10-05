@@ -1,3 +1,8 @@
 node_modules/
 .DS_Store
 dist/
+test-results/
+playwright-report/
+# Tarayıcı senaryolarının geçici sayı kopyaları
+data/e2e-*.json
+assets/e2e-*/
