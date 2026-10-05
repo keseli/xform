@@ -1,5 +1,5 @@
 {
-  "revision": 3,
+  "revision": 4,
   "issue": {
     "title": "XFORM",
     "month": 10,
@@ -56,7 +56,7 @@
       "spread_id": "s-tablets",
       "x": 14,
       "y": 94,
-      "w": 74,
+      "w": 80,
       "h": 14,
       "z": 1,
       "tone": "dark"
@@ -366,9 +366,9 @@
       "relates_to": [],
       "spread_id": "s-tablets",
       "x": 305,
-      "y": 94,
+      "y": 92,
       "w": 56,
-      "h": 42,
+      "h": 49,
       "z": 1,
       "tone": "dark"
     },
@@ -381,7 +381,7 @@
       "relates_to": [],
       "spread_id": "s-tablets",
       "x": 329,
-      "y": 139,
+      "y": 144,
       "w": 8,
       "h": 1,
       "z": 1,

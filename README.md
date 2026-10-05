@@ -160,18 +160,18 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
   kenarından sayılır (0–383). Editör snap adımı 2 hücre, değiştirici tuşla 1 (`SNAP`).
 - Tüm `--lh-*` satır yükseklikleri 4'ün katı; gövde 14.5/20.
 - Fontlar projeyle gelir (`styles/fonts/`), dış servisten yüklenmez:
-  - **Source Serif 4** (değişken, optik boyut ekseni): gövde, başlık, deck, alıntı,
+  - **Literata** (değişken, optik boyut ekseni): gövde, başlık, deck, alıntı,
     caption, not.
   - **Geist**: subhead, kicker (ve editör arayüzü).
   - **Geist Mono**: chrome satırları, sayfa numarası, caption ve not etiketleri.
 
   | Stil | Font | Boyut / satır |
   | --- | --- | --- |
-  | title | Source Serif 4, hafif sıkı aralık | 64/64 |
-  | deck | Source Serif 4 italik | 22/28 |
-  | body | Source Serif 4, sola yaslı, eski stil rakam | 14.5/20 |
-  | quote | Source Serif 4 italik, asılı tırnak | 22/28 |
-  | caption, note | Source Serif 4 | 10.5/16 |
+  | title | Literata, hafif sıkı aralık | 64/64 |
+  | deck | Literata italik | 22/28 |
+  | body | Literata, sola yaslı, eski stil rakam | 14.5/20 |
+  | quote | Literata italik, asılı tırnak | 22/28 |
+  | caption, note | Literata | 10.5/16 |
   | subhead | Geist yarı kalın, büyük harf, aralıklı | 12/20 |
   | kicker | Geist, büyük harf, daha geniş aralıklı | 11/16 |
   | chrome | Geist Mono, büyük harf | 10/16 |
