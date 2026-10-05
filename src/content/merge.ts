@@ -18,7 +18,7 @@ import type { Block, BlockType, FocalPoint, Issue, IssueMeta, Variant } from '..
 const KEY = /^[a-z0-9][a-z0-9-]*$/;
 const FILE = /^[A-Za-z0-9_][A-Za-z0-9_.-]*$/;
 const LAYOUT_KEYS = ['spread_id', 'x', 'y', 'w', 'h', 'z'] as const;
-const IMAGE_KEYS = ['source', 'credit', 'alt'] as const;
+const IMAGE_KEYS = ['source', 'credit', 'alt', 'source_url', 'license'] as const;
 const DEFAULT_FOCAL: FocalPoint = { x: 0.5, y: 0.5 };
 
 /** Paketteki blok (article.json). */
@@ -32,6 +32,9 @@ export interface PackageBlock {
   file?: string | null;
   alt?: string | null;
   credit?: string | null;
+  /** Arşivdeki açıklama sayfası ve lisans (künye). */
+  source_url?: string | null;
+  license?: string | null;
   focal_point?: FocalPoint;
 }
 
@@ -53,7 +56,7 @@ export interface Manifest {
 
 /** Paketten gelen, henüz yerleşim alanı olmayan blok. */
 export type IncomingBlock = Pick<Block, 'id' | 'type' | 'variant' | 'content' | 'order' | 'relates_to'> &
-  Pick<Block, 'label' | 'focal_point' | 'source' | 'credit' | 'alt'>;
+  Pick<Block, 'label' | 'focal_point' | 'source' | 'credit' | 'alt' | 'source_url' | 'license'>;
 
 export interface MergeReport {
   added: string[];
@@ -117,6 +120,8 @@ export function buildIncoming(
         block.source = src.file ? assetPath(article.slug, src.file) : null;
         block.credit = src.credit ?? null;
         block.alt = src.alt ?? null;
+        block.source_url = src.source_url ?? null;
+        block.license = src.license ?? null;
         if (src.file) files.push({ slug: article.slug, file: src.file });
       } else if (src.type !== 'divider') {
         if (typeof src.content !== 'string' || !src.content.trim()) return errors.push(`${where}: content boş`);
@@ -199,7 +204,14 @@ export function mergeIssue<T extends Pick<Issue, 'blocks'>>(
       relates_to: inc.relates_to,
       label: inc.label,
       ...(inc.type === 'image'
-        ? { source: inc.source, credit: inc.credit, alt: inc.alt, focal_point: cur.focal_point ?? inc.focal_point }
+        ? {
+            source: inc.source,
+            credit: inc.credit,
+            alt: inc.alt,
+            source_url: inc.source_url,
+            license: inc.license,
+            focal_point: cur.focal_point ?? inc.focal_point,
+          }
         : {}),
       removed_from_content: false,
     });

@@ -56,9 +56,14 @@ export interface Block {
   removed_from_content?: boolean;
   // Görsellere özgü
   focal_point?: FocalPoint;
+  /** Görsel dosyasının yolu (assets/<issue>/<slug>/<file>); içe aktarma yazar. */
   source?: string | null;
   credit?: string | null;
   alt?: string | null;
+  /** Görselin arşivdeki açıklama sayfası (künye; sayfada görünmez). */
+  source_url?: string | null;
+  /** Lisans, ör. "Public domain", "CC BY-SA 4.0" (künye; sayfada görünmez). */
+  license?: string | null;
 }
 
 /** Yerleştirilmiş blok: konum alanları dolu (yığındakiler bellekte hesaplanmış). */

@@ -109,6 +109,8 @@ content/
 - **Blok:** `key` (makale içinde benzersiz: küçük harf, rakam, `-`), `type`, `variant`,
   `content`, `label`, `relates_to` (aynı makalenin key'leri ya da `diger-slug/key`).
   Görselde `file`, `alt`, `credit`, `focal_point`; `file` yoksa düz kutu görünür.
+  Künye: `source_url` (arşivdeki açıklama sayfası) ve `license`; sayfada görünmez.
+  Sayıdaki `source` alanı görsel dosyasının yoludur, içe aktarma yazar.
 - **family** (isteğe bağlı): `anchor`, `encounter`, `activity` ya da `interlude`. Yalnız
   pakette durur, denetlenir; sayıya ve sayfaya taşınmaz.
 - **id** = `slug/key`. **order** yazılmaz: manifest'teki makale sırası ve makale içindeki

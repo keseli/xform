@@ -42,6 +42,20 @@ test('buildIncoming: hatalar toplanır', () => {
   assert.equal(errors.length, 6, errors.join('\n'));
 });
 
+test('buildIncoming ve mergeIssue: görsel künyesi (source_url, license) taşınır ve güncellenir', () => {
+  const art = (license) => ({ slug: 'k', blocks: [
+    { key: 'img', type: 'image', file: 'a.jpg', credit: 'NIST', source_url: 'https://example.org/file', license },
+  ] });
+  const first = build([art('Public domain')]);
+  assert.deepEqual([first.blocks[0].source_url, first.blocks[0].license], ['https://example.org/file', 'Public domain']);
+  const { data } = mergeIssue({ blocks: [] }, first.blocks);
+  Object.assign(data.blocks[0], placed);
+  const { data: next, report } = mergeIssue(data, build([art('CC0')]).blocks);
+  assert.equal(next.blocks[0].license, 'CC0');
+  assert.deepEqual(report.updated, ['k/img']);
+  assert.equal(next.blocks[0].x, 10, 'yerleşim korunur');
+});
+
 test('buildIncoming: family yalnız pakette; bilinmeyen değer hata', () => {
   const ok = build([{ ...article, family: 'anchor' }]);
   assert.deepEqual(ok.errors, []);
