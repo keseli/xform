@@ -29,10 +29,6 @@ export const check = (name: string, cond: unknown, extra = '') =>
   expect.soft(cond, extra ? `${name} (${extra})` : name).toBeTruthy();
 
 export const test = base.extend<{ errors: string[] }>({
-  page: async ({ page }, use) => {
-    if (process.env.E2E_FONTS_VIA_NODE) await routeFontsViaNode(page);
-    await use(page);
-  },
   /** Sayfadaki konsol hata/uyarıları ve yakalanmamış hatalar; senaryo sonunda boş olmalı. */
   errors: async ({ page }, use) => {
     const errors: string[] = [];
@@ -43,24 +39,6 @@ export const test = base.extend<{ errors: string[] }>({
     await use(errors);
   },
 });
-
-/**
- * Tarayıcının Google Fonts'a doğrudan erişemediği kısıtlı ağlar için: font
- * isteklerini test sürecinin fetch'iyle getirir (proxy için NODE_USE_ENV_PROXY=1).
- * Normal ağda gerekmez.
- */
-async function routeFontsViaNode(page: Page) {
-  const cache = new Map<string, { body: Buffer; type: string }>();
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, async (route) => {
-    const url = route.request().url();
-    if (!cache.has(url)) {
-      const res = await fetch(url, { headers: { 'user-agent': route.request().headers()['user-agent'] } });
-      cache.set(url, { body: Buffer.from(await res.arrayBuffer()), type: res.headers.get('content-type') ?? '' });
-    }
-    const hit = cache.get(url)!;
-    await route.fulfill({ body: hit.body, contentType: hit.type, headers: { 'access-control-allow-origin': '*' } });
-  });
-}
 
 /** Editördeki durum (window.__xform, src/editor/session.ts). */
 export const editorState = (page: Page) =>
