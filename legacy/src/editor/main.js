@@ -340,7 +340,7 @@ async function boot() {
         <button class="toggle" data-cmd="lock" aria-pressed="${state.lockAspect}">Oran kilidi <kbd>L</kbd></button>
         <span class="hint">snap ${SNAP.step} hücre · <kbd>Alt</kbd> ${SNAP.fine}</span>
         <span class="save save--${state.saveStatus}"></span>
-        <a class="read-link" href="index.html?issue=${encodeURIComponent(ISSUE)}&spread=${encodeURIComponent(
+        <a class="read-link" href="legacy/index.html?issue=${encodeURIComponent(ISSUE)}&spread=${encodeURIComponent(
           currentSpread().id,
         )}" target="_blank">Okuma görünümü ↗</a>
       </div>`;

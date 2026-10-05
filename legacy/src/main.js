@@ -75,7 +75,7 @@ function onKey(e) {
     spreadIndex--;
     draw();
   } else if (e.key === 'e') {
-    location.href = `editor.html?issue=${ISSUE}&spread=${data.spreads[spreadIndex].id}`;
+    location.href = `legacy/editor.html?issue=${ISSUE}&spread=${data.spreads[spreadIndex].id}`;
   }
 }
 

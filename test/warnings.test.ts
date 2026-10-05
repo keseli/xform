@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { computeWarnings } from '../src/editor/warnings.js';
+import { computeWarnings } from '../src/editor/warnings.ts';
 
 const spreads = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
 const block = (id, order, spread_id, extra = {}) => ({

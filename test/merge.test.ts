@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildIncoming, mergeIssue } from '../src/content/merge.js';
+import { buildIncoming, mergeIssue } from '../src/content/merge.ts';
 
 const assetPath = (slug, file) => `assets/i/${slug}/${file}`;
 const build = (articles) => buildIncoming(articles, { assetPath });
@@ -114,7 +114,7 @@ test('mergeIssue: yığın üyeliği korunur', () => {
 });
 
 test('validate: yığındaki bloğun x/y dosyada null, diğer konum alanları dolu', async () => {
-  const { validate } = await import('../src/model.js');
+  const { validate } = await import('../src/model.ts');
   const data = {
     spreads: [{ id: 's-1', chrome_left: 'full', chrome_right: 'full' }],
     stacks: [{ id: 'st', spread_id: 's-1', direction: 'vertical', x: 0, y: 0, gap: 0 }],

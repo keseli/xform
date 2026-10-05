@@ -7,9 +7,9 @@
 // Görseller assets/<issue>/<slug>/ altına kopyalanır; sayı data/<issue>.json'a yazılır.
 import { copyFile, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
-import { buildIncoming, emptyIssue, mergeIssue, normalizeBlock } from '../src/content/merge.js';
-import { validate } from '../src/model.js';
-import { toFileForm } from '../src/stacks.js';
+import { buildIncoming, emptyIssue, mergeIssue, normalizeBlock } from '../src/content/merge.ts';
+import { validate } from '../src/model.ts';
+import { toFileForm } from '../src/stacks.ts';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const args = process.argv.slice(2);

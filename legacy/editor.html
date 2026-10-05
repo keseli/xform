@@ -2,6 +2,8 @@
 <html lang="tr">
   <head>
     <meta charset="utf-8" />
+    <!-- Eski sürüm (parite karşılaştırması için): yollar depo kökünden çözülür. -->
+    <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>XFORM · editör</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,8 +16,10 @@
     <link rel="stylesheet" href="styles/editor.css" />
   </head>
   <body class="editor">
-    <!-- display: contents: bölgeler (#topbar, #tray, #canvas, #inspector) body ızgarasına doğrudan girer. -->
-    <div id="root" style="display: contents"></div>
-    <script type="module" src="/src/editor/main.tsx"></script>
+    <header id="topbar"></header>
+    <aside id="tray"></aside>
+    <main id="canvas"></main>
+    <aside id="inspector"></aside>
+    <script type="module" src="legacy/src/editor/main.js"></script>
   </body>
 </html>

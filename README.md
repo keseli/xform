@@ -1,11 +1,16 @@
 # XFORM
 
-Kişisel dergi için spread renderer'ı (ve ileride elle yerleşim editörü).
+Kişisel dergi: spread renderer'ı, okuma görünümü ve elle yerleşim editörü.
+Vite + React + TypeScript; Node 22.18+.
 
 ```
-npm run dev        # http://localhost:5173 — bağımlılık yok, Node 20+
-npm test           # node:test, DOM'suz modüller (geometri, uyarılar, içe aktarma)
+npm install
+npm run dev        # http://localhost:5173 — okuma görünümü ve editör (Vite)
+npm test           # node:test, DOM'suz modüller (TypeScript doğrudan çalışır)
+npm run typecheck  # tsc --noEmit (strict)
+npm run e2e        # Playwright: dört tarayıcı senaryosu (editör, odak, yerleşim, içe aktarma)
 npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini sayıya aktar
+npm run legacy     # eski (React öncesi) sürüm: http://localhost:5174/legacy/
 ```
 
 - **Okuma görünümü** `index.html`: **← / →** spread'ler arası, **e** editöre geçer.
@@ -13,6 +18,11 @@ npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini say
   kaydedilir (dev sunucusundaki `PUT /api/data/<issue>` ucu). Dosya dışarıda
   değişirse (içe aktarma, başka sekme) editör birkaç saniye içinde yeniden yükler.
 - `?issue=issue-001&spread=s-tablets`: dosya ve spread seçimi (iki görünümde de).
+- **Tarayıcı senaryoları** `e2e/`: her senaryo `data/issue-001.json`'un geçici bir
+  kopyasında (`data/e2e-*.json`) çalışır ve bitince siler; dev sunucusu açık değilse
+  kendisi başlatır. İlk kurulumda `npx playwright install chromium`. Google Fonts'a
+  tarayıcıdan erişilemeyen (vekil sunuculu) ortamlarda fontları Node üzerinden
+  çekmek için: `E2E_FONTS_VIA_NODE=1 NODE_USE_ENV_PROXY=1 npm run e2e`.
 
 ### Editör
 
@@ -130,16 +140,22 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 
 | Dosya | İçerik |
 | --- | --- |
-| `src/config.js` | Frame ölçüsü ve hücre boyu (tek kaynak), kenar kılavuzları, caption ölçüleri |
-| `src/model.js` | Blok/spread şeması, doğrulama, yardımcılar |
-| `src/render/` | Spread, chrome ve blok çizimi; akış tiplerinde yükseklik ölçümü |
-| `src/stacks.js` | Auto layout hesabı (editör ve okuma görünümü ortak, DOM'suz) |
-| `src/editor/` | Editör: tuval, tepsi, inspector, durum; `geometry.js`, `snapping.js`, `focal.js` ve `warnings.js` DOM'suz |
+| `src/types.ts` | Block, Spread, Stack, Issue ve yardımcı tipler (tek dosya) |
+| `src/config.ts` | Frame ölçüsü ve hücre boyu (tek kaynak), kenar kılavuzları, snap |
+| `src/model.ts` | Doğrulama, yardımcılar |
+| `src/stacks.ts` | Auto layout hesabı (editör ve okuma görünümü ortak, DOM'suz) |
+| `src/components/` | Saf bileşenler: `Spread`, `Chrome`, `TextBlock`, `HeadingBlock`, `ImageBlock`, `QuoteBlock`, `NoteBlock`, `DividerBlock`. Yalnız veriden çizer; okuma görünümü ve editör aynısını kullanır |
+| `src/render/` | Yükseklik ölçümü, frame'i sığdırma, fontlar (DOM) |
+| `src/read/` | Okuma görünümü (`index.html`) |
+| `src/editor/` | Editör (`editor.html`). DOM'suz: `store`, `geometry`, `snapping`, `focal`, `warnings`, `labels`. `session.ts` durum ve işlemler, `controller.ts` tuval etkileşimleri, `components/` arayüz; editöre özgü her şey `EditorLayer`/`GridGuides` katmanında |
+| `src/content/merge.ts` | İçe aktarma kuralları (DOM'suz, dosya sistemsiz) |
 | `styles/main.css` | Renkler ve tipografi; `--lh-*` satır yükseklikleri hücrenin katı olmalı |
-| `src/content/merge.js` | İçe aktarma kuralları (DOM'suz, dosya sistemsiz) |
+| `scripts/api.mjs` | Kayıt ve revizyon uçları (Vite eklentisi ve eski sunucu ortak) |
 | `scripts/import.mjs` | İçe aktarma komutu |
+| `e2e/`, `playwright.config.ts` | Tarayıcı senaryoları (`npm run e2e`) |
 | `content/` | İçerik paketleri (hattın çıktısı); örnek sayının kaynağı |
 | `data/issue-001.json` | Sayı: bloklar ve yerleşim |
+| `legacy/` | React öncesi sürüm; parite karşılaştırması bitince silinecek |
 
 ## Kurallar
 
