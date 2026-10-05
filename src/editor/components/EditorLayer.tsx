@@ -1,6 +1,6 @@
 // Editör katmanları; Spread'e genel yuvalarla verilir, blok bileşenleri bunlardan
-// habersizdir. Üst üste diziliş styles/*.css'teki z-index'lerle eski sürümdekiyle
-// aynı (DOM sırası da aynı, çünkü eşit z'de boyama sırasını o belirler):
+// habersizdir. Üst üste diziliş styles/*.css'teki z-index'lerle ve DOM sırasıyla
+// belirlenir (eşit z'de boyama sırasını DOM sırası belirler):
 // - GridGuides (.guides, z 9800): ızgara ve kenar kılavuzları; `underlay` yuvası,
 //   bloklardan önce
 // - EditorLayer (.overlay, z 9900): yığın çerçeveleri, rozetler, seçim ve

@@ -10,7 +10,6 @@ npm test           # node:test, DOM'suz modüller (TypeScript doğrudan çalış
 npm run typecheck  # tsc --noEmit (strict)
 npm run e2e        # Playwright: dört tarayıcı senaryosu (editör, odak, yerleşim, içe aktarma)
 npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini sayıya aktar
-npm run legacy     # eski (React öncesi) sürüm: http://localhost:5174/legacy/
 ```
 
 - **Okuma görünümü** `index.html`: **← / →** spread'ler arası, **e** editöre geçer.
@@ -150,12 +149,11 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `src/editor/` | Editör (`editor.html`). DOM'suz: `store`, `geometry`, `snapping`, `focal`, `warnings`, `labels`. `session.ts` durum ve işlemler, `controller.ts` tuval etkileşimleri, `components/` arayüz; editöre özgü her şey `EditorLayer`/`GridGuides` katmanında |
 | `src/content/merge.ts` | İçe aktarma kuralları (DOM'suz, dosya sistemsiz) |
 | `styles/main.css` | Renkler ve tipografi; `--lh-*` satır yükseklikleri hücrenin katı olmalı |
-| `scripts/api.mjs` | Kayıt ve revizyon uçları (Vite eklentisi ve eski sunucu ortak) |
+| `scripts/api.mjs` | Kayıt ve revizyon uçları (Vite eklentisi) |
 | `scripts/import.mjs` | İçe aktarma komutu |
 | `e2e/`, `playwright.config.ts` | Tarayıcı senaryoları (`npm run e2e`) |
 | `content/` | İçerik paketleri (hattın çıktısı); örnek sayının kaynağı |
 | `data/issue-001.json` | Sayı: bloklar ve yerleşim |
-| `legacy/` | React öncesi sürüm; parite karşılaştırması bitince silinecek |
 
 ## Kurallar
 

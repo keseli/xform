@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-// Kayıt uçları eski sunucuyla ortak (bkz. scripts/api.mjs).
+// Kayıt uçları: scripts/api.mjs.
 import { handleApi } from './scripts/api.mjs';
 
 export default defineConfig({
@@ -19,7 +19,7 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     // Editör data/ dosyasını kendisi yazar; Vite'ın sayfayı yenilemesine gerek yok.
-    watch: { ignored: ['**/data/**', '**/legacy/**', '**/content/**'] },
+    watch: { ignored: ['**/data/**', '**/content/**'] },
   },
   build: {
     rollupOptions: { input: { read: 'index.html', editor: 'editor.html' } },
