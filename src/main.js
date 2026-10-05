@@ -5,7 +5,7 @@ import { renderSpread } from './render/spread.js';
 import { placeElement, settleHeights } from './render/blocks.js';
 import { layoutStacks } from './stacks.js';
 import { fitFrame } from './render/fit.js';
-import { checkLineHeights } from './render/type.js';
+import { checkLineHeights, loadFonts, onFontsChanged } from './render/type.js';
 
 const params = new URLSearchParams(location.search);
 const ISSUE = params.get('issue') ?? 'issue-001';
@@ -26,8 +26,10 @@ async function boot() {
   spreadIndex = Math.max(0, data.spreads.findIndex((s) => s.id === wanted));
 
   checkLineHeights();
-  await document.fonts.ready;
+  await loadFonts();
   await draw();
+  // Bir font sonradan gelirse (yavaş ağ) yükseklikler ve yığınlar yeniden.
+  onFontsChanged(measure);
   addEventListener('resize', fit);
   addEventListener('keydown', onKey);
 }
@@ -41,17 +43,23 @@ async function draw() {
 
   // Satır içi em/sup gibi ek font kesitleri de yüklenmiş olsun.
   await document.fonts.ready;
+  measure();
+  fit();
+  document.body.dataset.ready = '';
+}
+
+/** Yükseklikleri ölç, yığınları bu yüksekliklerle diz. */
+function measure() {
+  const frame = stage.querySelector('.frame');
+  if (!frame) return;
   const heights = settleHeights(frame);
   for (const b of data.blocks) if (b.id in heights) b.h = heights[b.id];
-  // Auto layout: ölçülen yüksekliklerle yığınları yeniden diz.
   layoutStacks(data);
   for (const b of data.blocks) {
     const el = b.stack_id != null && frame.querySelector(`.block[data-id="${CSS.escape(b.id)}"]`);
     if (el) placeElement(el, b);
   }
   window.__xform = { data, heights };
-  fit();
-  document.body.dataset.ready = '';
 }
 
 function fit() {

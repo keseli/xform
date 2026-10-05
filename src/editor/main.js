@@ -3,7 +3,7 @@ import { FRAME, CELL, SNAP } from '../config.js';
 import { blocksOnSpread } from '../model.js';
 import { ConflictError, fetchRevision, loadIssue, saveIssue } from '../data.js';
 import { escapeHtml as esc } from '../inline.js';
-import { checkLineHeights } from '../render/type.js';
+import { checkLineHeights, loadFonts, onFontsChanged } from '../render/type.js';
 import { createStore } from './store.js';
 import { createCanvas } from './canvas.js';
 import { createTray } from './tray.js';
@@ -120,7 +120,7 @@ async function boot() {
   document.addEventListener('visibilitychange', checkExternal);
 
   checkLineHeights();
-  await document.fonts.ready;
+  await loadFonts();
 
   const block = (id) => state.data.blocks.find((b) => b.id === id);
   const currentSpread = () => state.data.spreads[state.spreadIndex];
@@ -385,6 +385,8 @@ async function boot() {
   });
 
   addEventListener('resize', () => canvas.fit());
+  // Bir font sonradan gelirse (yavaş ağ) yükseklikler ve yığınlar yeniden.
+  onFontsChanged(() => canvas.remeasure());
   addEventListener('keydown', (e) => {
     // Metin alanında tarayıcının kendi geri alması çalışsın.
     if (e.target.closest?.('input, select, textarea')) return;

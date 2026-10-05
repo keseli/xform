@@ -75,3 +75,18 @@ test('içerikte yok: içe aktarmanın koruduğu yerleşik blok', () => {
   assert.deepEqual(kinds(w, 'a'), ['removed']);
   assert.deepEqual(kinds(w, 'b'), []);
 });
+
+test('taşma: yığındaki blok için konum yığından hesaplanır', () => {
+  const data = {
+    spreads,
+    stacks: [{ id: 'st', spread_id: 'a', direction: 'vertical', x: 10, y: 240, gap: 2 }],
+    blocks: [
+      // dosya biçimi: x/y null; ikinci blok yığından dolayı 240+10+2 = 252'de başlar, 256'yı aşar
+      block('s1', 1, 'a', { x: null, y: null, w: 40, h: 10, stack_id: 'st', stack_index: 0 }),
+      block('s2', 2, 'a', { x: null, y: null, w: 40, h: 10, stack_id: 'st', stack_index: 1 }),
+    ],
+  };
+  const w = computeWarnings(data);
+  assert.deepEqual(kinds(w, 's1'), []);
+  assert.deepEqual(kinds(w, 's2'), ['overflow']);
+});

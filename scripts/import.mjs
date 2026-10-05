@@ -9,6 +9,7 @@ import { copyFile, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { buildIncoming, emptyIssue, mergeIssue, normalizeBlock } from '../src/content/merge.js';
 import { validate } from '../src/model.js';
+import { toFileForm } from '../src/stacks.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const args = process.argv.slice(2);
@@ -76,7 +77,10 @@ async function main() {
 
   const dataPath = join(ROOT, 'data', `${issue}.json`);
   const existing = (await readJson(dataPath)) ?? emptyIssue(manifest, articles[0].section);
-  const { data, report } = mergeIssue(existing, blocks);
+  const merged = mergeIssue(existing, blocks);
+  // Eski kayıtlarda yığın çocuklarının x/y'si dolu olabilir; dosya biçimi tek kaynak yığın.
+  const data = toFileForm(merged.data);
+  const { report } = merged;
   const problems = validate(data);
   if (problems.length) fail(problems);
 

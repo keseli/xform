@@ -26,7 +26,7 @@
  * @property {number|null} z
  * @property {'dark'|'light'} tone
  * @property {string|null} [label]  Örn. "01". Caption'da metnin üstünde, notta solda asılı.
- * @property {string} [stack_id]     Auto layout yığını; x/y yığından türetilir
+ * @property {string} [stack_id]     Auto layout yığını; x/y yığından türetilir, dosyada null
  * @property {number} [stack_index]  Yığın içindeki sıra
  * @property {true} [removed_from_content]  İçe aktarma: paketten çıktı ama yerleşik olduğu için korundu.
  *
@@ -96,9 +96,14 @@ export function validate(data) {
     }
     if (!['dark', 'light'].includes(b.tone)) problems.push(`${b.id}: tone geçersiz`);
 
-    const set = POSITION_KEYS.filter((k) => b[k] != null);
-    if (set.length && set.length !== POSITION_KEYS.length) {
+    // Yığındaki bloğun x/y'si yığından türetilir ve dosyada saklanmaz.
+    const keys = b.stack_id != null ? POSITION_KEYS.filter((k) => k !== 'x' && k !== 'y') : POSITION_KEYS;
+    const set = keys.filter((k) => b[k] != null);
+    if (set.length && set.length !== keys.length) {
       problems.push(`${b.id}: konum alanları kısmen dolu (${set.join(', ')})`);
+    }
+    if (b.stack_id != null && (b.x != null || b.y != null)) {
+      problems.push(`${b.id}: yığındaki bloğun x/y'si dosyada olmamalı (yığından türetilir)`);
     }
     if (b.spread_id != null && !spreadIds.has(b.spread_id)) {
       problems.push(`${b.id}: bilinmeyen spread ${b.spread_id}`);

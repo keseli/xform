@@ -147,8 +147,28 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
   kenarından sayılır (0–383). Editör snap adımı 2 hücre, değiştirici tuşla 1 (`SNAP`).
 - Tüm `--lh-*` satır yükseklikleri 4'ün katı; gövde 14.5/20.
 - `text`, `heading`, `quote`, `note` yüksekliği içerikten ölçülür ve bir üst hücreye
-  yuvarlanır; saklanan `h` önbellektir.
+  yuvarlanır; saklanan `h` önbellektir. Ölçüm fontlar yüklendikten sonra yapılır; bir
+  font geç gelirse iki görünüm de yeniden ölçer ve yığınları yeniden dizer.
 - Caption bağımsız bir bloktur (`text` / `caption`): genişliği blokta tutulur, `label`
   metnin üstünde görünür, `relates_to` ile görsele bağlanır. Görselde caption alanı yok.
 - Satır içi işaretleme: `*italik*`, `^1^` (üst simge).
 - Okuma görünümünde frame dışına taşan kısım kesilir.
+
+## Kararlar
+
+İlk şartnamede bu üç konu "yok" idi; Auto Layout ile şöyle değişti:
+
+- **Grup:** Ayrı bir grup kavramı hâlâ yok. Blokları bir arada tutan tek yapı auto
+  layout yığınıdır (`stacks`); yığın bloklarını hem birlikte taşır hem de dizer.
+- **Çoklu seçim:** Var (Shift+tık, alan seçimi). Yalnız editör anı içindir, dosyaya
+  yazılmaz; seçilenleri birlikte taşımak, kaydırmak, tepsiye göndermek ve Shift+A ile
+  yığın kurmak için kullanılır.
+- **Otomatik yerleşim:** Spread genelinde yerleşim hesaplayan motor yok; bloklar elle
+  yerleştirilir ve içerik frame'e sığmazsa kendiliğinden yeni spread'e geçmez. Tek
+  istisna senin kurduğun yığınlar: içlerinde konum yığından türetilir.
+  - Tek kaynak yığındır: dosyada yığın bloklarının `x`/`y`'si `null` yazılır, yüklenince
+    ve her yükseklik ölçümünden sonra yığından hesaplanır. Uyarılar (frame dışına
+    taşma) hesaplanan konumu kullanır.
+  - Kapsam: iç içe yığın yok; çapraz eksende hep başa hizalı; yığın genişliği
+    tutamacı yalnız dikey yığında var ve yalnız metin bloklarını (metin, başlık,
+    alıntı, not) aynı genişliğe getirir, görsel ve çizgilerin genişliği korunur.

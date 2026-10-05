@@ -616,6 +616,10 @@ body.editor {
   outline-width: calc(2px / var(--scale));
 }
 
+.selection--handles {
+  outline: none;
+}
+
 .selection--child {
   outline-style: solid;
 }

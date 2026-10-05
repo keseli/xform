@@ -112,3 +112,16 @@ test('mergeIssue: yığın üyeliği korunur', () => {
   const { data } = mergeIssue(first, build([changed]).blocks);
   assert.deepEqual([data.blocks[0].stack_id, data.blocks[0].stack_index], ['stack-1', 0]);
 });
+
+test('validate: yığındaki bloğun x/y dosyada null, diğer konum alanları dolu', async () => {
+  const { validate } = await import('../src/model.js');
+  const data = {
+    spreads: [{ id: 's-1', chrome_left: 'full', chrome_right: 'full' }],
+    stacks: [{ id: 'st', spread_id: 's-1', direction: 'vertical', x: 0, y: 0, gap: 0 }],
+    blocks: [
+      { id: 'a', type: 'text', variant: 'body', tone: 'dark', spread_id: 's-1', x: null, y: null, w: 4, h: 4, z: 1, stack_id: 'st', stack_index: 0 },
+      { id: 'b', type: 'text', variant: 'body', tone: 'dark', spread_id: 's-1', x: 3, y: 4, w: 4, h: 4, z: 1, stack_id: 'st', stack_index: 1 },
+    ],
+  };
+  assert.deepEqual(validate(data), ["b: yığındaki bloğun x/y'si dosyada olmamalı (yığından türetilir)"]);
+});

@@ -73,6 +73,10 @@ export function createCanvas(container, store) {
   const stacksHere = () => (data().stacks ?? []).filter((s) => s.spread_id === spread().id);
   const blockRect = (b) => ({ x: b.x, y: b.y, w: b.w, h: b.type === 'divider' ? DIVIDER_ROWS : b.h });
 
+  /** Yığındaki metin blokları (genişliği yığınla birlikte değişenler). */
+  const stackTexts = (s) => childrenOf(data(), s.id).filter((b) => FLOW_TYPES.has(b.type));
+  const textWidth = (texts) => Math.max(...texts.map((b) => b.w));
+
   /** Birimin (serbest blok ya da yığın) kapladığı alan. */
   function unitRect(id) {
     const s = stackById(data(), id);
@@ -158,6 +162,14 @@ export function createCanvas(container, store) {
     for (const img of frame.querySelectorAll('.blocks > .block--image img')) rememberNatural(img);
     fit();
     drawOverlay();
+  }
+
+  /** Fontlar değişince: yükseklikleri yeniden ölç, yığınları diz, panelleri güncelle. */
+  function remeasure() {
+    if (!frame) return;
+    for (const [id, h] of Object.entries(settleHeights(frame))) blockById(id).h = h;
+    relayout();
+    store.emit('selection');
   }
 
   function fit() {
@@ -261,7 +273,23 @@ export function createCanvas(container, store) {
     const id = ids[0];
     if (id === draggingId) return;
     const s = stackById(data(), id);
-    if (s) return overlay.append(rectEl('selection selection--stack', stackBounds(data(), s)));
+    if (s) {
+      overlay.append(rectEl('selection selection--stack', stackBounds(data(), s)));
+      // Dikey yığında metin genişliği tutamaçları: metin bloklarının ortak kenarında.
+      const texts = stackTexts(s);
+      if (s.direction === 'vertical' && texts.length) {
+        const r = stackBounds(data(), s);
+        const box = rectEl('selection selection--sides selection--handles', { ...r, w: textWidth(texts) });
+        for (const dir of ['w', 'e']) {
+          const handle = document.createElement('div');
+          handle.className = `handle handle--${dir}`;
+          handle.dataset.dir = dir;
+          box.append(handle);
+        }
+        overlay.append(box);
+      }
+      return;
+    }
 
     const b = blockById(id);
     const box = rectEl('selection', blockRect(b));
@@ -536,7 +564,71 @@ export function createCanvas(container, store) {
     });
   }
 
+  /**
+   * Dikey yığının metin genişliği: tüm metin blokları aynı genişliğe geçer.
+   * Sol tutamaç yığının x'ini kaydırır; görsel ve çizgilerin genişliği korunur.
+   */
+  function startStackResize(e, dir, st) {
+    const D = DIRS[dir];
+    const texts = stackTexts(st);
+    if (!texts.length) return;
+    const startX = st.x;
+    const widths = new Map(texts.map((b) => [b.id, b.w]));
+    const bounds = stackBounds(data(), st);
+    const base = { x: st.x, y: bounds.y, w: textWidth(texts), h: bounds.h };
+    const others = unitsOnSpread()
+      .filter((id) => id !== st.id)
+      .map(unitRect);
+    const lines = frameLines();
+    const p0 = toCells(e);
+    store.checkpoint();
+
+    const apply = (x, w) => {
+      st.x = x;
+      for (const b of texts) {
+        b.w = w ?? widths.get(b.id);
+        applyBox(b);
+      }
+      relayout();
+    };
+
+    drag(e, {
+      move(ev) {
+        const p = toCells(ev);
+        const delta = { x: p.x - p0.x, y: 0 };
+        let step = stepOf(ev);
+        let matched = null;
+        if (!noSnap(ev)) {
+          const edge0 = D.x === 1 ? base.x + base.w : base.x;
+          const m = snapValue(edge0 + delta.x, axisTargets(others, lines, 'x'), threshold());
+          if (m) {
+            delta.x = Math.round(m.line) - edge0;
+            step = 1;
+            matched = m.line;
+          }
+        }
+        const box = resizeBox(base, D, delta, { step, widthOnly: true });
+        if (!staysInFrame({ ...box, h: bounds.h })) return;
+        apply(box.x, box.w);
+        guides = guideSegments({ ...box, h: stackBounds(data(), st).h }, others, lines, { x: matched, y: null });
+        drawOverlay();
+      },
+      end() {
+        guides = [];
+        store.commit();
+      },
+      cancel() {
+        store.discard();
+        apply(startX, null);
+        guides = [];
+        drawOverlay();
+      },
+    });
+  }
+
   function startResize(e, dir) {
+    const st = stackById(data(), state.selectedId);
+    if (st) return startStackResize(e, dir, st);
     const b = blockById(state.selectedId);
     if (!b) return;
     const D = DIRS[dir];
@@ -742,6 +834,7 @@ export function createCanvas(container, store) {
 
   return {
     render,
+    remeasure,
     drawOverlay,
     fit,
     beginPlace,

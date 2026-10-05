@@ -148,7 +148,9 @@ export function createInspector(el, store, actions) {
               ${esc(kindLabel(b))} <span class="muted">${esc(snippet(b, 40))}</span></button></li>`,
           )
           .join('')}</ol>
-        <span class="muted">Çift tık ya da listeden seç: içindeki bloğa gir.</span>
+        <span class="muted">Çift tık ya da listeden seç: içindeki bloğa gir.${
+          st.direction === 'vertical' ? ' Yan tutamaçlar tüm metin bloklarının genişliğini birlikte değiştirir.' : ''
+        }</span>
       </div>
       <div class="buttons">
         <button data-action="remove-stack">Auto layout’u kaldır <kbd>Alt⇧A</kbd></button>

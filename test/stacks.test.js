@@ -94,3 +94,16 @@ test('insertionIndex ve marker: orta noktalara göre', () => {
   assert.equal(insertionIndex(data, s.id, { x: 120, y: 200 }, 'c'), 2);
   assert.deepEqual(insertionMarker(data, s.id, 1, null), { x: 100, y: 82, w: 79, h: 0 });
 });
+
+test('stackPositions ve toFileForm: konum yalnız yığından', async () => {
+  const { stackPositions, toFileForm } = await import('../src/stacks.js');
+  const data = column();
+  const s = createStack(data, ['a', 'b']);
+  const file = toFileForm(data);
+  const a = file.blocks.find((b) => b.id === 'a');
+  assert.deepEqual([a.x, a.y, a.w, a.h, a.stack_id], [null, null, 79, 45, s.id]);
+  assert.equal(data.blocks.find((b) => b.id === 'a').x, 101); // bellekteki veri değişmez
+  assert.deepEqual(stackPositions(file).get('b'), { y: 84, x: 101 });
+  layoutStacks(file);
+  assert.deepEqual(pos(file, 'b'), [101, 84]);
+});

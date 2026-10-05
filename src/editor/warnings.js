@@ -1,7 +1,9 @@
 // Editör uyarıları. Yalnızca gösterilir, hiçbir işlemi engellemez.
 // DOM'a dokunmaz; akış bloklarında saklanan h (son ölçüm) kullanılır.
+// Yığındaki blokların konumu her zaman yığından hesaplanır (saklanan x/y'ye bakılmaz).
 import { COLS, ROWS } from '../config.js';
 import { isPlaced } from '../model.js';
+import { stackPositions } from '../stacks.js';
 
 /**
  * @returns {Map<string, {kind: 'order'|'relation'|'overflow'|'removed', message: string, ref?: string}[]>}
@@ -61,7 +63,9 @@ export function computeWarnings(data) {
   }
 
   // Frame dışına taşma.
-  for (const b of placed) {
+  const derived = stackPositions(data);
+  for (const p of placed) {
+    const b = { ...p, ...derived.get(p.id) };
     if (b.x < 0 || b.y < 0 || b.x + b.w > COLS || b.y + b.h > ROWS) {
       add(b, { kind: 'overflow', message: 'Frame dışına taşıyor.' });
     }

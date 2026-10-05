@@ -3,7 +3,9 @@
 // Yığın: { id, spread_id, direction: 'vertical'|'horizontal', x, y, gap }.
 // Çocuk bloklar stack_id ve stack_index taşır; x/y'leri yığından türetilir
 // (yön boyunca art arda, aralarında gap; çapraz eksende yığının başına hizalı).
-// Akış bloklarının yüksekliği ölçümle değişince layoutStacks() yeniden çağrılır.
+//
+// Tek kaynak yığındır: dosyada çocukların x/y'si null yazılır (toFileForm),
+// yüklenince ve her yükseklik ölçümünden sonra layoutStacks() ile hesaplanır.
 
 export const stackById = (data, id) => (data.stacks ?? []).find((s) => s.id === id);
 
@@ -12,6 +14,21 @@ export function childrenOf(data, stackId) {
 }
 
 const along = (s) => (s.direction === 'horizontal' ? { pos: 'x', size: 'w' } : { pos: 'y', size: 'h' });
+
+/** Yığın çocuklarının hesaplanan konumları; veriyi değiştirmez. */
+export function stackPositions(data) {
+  const out = new Map();
+  for (const s of data.stacks ?? []) {
+    const { pos, size } = along(s);
+    const cross = pos === 'x' ? 'y' : 'x';
+    let cursor = s[pos];
+    for (const b of childrenOf(data, s.id)) {
+      out.set(b.id, { [pos]: cursor, [cross]: s[cross] });
+      cursor += (b[size] ?? 0) + s.gap;
+    }
+  }
+  return out;
+}
 
 /** Bir yığının çocuklarını dizer ve stack_index'leri 0..n-1'e sıkıştırır. */
 export function layoutStack(data, s) {
@@ -25,6 +42,14 @@ export function layoutStack(data, s) {
     b[cross] = s[cross];
     cursor += (b[size] ?? 0) + s.gap;
   });
+}
+
+/** Dosyaya yazılacak biçim: yığın çocuklarının türetilen x/y'si saklanmaz. */
+export function toFileForm(data) {
+  return {
+    ...data,
+    blocks: data.blocks.map((b) => (b.stack_id != null ? { ...b, x: null, y: null } : b)),
+  };
 }
 
 export function layoutStacks(data) {
