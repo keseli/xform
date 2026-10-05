@@ -199,7 +199,7 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `e2e/`, `playwright.config.ts` | Tarayıcı senaryoları (`npm run e2e`) |
 | `content/` | İçerik paketleri (hattın çıktısı); örnek sayının kaynağı |
 | `data/issue-001.json` | Sayı: bloklar ve yerleşim |
-| `data/issue-sample.json` | Gerçek metinli örnek sayı (`content/issue-sample.json`'dan): dört düzen; görseller henüz yok |
+| `data/issue-sample.json` | Gerçek metin ve arşiv görselleriyle örnek sayı (`content/issue-sample.json`): dört düzen |
 | `data/templates/` | Spread şablonları |
 
 ## Kurallar

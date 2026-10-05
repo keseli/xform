@@ -18,9 +18,11 @@
     {
       "key": "img",
       "type": "image",
-      "file": null,
+      "file": "melencolia-i.jpg",
       "alt": "Albrecht Dürer, Melencolia I, 1514. Engraving.",
-      "credit": null,
+      "credit": "Städel Museum, Frankfurt am Main",
+      "license": "Public domain",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Albrecht_D%C3%BCrer,_Melencolia_I_(Die_Melancholie),_1514.png",
       "relates_to": []
     },
     {
@@ -28,7 +30,9 @@
       "type": "text",
       "variant": "caption",
       "content": "Albrecht Dürer, 1514. Engraving, about 24 × 19 cm. Impressions are held by many museums.",
-      "relates_to": ["img"]
+      "relates_to": [
+        "img"
+      ]
     },
     {
       "key": "t1",
@@ -53,28 +57,36 @@
       "type": "note",
       "label": "01",
       "content": "The square of numbers on the wall: every row, column and diagonal adds up to 34. The two middle cells of the bottom row read 15 and 14, the year.",
-      "relates_to": ["img"]
+      "relates_to": [
+        "img"
+      ]
     },
     {
       "key": "n2",
       "type": "note",
       "label": "02",
       "content": "The large stone solid has never been conclusively explained. It is usually described as a cube stretched and then cut at two corners.",
-      "relates_to": ["img"]
+      "relates_to": [
+        "img"
+      ]
     },
     {
       "key": "n3",
       "type": "note",
       "label": "03",
       "content": "On the ground: a plane, a saw, a ruler, nails. Carpenter’s tools, scattered rather than put away.",
-      "relates_to": ["img"]
+      "relates_to": [
+        "img"
+      ]
     },
     {
       "key": "n4",
       "type": "note",
       "label": "04",
       "content": "The title is carried by a bat-like creature. Nobody knows what the “I” stands for.",
-      "relates_to": ["img"]
+      "relates_to": [
+        "img"
+      ]
     }
   ]
 }

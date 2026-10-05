@@ -1,5 +1,5 @@
 {
-  "revision": 1,
+  "revision": 2,
   "issue": {
     "title": "XFORM",
     "month": 10,
@@ -97,9 +97,11 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": null,
-      "credit": null,
-      "alt": "The moving assembly line at Ford’s Highland Park plant, 1913."
+      "source": "assets/issue-sample/allowance-for-error/ford-assembly-line-1913.jpg",
+      "credit": "National Archives, NAID 1633486",
+      "alt": "Workers on the first moving assembly line at Ford’s Highland Park plant putting together magnetos and flywheels, 1913.",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ford_assembly_line_-_1913.jpg",
+      "license": "Public domain"
     },
     {
       "id": "allowance-for-error/cap-line",
@@ -164,16 +166,18 @@
       "x": null,
       "y": null,
       "w": 46,
-      "h": 30,
+      "h": 21,
       "z": 5,
       "tone": "dark",
       "focal_point": {
         "x": 0.5,
         "y": 0.5
       },
-      "source": null,
-      "credit": null,
-      "alt": "A go/no-go gauge.",
+      "source": "assets/issue-sample/allowance-for-error/go-no-go-gauge.jpg",
+      "credit": "Glenn McKechnie / CC BY-SA 3.0",
+      "alt": "Two go/no-go plug gauges: a thread gauge for half-inch Whitworth screws and a plain 12.60/12.90 mm gauge.",
+      "source_url": "https://commons.wikimedia.org/wiki/File:GaugePlugThreadGoNoGo.jpg",
+      "license": "CC BY-SA 3.0",
       "stack_id": "stack-1",
       "stack_index": 1
     },
@@ -208,16 +212,18 @@
       "x": null,
       "y": null,
       "w": 46,
-      "h": 30,
+      "h": 20,
       "z": 7,
       "tone": "dark",
       "focal_point": {
         "x": 0.5,
         "y": 0.5
       },
-      "source": null,
-      "credit": null,
-      "alt": "Johansson gauge blocks.",
+      "source": "assets/issue-sample/allowance-for-error/johansson-blocks.jpg",
+      "credit": "Goodrich & Stanley, Accurate Tool Work, 1907",
+      "alt": "Thirty-six Johansson gauge blocks wrung together and held out horizontally in one hand.",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Gauge_block_adhesion.jpg",
+      "license": "Public domain",
       "stack_id": "stack-1",
       "stack_index": 3
     },
@@ -252,16 +258,18 @@
       "x": null,
       "y": null,
       "w": 46,
-      "h": 30,
+      "h": 27,
       "z": 9,
       "tone": "dark",
       "focal_point": {
         "x": 0.5,
         "y": 0.5
       },
-      "source": null,
-      "credit": null,
-      "alt": "Drawing of the Whitworth screw thread profile.",
+      "source": "assets/issue-sample/allowance-for-error/whitworth-thread.svg",
+      "credit": "Tjt263, AntiCompositeNumber / CC BY-SA 4.0",
+      "alt": "Diagram of the British Standard Whitworth thread profile, with its 55-degree angle.",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Whitworth_Thread.svg",
+      "license": "CC BY-SA 4.0",
       "stack_id": "stack-1",
       "stack_index": 5
     },
@@ -320,9 +328,11 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": null,
-      "credit": null,
-      "alt": "The flintlock mechanism of an eighteenth-century French infantry musket."
+      "source": "assets/issue-sample/allowance-for-error/flintlock-1777.jpg",
+      "credit": "Rama, MCAH Lausanne / CC BY-SA 3.0 FR",
+      "alt": "The flintlock of a French infantry musket, model 1777.",
+      "source_url": "https://commons.wikimedia.org/wiki/File:French_infantry_musket_model_1777-MCAH_HIS_91_01-IMG_9716.JPG",
+      "license": "CC BY-SA 3.0 FR"
     },
     {
       "id": "allowance-for-error/cap-lock",
@@ -456,16 +466,18 @@
       "x": 291,
       "y": 20,
       "w": 79,
-      "h": 18,
+      "h": 20,
       "z": 13,
-      "tone": "dark",
+      "tone": "light",
       "focal_point": {
         "x": 0.5,
-        "y": 0.5
+        "y": 0.74
       },
-      "source": null,
-      "credit": null,
-      "alt": "John Hall’s M1819 breech-loading rifle."
+      "source": "assets/issue-sample/allowance-for-error/hall-m1819.jpg",
+      "credit": "Smithsonian, National Museum of American History",
+      "alt": "A Hall breech-loading flintlock rifle, Model 1819, made at Harpers Ferry in 1834 and later shortened.",
+      "source_url": "https://n2t.net/ark:/65665/ng49ca746a2-16ed-704b-e053-15f76fa0b4fa",
+      "license": "CC0"
     },
     {
       "id": "allowance-for-error/cap-hall",
@@ -478,7 +490,7 @@
       ],
       "spread_id": "s-2",
       "x": 291,
-      "y": 41,
+      "y": 43,
       "w": 79,
       "h": 4,
       "z": 14,
@@ -590,9 +602,11 @@
         "x": 0.5,
         "y": 0.5
       },
-      "source": null,
-      "credit": null,
-      "alt": "Albrecht Dürer, Melencolia I, 1514. Engraving."
+      "source": "assets/issue-sample/melencolia/melencolia-i.jpg",
+      "credit": "Städel Museum, Frankfurt am Main",
+      "alt": "Albrecht Dürer, Melencolia I, 1514. Engraving.",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Albrecht_D%C3%BCrer,_Melencolia_I_(Die_Melancholie),_1514.png",
+      "license": "Public domain"
     },
     {
       "id": "melencolia/kunye",
@@ -873,16 +887,18 @@
       "x": 204,
       "y": 88,
       "w": 79,
-      "h": 99,
+      "h": 120,
       "z": 7,
       "tone": "dark",
       "focal_point": {
-        "x": 0.5,
+        "x": 0,
         "y": 0.5
       },
-      "source": null,
-      "credit": null,
-      "alt": "A national copy of the international prototype kilogram under its glass jars."
+      "source": "assets/issue-sample/kilogram/kilogram-k4-k20.jpg",
+      "credit": "NIST",
+      "alt": "Kilogram No. 4, a United States national copy of the prototype kilogram, under two glass bell jars; beside it the jars and stand of Kilogram No. 20.",
+      "source_url": "https://commons.wikimedia.org/wiki/File:MassStandards_005.jpg",
+      "license": "Public domain"
     },
     {
       "id": "kilogram/cap",
@@ -895,7 +911,7 @@
       ],
       "spread_id": "s-4",
       "x": 204,
-      "y": 190,
+      "y": 211,
       "w": 79,
       "h": 8,
       "z": 8,

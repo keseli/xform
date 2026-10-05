@@ -24,17 +24,24 @@
     {
       "key": "img",
       "type": "image",
-      "file": null,
-      "alt": "A national copy of the international prototype kilogram under its glass jars.",
-      "credit": null,
-      "relates_to": ["k1", "k2"]
+      "file": "kilogram-k4-k20.jpg",
+      "alt": "Kilogram No. 4, a United States national copy of the prototype kilogram, under two glass bell jars; beside it the jars and stand of Kilogram No. 20.",
+      "credit": "NIST",
+      "license": "Public domain",
+      "source_url": "https://commons.wikimedia.org/wiki/File:MassStandards_005.jpg",
+      "relates_to": [
+        "k1",
+        "k2"
+      ]
     },
     {
       "key": "cap",
       "type": "text",
       "variant": "caption",
       "content": "A national copy of the prototype kilogram under its glass jars.",
-      "relates_to": ["img"]
+      "relates_to": [
+        "img"
+      ]
     },
     {
       "key": "k1",
