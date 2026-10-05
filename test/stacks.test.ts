@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   childrenOf, createStack, insertIntoStack, insertionIndex, insertionMarker, layoutStacks,
   moveInStack, removeFromStack, removeStack, stackBounds,
-} from '../src/stacks.js';
+} from '../src/stacks.ts';
 
 const blk = (id, order, x, y, w, h) => ({ id, order, spread_id: 's', x, y, w, h, z: 1 });
 const column = () => ({
@@ -96,7 +96,7 @@ test('insertionIndex ve marker: orta noktalara göre', () => {
 });
 
 test('stackPositions ve toFileForm: konum yalnız yığından', async () => {
-  const { stackPositions, toFileForm } = await import('../src/stacks.js');
+  const { stackPositions, toFileForm } = await import('../src/stacks.ts');
   const data = column();
   const s = createStack(data, ['a', 'b']);
   const file = toFileForm(data);

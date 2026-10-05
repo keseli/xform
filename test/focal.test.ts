@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { coverFit, imageRect, isCropped, panFocal } from '../src/editor/focal.js';
+import { coverFit, imageRect, isCropped, panFocal } from '../src/editor/focal.ts';
 
 // 2:1 görsel, kare kutu: yatayda taşar.
 const natural = { width: 2000, height: 1000 };

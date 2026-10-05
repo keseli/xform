@@ -1,9 +1,11 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- Eski sürüm (parite karşılaştırması için): yollar depo kökünden çözülür. -->
+    <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>XFORM · editör</title>
+    <title>XFORM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -11,13 +13,9 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=block"
     />
     <link rel="stylesheet" href="styles/main.css" />
-    <link rel="stylesheet" href="styles/editor.css" />
   </head>
-  <body class="editor">
-    <header id="topbar"></header>
-    <aside id="tray"></aside>
-    <main id="canvas"></main>
-    <aside id="inspector"></aside>
-    <script type="module" src="src/editor/main.js"></script>
+  <body>
+    <main id="stage"></main>
+    <script type="module" src="legacy/src/main.js"></script>
   </body>
 </html>

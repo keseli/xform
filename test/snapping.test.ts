@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { frameLines, guideSegments, snapRect, snapValue, axisTargets } from '../src/editor/snapping.js';
+import { frameLines, guideSegments, snapRect, snapValue, axisTargets } from '../src/editor/snapping.ts';
 
 const lines = frameLines();
 const other = { x: 100, y: 40, w: 80, h: 30 };

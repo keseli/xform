@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   moveBox, resizeBox, snap, normalizeZ, heightForRatio, keepInFrame, staysInFrame,
-} from '../src/editor/geometry.js';
+} from '../src/editor/geometry.ts';
 
 test('snap: mutlak ızgaraya yuvarlar', () => {
   assert.equal(snap(101, 2), 102);
