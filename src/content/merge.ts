@@ -160,7 +160,15 @@ export function mergeIssue<T extends Pick<Issue, 'blocks'>>(
   data: T,
   incoming: IncomingBlock[],
 ): { data: T; report: MergeReport } {
-  const report: MergeReport = { added: [], updated: [], reordered: [], reflow: [], deleted: [], kept: [], unchanged: 0 };
+  const report: MergeReport = {
+    added: [],
+    updated: [],
+    reordered: [],
+    reflow: [],
+    deleted: [],
+    kept: [],
+    unchanged: 0,
+  };
   const existing = new Map(data.blocks.map((b) => [b.id, b]));
   const incomingIds = new Set(incoming.map((b) => b.id));
   const blocks: Block[] = [];
@@ -221,7 +229,8 @@ export function mergeIssue<T extends Pick<Issue, 'blocks'>>(
 
 /** Sayı dosyası yoksa manifest'ten boş bir sayı kurar. */
 export function emptyIssue(manifest: Manifest, firstSection: string | undefined): Issue {
-  if (!manifest.meta) throw new Error('data dosyası yok; manifest.meta (title, month, year, number, first_page) gerekli');
+  if (!manifest.meta)
+    throw new Error('data dosyası yok; manifest.meta (title, month, year, number, first_page) gerekli');
   return {
     revision: 0,
     issue: manifest.meta,

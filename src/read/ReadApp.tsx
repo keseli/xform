@@ -22,7 +22,12 @@ export function ReadApp({ stage }: { stage: HTMLElement }) {
     (async () => {
       const d = await loadIssue(ISSUE);
       const wanted = params.get('spread');
-      setSpreadIndex(Math.max(0, d.spreads.findIndex((s) => s.id === wanted)));
+      setSpreadIndex(
+        Math.max(
+          0,
+          d.spreads.findIndex((s) => s.id === wanted),
+        ),
+      );
       checkLineHeights();
       await loadFonts();
       setData(d);

@@ -63,7 +63,10 @@ export function computeWarnings(data: Pick<Issue, 'spreads' | 'blocks' | 'stacks
   // İçerik paketinden çıkarılmış ama yerleşik (içe aktarma korudu).
   for (const b of placed) {
     if (b.removed_from_content) {
-      add(b, { kind: 'removed', message: 'İçerik paketinde artık yok. Tepsiye gönderirsen bir sonraki içe aktarmada silinir.' });
+      add(b, {
+        kind: 'removed',
+        message: 'İçerik paketinde artık yok. Tepsiye gönderirsen bir sonraki içe aktarmada silinir.',
+      });
     }
   }
 

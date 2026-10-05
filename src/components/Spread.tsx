@@ -3,7 +3,8 @@
 // girişlerle ekleme yapar:
 //   className   frame'e ek sınıf
 //   blockProps  bloğa ek sınıf/stil
-//   children    frame içinde, en üstte ek katman
+//   underlay    frame içinde, bloklardan önce ek katman
+//   children    frame içinde, en sonda ek katman
 import type { ReactNode, Ref } from 'react';
 import { FRAME } from '../config.ts';
 import { blocksOnSpread } from '../model.ts';
@@ -16,11 +17,12 @@ interface SpreadProps {
   spreadId: string;
   className?: string;
   blockProps?: (block: PlacedBlock) => Pick<BlockViewProps, 'className' | 'style'> | undefined;
+  underlay?: ReactNode;
   children?: ReactNode;
   frameRef?: Ref<HTMLDivElement>;
 }
 
-export function Spread({ data, spreadId, className, blockProps, children, frameRef }: SpreadProps) {
+export function Spread({ data, spreadId, className, blockProps, underlay, children, frameRef }: SpreadProps) {
   const index = data.spreads.findIndex((s) => s.id === spreadId);
   const spread = data.spreads[index];
   if (!spread) throw new Error(`spread bulunamadı: ${spreadId}`);
@@ -32,6 +34,7 @@ export function Spread({ data, spreadId, className, blockProps, children, frameR
       style={{ width: `${FRAME.width}px`, height: `${FRAME.height}px` }}
       data-spread={spread.id}
     >
+      {underlay}
       <div className="blocks">
         {blocksOnSpread(data.blocks, spread.id).map((b) => (
           <Block key={b.id} block={b} {...blockProps?.(b)} />

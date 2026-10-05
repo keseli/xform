@@ -71,8 +71,7 @@ export function resizeBox(
   if (lock) {
     const ratio = start.w / start.h;
     // Köşede hangi kenar oransal olarak daha çok değiştiyse o belirler.
-    const byWidth =
-      dir.x !== 0 && (dir.y === 0 || Math.abs(w / start.w - 1) >= Math.abs(h / start.h - 1));
+    const byWidth = dir.x !== 0 && (dir.y === 0 || Math.abs(w / start.w - 1) >= Math.abs(h / start.h - 1));
     if (byWidth) h = Math.max(MIN_SIZE, Math.round(w / ratio));
     else w = Math.max(MIN_SIZE, Math.round(h * ratio));
     x = dir.x === -1 ? right - w : start.x;

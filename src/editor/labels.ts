@@ -19,8 +19,7 @@ export function kindLabel(b: Pick<Block, 'type' | 'variant'>): string {
 }
 
 export function snippet(b: Block, max = 90): string {
-  const text =
-    b.type === 'image' ? (b.alt ?? b.source ?? '') : b.type === 'divider' ? '—' : (b.content ?? '');
+  const text = b.type === 'image' ? (b.alt ?? b.source ?? '') : b.type === 'divider' ? '—' : (b.content ?? '');
   const plain = text.replace(/[*^]/g, '');
   return plain.length > max ? `${plain.slice(0, max - 1).trimEnd()}…` : plain;
 }
