@@ -16,6 +16,7 @@ import {
   stackById,
 } from '../stacks.ts';
 import {
+  createBox,
   instantiateTemplate,
   removeSlot,
   removeSpreadSkeleton,
@@ -23,7 +24,7 @@ import {
   templateFromSpread,
   templateKey,
 } from '../templates.ts';
-import type { Block, FocalPoint, PlacedBlock, Rect, Spread, Stack, Template } from '../types.ts';
+import type { Block, FocalPoint, PaletteName, PlacedBlock, Rect, Spread, Stack, Template } from '../types.ts';
 import { createStore, type EditorState } from './store.ts';
 import { createController } from './controller.ts';
 import { keepInFrame, normalizeZ } from './geometry.ts';
@@ -183,6 +184,11 @@ export async function createSession() {
             removeSlot(s.data, id);
             continue;
           }
+          // Kutu içerik değildir: tepsiye gitmez, silinir.
+          if (block(id)?.type === 'box') {
+            s.data.blocks = s.data.blocks.filter((b) => b.id !== id);
+            continue;
+          }
           const st = stackById(s.data, id);
           const targets = st ? childrenOf(s.data, id).map((b) => b.id) : [id];
           if (st) removeStack(s.data, id);
@@ -282,7 +288,7 @@ export async function createSession() {
     detachFromStack(id: string) {
       store.commit(() => removeFromStack(state.data, id));
     },
-    /** Yeni spread; şablon verilirse chrome ayarları, slotlar ve boş yığınlar ondan. */
+    /** Yeni spread; şablon verilirse chrome ve tema ayarları, slotlar, boş yığınlar ve kutular ondan. */
     addSpread(template?: Template) {
       store.commit((s) => {
         const ids = new Set(s.data.spreads.map((x) => x.id));
@@ -294,10 +300,37 @@ export async function createSession() {
           section: currentSpread().section ?? '',
           chrome_left: template?.chrome_left ?? 'full',
           chrome_right: template?.chrome_right ?? 'full',
+          ...(template?.theme_left ? { theme_left: template.theme_left } : {}),
+          ...(template?.theme_right ? { theme_right: template.theme_right } : {}),
         });
         if (template) instantiateTemplate(s.data, template, id);
         s.spreadIndex = s.data.spreads.length - 1;
         s.selectedId = null;
+      });
+    },
+    /** Bloğun görünüm alanları (color, drop_cap, treatment, fill, opacity); undefined alanı siler. */
+    updateBlock(id: string, patch: Partial<Block>) {
+      store.commit(() => {
+        const b = block(id) as Block;
+        for (const [k, v] of Object.entries(patch)) {
+          if (v === undefined) delete (b as unknown as Record<string, unknown>)[k];
+          else (b as unknown as Record<string, unknown>)[k] = v;
+        }
+      });
+    },
+    /** Sayının paletinde bir renk. */
+    setPaletteColor(name: PaletteName, hex: string) {
+      store.commit((s) => {
+        s.data.palette = { ...(s.data.palette ?? {}), [name]: hex.toLowerCase() };
+      });
+    },
+    /** Açık spread'e kutu: sol sayfanın ortasında, en üstte; seçili gelir. */
+    addBox() {
+      store.commit((s) => {
+        const sp = currentSpread();
+        const z = Math.max(0, ...blocksOnSpread(s.data.blocks, sp.id).map((b) => b.z ?? 0)) + 1;
+        const b = createBox(s.data, sp.id, { x: 64, y: 108, w: 64, h: 40, z, fill: 'accent-soft' });
+        s.selectedIds = [b.id];
       });
     },
     /** Bloksuz spread silinir; slotları ve boş yığınları da gider. */

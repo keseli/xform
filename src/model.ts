@@ -7,17 +7,23 @@
 //   blocks:  [Block]
 //   stacks:  [{ id, spread_id, direction, x, y, gap, w?, h? }]  // auto layout (src/stacks.ts), isteğe bağlı
 //   slots:   [{ id, spread_id, x, y, w, h, z, tone, accepts: { type, variant? } }]  // src/templates.ts, isteğe bağlı
+//   palette: { paper, ink, muted, accent, accent-soft }      // hex; src/style.ts, isteğe bağlı
 // }
+import { colorsFor, isHex, PALETTE_NAMES, THEMES, TREATMENTS } from './style.ts';
 import type { Block, BlockType, Issue, IssueMeta, PlacedBlock, Slot, Stack, Variant } from './types.ts';
 
 export const VARIANTS: Record<BlockType, (Variant | null)[]> = {
   heading: ['title', 'subhead', 'kicker'],
   text: ['body', 'deck', 'caption'],
   image: [null],
-  quote: [null],
+  quote: [null, 'pull'],
   note: [null],
   divider: [null],
+  box: [null],
 };
+
+/** Editörde oluşturulan, içerik paketinden gelmeyen blok tipleri (tepsiye gitmez). */
+export const LAYOUT_ONLY = new Set<BlockType>(['box']);
 
 const POSITION_KEYS = ['spread_id', 'x', 'y', 'w', 'h', 'z'] as const;
 
@@ -30,7 +36,7 @@ export function blocksOnSpread(blocks: Block[], spreadId: string | null): Placed
 }
 
 export function unplacedBlocks(blocks: Block[]): Block[] {
-  return blocks.filter((b) => !isPlaced(b)).sort((a, b) => a.order - b.order);
+  return blocks.filter((b) => !isPlaced(b) && !LAYOUT_ONLY.has(b.type)).sort((a, b) => a.order - b.order);
 }
 
 export function pageNumbers(issue: IssueMeta, spreadIndex: number) {
@@ -65,6 +71,13 @@ export function validate(data: Issue): string[] {
     for (const key of ['chrome_left', 'chrome_right'] as const) {
       if (!['full', 'none'].includes(s[key])) problems.push(`spread ${s.id}: ${key} geçersiz`);
     }
+    for (const key of ['theme_left', 'theme_right'] as const) {
+      if (s[key] != null && !THEMES.includes(s[key])) problems.push(`spread ${s.id}: ${key} geçersiz (${s[key]})`);
+    }
+  }
+  for (const [name, value] of Object.entries(data.palette ?? {})) {
+    if (!PALETTE_NAMES.includes(name as never)) problems.push(`palette: bilinmeyen ad ${name}`);
+    else if (!isHex(value)) problems.push(`palette.${name}: #rrggbb olmalı (${value})`);
   }
 
   for (const b of data.blocks) {
@@ -79,6 +92,16 @@ export function validate(data: Issue): string[] {
       problems.push(`${b.id}: ${b.type} için geçersiz variant ${b.variant}`);
     }
     if (!['dark', 'light'].includes(b.tone)) problems.push(`${b.id}: tone geçersiz`);
+    if (b.color != null && !colorsFor(b.type).includes(b.color)) problems.push(`${b.id}: ${b.type} için geçersiz color ${b.color}`);
+    if (b.drop_cap && !(b.type === 'text' && b.variant === 'body')) problems.push(`${b.id}: drop_cap yalnız gövde paragrafında`);
+    if (b.treatment != null && (b.type !== 'image' || !TREATMENTS.includes(b.treatment))) {
+      problems.push(`${b.id}: treatment geçersiz (${b.treatment})`);
+    }
+    if (b.type === 'box') {
+      if (!PALETTE_NAMES.includes(b.fill as never)) problems.push(`${b.id}: kutunun fill'i palet adı olmalı (${b.fill})`);
+      if (b.opacity != null && !(b.opacity >= 0 && b.opacity <= 1)) problems.push(`${b.id}: opacity 0–1 olmalı`);
+      if (b.spread_id == null) problems.push(`${b.id}: kutu yerleşik olmalı (tepsiye gitmez)`);
+    }
 
     // Yığındaki bloğun x/y'si yığından türetilir ve dosyada saklanmaz.
     const keys = b.stack_id != null ? POSITION_KEYS.filter((k) => k !== 'x' && k !== 'y') : POSITION_KEYS;

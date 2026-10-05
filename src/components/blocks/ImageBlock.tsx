@@ -1,7 +1,10 @@
-import { inlineHtml } from '../../inline.ts';
 import { shell, type BlockViewProps } from './shell.ts';
 
-/** Kutu oranı görselden farklıysa focal_point'e göre kırpılır (object-position). */
+/**
+ * Kutu oranı görselden farklıysa focal_point'e göre kırpılır (object-position).
+ * Künye görselin üstünde değil, bağlı caption'ın ya da notun sonunda (Spread).
+ * İşleme (treatment) sınıfı shell'den: mono, duotone, multiply.
+ */
 export function ImageBlock(props: BlockViewProps) {
   const b = props.block;
   const fx = (b.focal_point?.x ?? 0.5) * 100;
@@ -13,7 +16,6 @@ export function ImageBlock(props: BlockViewProps) {
           <img src={b.source} alt={b.alt ?? ''} draggable={false} style={{ objectPosition: `${fx}% ${fy}%` }} />
         )}
       </div>
-      {b.credit && <span className="image-credit" dangerouslySetInnerHTML={{ __html: inlineHtml(b.credit) }} />}
     </div>
   );
 }

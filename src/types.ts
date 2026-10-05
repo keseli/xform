@@ -1,13 +1,25 @@
 // XFORM veri tipleri. Dosya biçimi: data/<issue>.json (bkz. src/model.ts).
 // Konumlar hücre cinsinden; x spread'in sol kenarından sayılır.
 
-export type BlockType = 'text' | 'heading' | 'image' | 'quote' | 'note' | 'divider';
+export type BlockType = 'text' | 'heading' | 'image' | 'quote' | 'note' | 'divider' | 'box';
 export type HeadingVariant = 'title' | 'subhead' | 'kicker';
 export type TextVariant = 'body' | 'deck' | 'caption';
-export type Variant = HeadingVariant | TextVariant;
+/** quote: null (normal) | pull (sütun arasında büyük alıntı) */
+export type QuoteVariant = 'pull';
+export type Variant = HeadingVariant | TextVariant | QuoteVariant;
 export type Tone = 'dark' | 'light';
 export type ChromeMode = 'full' | 'none';
 export type Direction = 'vertical' | 'horizontal';
+
+/** Sayının paletindeki adlar (src/style.ts); bloklar renk kodu değil bu adı taşır. */
+export type PaletteName = 'paper' | 'ink' | 'muted' | 'accent' | 'accent-soft';
+export type Palette = Record<PaletteName, string>;
+/** Sayfa teması: zemin, varsayılan metin, çizgi ve chrome rengi. */
+export type Theme = 'paper' | 'ink' | 'soft' | 'accent';
+/** Metin rengi; default, stilin kendi rengi (ör. kicker accent). */
+export type TextColor = 'default' | 'accent' | 'muted';
+/** Görsel işleme: mono gri, duotone ink + paper, multiply kâğıt zemine karışır. */
+export type Treatment = 'none' | 'mono' | 'duotone' | 'multiply';
 
 export interface Point {
   x: number;
@@ -54,6 +66,15 @@ export interface Block {
   stack_index?: number;
   /** İçe aktarma: paketten çıktı ama yerleşik olduğu için korundu. */
   removed_from_content?: boolean;
+  // Editöre ait görünüm alanları (içe aktarma korur)
+  /** Metin blokları ve çizgi: renk (çizgide default | accent). */
+  color?: TextColor;
+  /** Gövde paragrafı: üç satırlık büyük baş harf. */
+  drop_cap?: boolean;
+  // Kutu (type: box): yalnız konum, boyut, z ve dolgu
+  fill?: PaletteName;
+  /** 0–1; yoksa 1. */
+  opacity?: number;
   // Görsellere özgü
   focal_point?: FocalPoint;
   /** Görsel dosyasının yolu (assets/<issue>/<slug>/<file>); içe aktarma yazar. */
@@ -64,6 +85,8 @@ export interface Block {
   source_url?: string | null;
   /** Lisans, ör. "Public domain", "CC BY-SA 4.0" (künye; sayfada görünmez). */
   license?: string | null;
+  /** Görsel işleme (editöre ait). */
+  treatment?: Treatment;
 }
 
 /** Yerleştirilmiş blok: konum alanları dolu (yığındakiler bellekte hesaplanmış). */
@@ -74,6 +97,9 @@ export interface Spread {
   section: string;
   chrome_left: ChromeMode;
   chrome_right: ChromeMode;
+  /** Sayfa temaları; yoksa paper. */
+  theme_left?: Theme;
+  theme_right?: Theme;
 }
 
 /** Auto layout yığını (src/stacks.ts). */
@@ -115,13 +141,27 @@ export interface Slot {
   accepts: SlotAccepts;
 }
 
+/** Şablondaki kutu (box bloğu olarak kurulur). */
+export interface TemplateBox {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  z: number;
+  fill: PaletteName;
+  opacity?: number;
+}
+
 /** Spread iskeleti: data/templates/<ad>.json. Kimlikler spread kurulurken verilir. */
 export interface Template {
   name: string;
   chrome_left: ChromeMode;
   chrome_right: ChromeMode;
+  theme_left?: Theme;
+  theme_right?: Theme;
   slots: Omit<Slot, 'id' | 'spread_id'>[];
   stacks: (Omit<Stack, 'id' | 'spread_id' | 'w' | 'h'> & { w: number; h: number })[];
+  boxes?: TemplateBox[];
 }
 
 export interface IssueMeta {
@@ -142,4 +182,6 @@ export interface Issue {
   stacks?: Stack[];
   /** Şablondan gelen ya da kalan boş kutular (yalnız editörde görünür). */
   slots?: Slot[];
+  /** Sayının paleti (src/style.ts); yoksa varsayılan. */
+  palette?: Partial<Palette>;
 }

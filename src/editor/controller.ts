@@ -526,6 +526,8 @@ export function createController(store: Store) {
             .map(blockRect)
         : []),
     ];
+    // Görsel ve kutu iki eksende boyutlanır; metin ve çizgide yalnız genişlik.
+    const sized = b.type === 'image' || b.type === 'box';
     const lines: Lines = frameLines();
     const p0 = toCells(e);
     store.checkpoint();
@@ -541,7 +543,7 @@ export function createController(store: Store) {
             ['x', 'x', 'w'],
             ['y', 'y', 'h'],
           ] as const) {
-            if (!D[axis] || (axis === 'y' && b.type !== 'image')) continue;
+            if (!D[axis] || (axis === 'y' && !sized)) continue;
             const edge0 = D[axis] === 1 ? start[pos] + start[size] : start[pos];
             const m = snapValue(edge0 + delta[axis], axisTargets(others, lines, axis), threshold());
             if (m) {
@@ -555,7 +557,7 @@ export function createController(store: Store) {
           step,
           // Shift, oran kilidini geçici olarak tersine çevirir.
           lock: b.type === 'image' && state.lockAspect !== ev.shiftKey,
-          widthOnly: b.type !== 'image',
+          widthOnly: !sized,
         });
         // Bloğu frame dışına çıkaracak adım uygulanmaz; son geçerli kutu kalır.
         if (!staysInFrame(box)) return;

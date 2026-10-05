@@ -1,5 +1,5 @@
 {
-  "revision": 2,
+  "revision": 3,
   "issue": {
     "title": "XFORM",
     "month": 10,
@@ -17,7 +17,7 @@
     {
       "id": "s-2",
       "section": "The Allowance for Error",
-      "chrome_left": "full",
+      "chrome_left": "none",
       "chrome_right": "full"
     },
     {
@@ -30,7 +30,8 @@
       "id": "s-4",
       "section": "Interlude",
       "chrome_left": "none",
-      "chrome_right": "full"
+      "chrome_right": "full",
+      "theme_left": "accent"
     }
   ],
   "blocks": [
@@ -101,7 +102,8 @@
       "credit": "National Archives, NAID 1633486",
       "alt": "Workers on the first moving assembly line at Ford’s Highland Park plant putting together magnetos and flywheels, 1913.",
       "source_url": "https://commons.wikimedia.org/wiki/File:Ford_assembly_line_-_1913.jpg",
-      "license": "Public domain"
+      "license": "Public domain",
+      "treatment": "duotone"
     },
     {
       "id": "allowance-for-error/cap-line",
@@ -114,9 +116,9 @@
       ],
       "spread_id": "s-1",
       "x": 228,
-      "y": 228,
+      "y": 222,
       "w": 80,
-      "h": 8,
+      "h": 13,
       "z": 3,
       "tone": "light"
     },
@@ -146,7 +148,7 @@
       "x": null,
       "y": null,
       "w": 46,
-      "h": 16,
+      "h": 21,
       "z": 4,
       "tone": "dark",
       "label": "01",
@@ -179,7 +181,8 @@
       "source_url": "https://commons.wikimedia.org/wiki/File:GaugePlugThreadGoNoGo.jpg",
       "license": "CC BY-SA 3.0",
       "stack_id": "stack-1",
-      "stack_index": 1
+      "stack_index": 1,
+      "treatment": "multiply"
     },
     {
       "id": "allowance-for-error/note-blocks",
@@ -192,7 +195,7 @@
       "x": null,
       "y": null,
       "w": 46,
-      "h": 24,
+      "h": 29,
       "z": 6,
       "tone": "dark",
       "label": "02",
@@ -225,7 +228,8 @@
       "source_url": "https://commons.wikimedia.org/wiki/File:Gauge_block_adhesion.jpg",
       "license": "Public domain",
       "stack_id": "stack-1",
-      "stack_index": 3
+      "stack_index": 3,
+      "treatment": "multiply"
     },
     {
       "id": "allowance-for-error/note-thread",
@@ -238,7 +242,7 @@
       "x": null,
       "y": null,
       "w": 46,
-      "h": 16,
+      "h": 25,
       "z": 8,
       "tone": "dark",
       "label": "03",
@@ -284,11 +288,12 @@
       "x": null,
       "y": null,
       "w": 79,
-      "h": 55,
+      "h": 36,
       "z": 4,
       "tone": "dark",
       "stack_id": "stack-2",
-      "stack_index": 0
+      "stack_index": 0,
+      "drop_cap": true
     },
     {
       "id": "allowance-for-error/p2",
@@ -301,7 +306,7 @@
       "x": null,
       "y": null,
       "w": 79,
-      "h": 45,
+      "h": 28,
       "z": 5,
       "tone": "dark",
       "stack_id": "stack-2",
@@ -318,21 +323,22 @@
         "allowance-for-error/p2"
       ],
       "spread_id": "s-2",
-      "x": 14,
-      "y": 20,
-      "w": 79,
-      "h": 60,
+      "x": 0,
+      "y": 0,
+      "w": 192,
+      "h": 200,
       "z": 2,
       "tone": "dark",
       "focal_point": {
-        "x": 0.5,
+        "x": 0.75,
         "y": 0.5
       },
       "source": "assets/issue-sample/allowance-for-error/flintlock-1777.jpg",
       "credit": "Rama, MCAH Lausanne / CC BY-SA 3.0 FR",
       "alt": "The flintlock of a French infantry musket, model 1777.",
       "source_url": "https://commons.wikimedia.org/wiki/File:French_infantry_musket_model_1777-MCAH_HIS_91_01-IMG_9716.JPG",
-      "license": "CC BY-SA 3.0 FR"
+      "license": "CC BY-SA 3.0 FR",
+      "treatment": "duotone"
     },
     {
       "id": "allowance-for-error/cap-lock",
@@ -345,9 +351,9 @@
       ],
       "spread_id": "s-2",
       "x": 14,
-      "y": 83,
-      "w": 79,
-      "h": 8,
+      "y": 204,
+      "w": 110,
+      "h": 9,
       "z": 3,
       "tone": "dark"
     },
@@ -362,7 +368,7 @@
       "x": null,
       "y": null,
       "w": 79,
-      "h": 40,
+      "h": 28,
       "z": 6,
       "tone": "dark",
       "stack_id": "stack-2",
@@ -380,10 +386,10 @@
       "y": null,
       "w": 79,
       "h": 5,
-      "z": 7,
+      "z": 11,
       "tone": "dark",
-      "stack_id": "stack-2",
-      "stack_index": 3
+      "stack_id": "stack-4",
+      "stack_index": 0
     },
     {
       "id": "allowance-for-error/p4",
@@ -396,79 +402,96 @@
       "x": null,
       "y": null,
       "w": 79,
-      "h": 35,
-      "z": 8,
+      "h": 24,
+      "z": 12,
       "tone": "dark",
-      "stack_id": "stack-2",
-      "stack_index": 4
+      "stack_id": "stack-4",
+      "stack_index": 1
+    },
+    {
+      "id": "allowance-for-error/pull",
+      "type": "quote",
+      "variant": "pull",
+      "content": "“It is a written statement of how wrong a part is allowed to be and still count as right.”",
+      "order": 20,
+      "relates_to": [
+        "allowance-for-error/p4"
+      ],
+      "spread_id": "s-2",
+      "x": 204,
+      "y": 126,
+      "w": 166,
+      "h": 18,
+      "z": 17,
+      "tone": "dark"
     },
     {
       "id": "allowance-for-error/p5",
       "type": "text",
       "variant": "body",
       "content": "Tolerances cost money. Halving the permitted error usually far more than doubles the work, since it demands better machines, slower cuts and more rejected parts. A good designer therefore does the opposite of what precision seems to mean, and makes every tolerance as loose as the job will bear. Errors also add up. Ten parts in a row, each within its limits, can together miss by ten times as much, so error has to be budgeted across a design the way money is.",
-      "order": 20,
-      "relates_to": [],
-      "spread_id": "s-2",
-      "x": null,
-      "y": null,
-      "w": 79,
-      "h": 55,
-      "z": 9,
-      "tone": "dark",
-      "stack_id": "stack-3",
-      "stack_index": 0
-    },
-    {
-      "id": "allowance-for-error/sub-strangers",
-      "type": "heading",
-      "variant": "subhead",
-      "content": "STRANGERS WHO NEVER MEET",
       "order": 21,
       "relates_to": [],
       "spread_id": "s-2",
       "x": null,
       "y": null,
       "w": 79,
-      "h": 5,
-      "z": 10,
+      "h": 36,
+      "z": 13,
       "tone": "dark",
-      "stack_id": "stack-3",
-      "stack_index": 1
+      "stack_id": "stack-4",
+      "stack_index": 2
     },
     {
-      "id": "allowance-for-error/p6",
-      "type": "text",
-      "variant": "body",
-      "content": "The idea travelled slowly. Eli Whitney promised the United States interchangeable muskets in 1798 and never truly delivered them.^1^ It took until the 1820s, at the Harpers Ferry armory, for John Hall to build rifles whose parts really could be swapped, and it took him a workshop full of special machines and gauges to do it.",
+      "id": "allowance-for-error/sub-strangers",
+      "type": "heading",
+      "variant": "subhead",
+      "content": "STRANGERS WHO NEVER MEET",
       "order": 22,
       "relates_to": [],
       "spread_id": "s-2",
       "x": null,
       "y": null,
       "w": 79,
-      "h": 40,
-      "z": 11,
+      "h": 5,
+      "z": 9,
       "tone": "dark",
       "stack_id": "stack-3",
       "stack_index": 2
+    },
+    {
+      "id": "allowance-for-error/p6",
+      "type": "text",
+      "variant": "body",
+      "content": "The idea travelled slowly. Eli Whitney promised the United States interchangeable muskets in 1798 and never truly delivered them.^1^ It took until the 1820s, at the Harpers Ferry armory, for John Hall to build rifles whose parts really could be swapped, and it took him a workshop full of special machines and gauges to do it.",
+      "order": 23,
+      "relates_to": [],
+      "spread_id": "s-2",
+      "x": null,
+      "y": null,
+      "w": 79,
+      "h": 24,
+      "z": 10,
+      "tone": "dark",
+      "stack_id": "stack-3",
+      "stack_index": 3
     },
     {
       "id": "allowance-for-error/img-hall",
       "type": "image",
       "variant": null,
       "content": null,
-      "order": 23,
+      "order": 24,
       "relates_to": [
         "allowance-for-error/p6"
       ],
       "spread_id": "s-2",
-      "x": 291,
-      "y": 20,
+      "x": null,
+      "y": null,
       "w": 79,
-      "h": 20,
-      "z": 13,
-      "tone": "light",
+      "h": 18,
+      "z": 7,
+      "tone": "dark",
       "focal_point": {
         "x": 0.5,
         "y": 0.74
@@ -477,48 +500,53 @@
       "credit": "Smithsonian, National Museum of American History",
       "alt": "A Hall breech-loading flintlock rifle, Model 1819, made at Harpers Ferry in 1834 and later shortened.",
       "source_url": "https://n2t.net/ark:/65665/ng49ca746a2-16ed-704b-e053-15f76fa0b4fa",
-      "license": "CC0"
+      "license": "CC0",
+      "stack_id": "stack-3",
+      "stack_index": 0,
+      "treatment": "duotone"
     },
     {
       "id": "allowance-for-error/cap-hall",
       "type": "text",
       "variant": "caption",
       "content": "John Hall’s breech-loading rifle, made at Harpers Ferry.",
-      "order": 24,
+      "order": 25,
       "relates_to": [
         "allowance-for-error/img-hall"
       ],
       "spread_id": "s-2",
-      "x": 291,
-      "y": 43,
+      "x": null,
+      "y": null,
       "w": 79,
-      "h": 4,
-      "z": 14,
-      "tone": "dark"
+      "h": 9,
+      "z": 8,
+      "tone": "dark",
+      "stack_id": "stack-3",
+      "stack_index": 1
     },
     {
       "id": "allowance-for-error/p7",
       "type": "text",
       "variant": "body",
       "content": "The result is so ordinary now that it is hard to see. A bolt made in one country fits a nut made in another by people who will never speak. The agreement that once took place between two hands at a bench happens in advance, on paper, between strangers. The same move appears wherever separately made things must work together: timetables, contracts, software interfaces. It holds only where fit can be checked by something like a gauge. Where it cannot, we are back to fitting.",
-      "order": 25,
+      "order": 26,
       "relates_to": [],
       "spread_id": "s-2",
       "x": null,
       "y": null,
       "w": 79,
-      "h": 60,
-      "z": 12,
+      "h": 36,
+      "z": 14,
       "tone": "dark",
-      "stack_id": "stack-3",
-      "stack_index": 3
+      "stack_id": "stack-5",
+      "stack_index": 0
     },
     {
       "id": "allowance-for-error/fn1",
       "type": "note",
       "variant": null,
       "content": "Whitney’s celebrated demonstration of 1801 is now generally thought to have used specially prepared parts. See Robert S. Woodbury, “The Legend of Eli Whitney and Interchangeable Parts”, *Technology and Culture*, 1960.",
-      "order": 26,
+      "order": 27,
       "relates_to": [
         "allowance-for-error/p6"
       ],
@@ -530,15 +558,15 @@
       "z": 15,
       "tone": "dark",
       "label": "1",
-      "stack_id": "stack-4",
-      "stack_index": 0
+      "stack_id": "stack-5",
+      "stack_index": 1
     },
     {
       "id": "allowance-for-error/sources",
       "type": "note",
       "variant": null,
       "content": "David A. Hounshell, *From the American System to Mass Production, 1800–1932* (1984). Ken Alder, *Engineering the Revolution* (1997).",
-      "order": 27,
+      "order": 28,
       "relates_to": [],
       "spread_id": "s-2",
       "x": null,
@@ -547,15 +575,15 @@
       "h": 12,
       "z": 16,
       "tone": "dark",
-      "stack_id": "stack-4",
-      "stack_index": 1
+      "stack_id": "stack-5",
+      "stack_index": 2
     },
     {
       "id": "melencolia/kicker",
       "type": "heading",
       "variant": "kicker",
       "content": "ENCOUNTER / ENGRAVING",
-      "order": 28,
+      "order": 29,
       "relates_to": [],
       "spread_id": "s-3",
       "x": null,
@@ -564,7 +592,7 @@
       "h": 4,
       "z": 2,
       "tone": "dark",
-      "stack_id": "stack-5",
+      "stack_id": "stack-6",
       "stack_index": 0
     },
     {
@@ -572,7 +600,7 @@
       "type": "heading",
       "variant": "title",
       "content": "Melencolia I",
-      "order": 29,
+      "order": 30,
       "relates_to": [],
       "spread_id": "s-3",
       "x": null,
@@ -581,7 +609,7 @@
       "h": 16,
       "z": 3,
       "tone": "dark",
-      "stack_id": "stack-5",
+      "stack_id": "stack-6",
       "stack_index": 1
     },
     {
@@ -589,7 +617,7 @@
       "type": "image",
       "variant": null,
       "content": null,
-      "order": 30,
+      "order": 31,
       "relates_to": [],
       "spread_id": "s-3",
       "x": 107,
@@ -606,14 +634,15 @@
       "credit": "Städel Museum, Frankfurt am Main",
       "alt": "Albrecht Dürer, Melencolia I, 1514. Engraving.",
       "source_url": "https://commons.wikimedia.org/wiki/File:Albrecht_D%C3%BCrer,_Melencolia_I_(Die_Melancholie),_1514.png",
-      "license": "Public domain"
+      "license": "Public domain",
+      "treatment": "multiply"
     },
     {
       "id": "melencolia/kunye",
       "type": "text",
       "variant": "caption",
       "content": "Albrecht Dürer, 1514. Engraving, about 24 × 19 cm. Impressions are held by many museums.",
-      "order": 31,
+      "order": 32,
       "relates_to": [
         "melencolia/img"
       ],
@@ -621,10 +650,10 @@
       "x": null,
       "y": null,
       "w": 86,
-      "h": 8,
+      "h": 9,
       "z": 4,
       "tone": "dark",
-      "stack_id": "stack-5",
+      "stack_id": "stack-6",
       "stack_index": 2
     },
     {
@@ -632,16 +661,17 @@
       "type": "text",
       "variant": "body",
       "content": "A winged figure sits among the instruments of every exact art: compass, scale, plane, saw, hourglass. She is holding the compass and not using it. Nothing in the picture is broken. Everything needed for work is within reach, and no work is being done.",
-      "order": 32,
+      "order": 33,
       "relates_to": [],
       "spread_id": "s-3",
       "x": null,
       "y": null,
       "w": 86,
-      "h": 30,
+      "h": 20,
       "z": 5,
       "tone": "dark",
-      "stack_id": "stack-6",
+      "drop_cap": true,
+      "stack_id": "stack-7",
       "stack_index": 0
     },
     {
@@ -649,16 +679,16 @@
       "type": "text",
       "variant": "body",
       "content": "The best known reading, Erwin Panofsky’s, takes the print as a portrait of the mind that can measure everything and still cannot reach what it wants to know. Other scholars disagree, and Dürer left no explanation.",
-      "order": 33,
+      "order": 34,
       "relates_to": [],
       "spread_id": "s-3",
       "x": null,
       "y": null,
       "w": 86,
-      "h": 25,
+      "h": 16,
       "z": 6,
       "tone": "dark",
-      "stack_id": "stack-6",
+      "stack_id": "stack-7",
       "stack_index": 1
     },
     {
@@ -666,16 +696,16 @@
       "type": "text",
       "variant": "body",
       "content": "Look at it large. Give it ten minutes before reading anything else about it.",
-      "order": 34,
+      "order": 35,
       "relates_to": [],
       "spread_id": "s-3",
       "x": null,
       "y": null,
       "w": 86,
-      "h": 10,
+      "h": 8,
       "z": 7,
       "tone": "dark",
-      "stack_id": "stack-6",
+      "stack_id": "stack-7",
       "stack_index": 2
     },
     {
@@ -683,7 +713,7 @@
       "type": "note",
       "variant": null,
       "content": "The square of numbers on the wall: every row, column and diagonal adds up to 34. The two middle cells of the bottom row read 15 and 14, the year.",
-      "order": 35,
+      "order": 36,
       "relates_to": [
         "melencolia/img"
       ],
@@ -695,7 +725,7 @@
       "z": 8,
       "tone": "dark",
       "label": "01",
-      "stack_id": "stack-7",
+      "stack_id": "stack-8",
       "stack_index": 0
     },
     {
@@ -703,7 +733,7 @@
       "type": "note",
       "variant": null,
       "content": "The large stone solid has never been conclusively explained. It is usually described as a cube stretched and then cut at two corners.",
-      "order": 36,
+      "order": 37,
       "relates_to": [
         "melencolia/img"
       ],
@@ -715,7 +745,7 @@
       "z": 9,
       "tone": "dark",
       "label": "02",
-      "stack_id": "stack-7",
+      "stack_id": "stack-8",
       "stack_index": 1
     },
     {
@@ -723,7 +753,7 @@
       "type": "note",
       "variant": null,
       "content": "On the ground: a plane, a saw, a ruler, nails. Carpenter’s tools, scattered rather than put away.",
-      "order": 37,
+      "order": 38,
       "relates_to": [
         "melencolia/img"
       ],
@@ -735,7 +765,7 @@
       "z": 10,
       "tone": "dark",
       "label": "03",
-      "stack_id": "stack-7",
+      "stack_id": "stack-8",
       "stack_index": 2
     },
     {
@@ -743,7 +773,7 @@
       "type": "note",
       "variant": null,
       "content": "The title is carried by a bat-like creature. Nobody knows what the “I” stands for.",
-      "order": 38,
+      "order": 39,
       "relates_to": [
         "melencolia/img"
       ],
@@ -755,7 +785,7 @@
       "z": 11,
       "tone": "dark",
       "label": "04",
-      "stack_id": "stack-7",
+      "stack_id": "stack-8",
       "stack_index": 3
     },
     {
@@ -763,7 +793,7 @@
       "type": "heading",
       "variant": "kicker",
       "content": "ACTIVITY / 20 MINUTES / OUTDOORS",
-      "order": 39,
+      "order": 40,
       "relates_to": [],
       "spread_id": "s-4",
       "x": 14,
@@ -778,7 +808,7 @@
       "type": "heading",
       "variant": "title",
       "content": "Find a path nobody built.",
-      "order": 40,
+      "order": 41,
       "relates_to": [],
       "spread_id": "s-4",
       "x": 14,
@@ -793,16 +823,16 @@
       "type": "text",
       "variant": "body",
       "content": "Go to a park, a campus, or any stretch of grass with paved walkways. Look for a strip of bare earth where people have cut the corner. Walk it. Then walk the paved route it replaces. Notice where the worn path begins and ends, how wide it is, and whether it is straight.",
-      "order": 41,
+      "order": 42,
       "relates_to": [],
       "spread_id": "s-4",
       "x": null,
       "y": null,
       "w": 100,
-      "h": 25,
+      "h": 16,
       "z": 2,
       "tone": "dark",
-      "stack_id": "stack-8",
+      "stack_id": "stack-9",
       "stack_index": 0
     },
     {
@@ -810,7 +840,7 @@
       "type": "note",
       "variant": null,
       "content": "Nothing to write down.",
-      "order": 42,
+      "order": 43,
       "relates_to": [],
       "spread_id": "s-4",
       "x": null,
@@ -819,7 +849,7 @@
       "h": 4,
       "z": 3,
       "tone": "dark",
-      "stack_id": "stack-8",
+      "stack_id": "stack-9",
       "stack_index": 1
     },
     {
@@ -827,7 +857,7 @@
       "type": "heading",
       "variant": "kicker",
       "content": "INTERLUDE / 2 MIN READ",
-      "order": 43,
+      "order": 44,
       "relates_to": [],
       "spread_id": "s-4",
       "x": null,
@@ -836,7 +866,7 @@
       "h": 4,
       "z": 4,
       "tone": "dark",
-      "stack_id": "stack-9",
+      "stack_id": "stack-10",
       "stack_index": 0
     },
     {
@@ -844,7 +874,7 @@
       "type": "heading",
       "variant": "title",
       "content": "The Kilogram That Drifted",
-      "order": 44,
+      "order": 45,
       "relates_to": [],
       "spread_id": "s-4",
       "x": null,
@@ -853,7 +883,7 @@
       "h": 32,
       "z": 5,
       "tone": "dark",
-      "stack_id": "stack-9",
+      "stack_id": "stack-10",
       "stack_index": 1
     },
     {
@@ -861,7 +891,7 @@
       "type": "text",
       "variant": "deck",
       "content": "For 130 years the unit of mass was a single metal cylinder in a vault near Paris. Then it stopped agreeing with its own copies.",
-      "order": 45,
+      "order": 46,
       "relates_to": [],
       "spread_id": "s-4",
       "x": null,
@@ -870,7 +900,7 @@
       "h": 14,
       "z": 6,
       "tone": "dark",
-      "stack_id": "stack-9",
+      "stack_id": "stack-10",
       "stack_index": 2
     },
     {
@@ -878,7 +908,7 @@
       "type": "image",
       "variant": null,
       "content": null,
-      "order": 46,
+      "order": 47,
       "relates_to": [
         "kilogram/k1",
         "kilogram/k2"
@@ -898,14 +928,15 @@
       "credit": "NIST",
       "alt": "Kilogram No. 4, a United States national copy of the prototype kilogram, under two glass bell jars; beside it the jars and stand of Kilogram No. 20.",
       "source_url": "https://commons.wikimedia.org/wiki/File:MassStandards_005.jpg",
-      "license": "Public domain"
+      "license": "Public domain",
+      "treatment": "multiply"
     },
     {
       "id": "kilogram/cap",
       "type": "text",
       "variant": "caption",
       "content": "A national copy of the prototype kilogram under its glass jars.",
-      "order": 47,
+      "order": 48,
       "relates_to": [
         "kilogram/img"
       ],
@@ -913,7 +944,7 @@
       "x": 204,
       "y": 211,
       "w": 79,
-      "h": 8,
+      "h": 9,
       "z": 8,
       "tone": "dark"
     },
@@ -922,16 +953,17 @@
       "type": "text",
       "variant": "body",
       "content": "From 1889 the kilogram was defined as the mass of one object: a cylinder of platinum and iridium, about 39 millimetres tall and as wide, kept under three nested glass jars at Sèvres. Whatever happened to it, its mass was one kilogram, by definition.",
-      "order": 48,
+      "order": 49,
       "relates_to": [],
       "spread_id": "s-4",
       "x": null,
       "y": null,
       "w": 79,
-      "h": 30,
+      "h": 20,
       "z": 9,
       "tone": "dark",
-      "stack_id": "stack-10",
+      "drop_cap": true,
+      "stack_id": "stack-11",
       "stack_index": 0
     },
     {
@@ -939,16 +971,16 @@
       "type": "text",
       "variant": "body",
       "content": "It was taken out only a few times, to be compared with its official copies. Over a century the comparisons showed the prototype and the copies drifting apart by roughly fifty millionths of a gram. Nobody could say which had changed. There was nothing more authoritative to ask.",
-      "order": 49,
+      "order": 50,
       "relates_to": [],
       "spread_id": "s-4",
       "x": null,
       "y": null,
       "w": 79,
-      "h": 35,
+      "h": 24,
       "z": 10,
       "tone": "dark",
-      "stack_id": "stack-10",
+      "stack_id": "stack-11",
       "stack_index": 1
     },
     {
@@ -956,17 +988,33 @@
       "type": "text",
       "variant": "body",
       "content": "On 20 May 2019 the kilogram was redefined through a constant of physics. The cylinder is still in its vault. It is now an object that weighs approximately one kilogram.",
-      "order": 50,
+      "order": 51,
       "relates_to": [],
       "spread_id": "s-4",
       "x": null,
       "y": null,
       "w": 79,
-      "h": 20,
+      "h": 12,
       "z": 11,
       "tone": "dark",
-      "stack_id": "stack-10",
+      "stack_id": "stack-11",
       "stack_index": 2
+    },
+    {
+      "id": "box-1",
+      "type": "box",
+      "variant": null,
+      "content": null,
+      "order": 0,
+      "relates_to": [],
+      "spread_id": "s-1",
+      "x": 316,
+      "y": 0,
+      "w": 68,
+      "h": 256,
+      "z": 2,
+      "tone": "dark",
+      "fill": "accent-soft"
     }
   ],
   "stacks": [
@@ -982,7 +1030,7 @@
       "id": "stack-2",
       "spread_id": "s-2",
       "direction": "vertical",
-      "x": 101,
+      "x": 204,
       "y": 20,
       "gap": 5
     },
@@ -990,20 +1038,28 @@
       "id": "stack-3",
       "spread_id": "s-2",
       "direction": "vertical",
-      "x": 204,
+      "x": 291,
       "y": 20,
-      "gap": 5
+      "gap": 3
     },
     {
       "id": "stack-4",
       "spread_id": "s-2",
       "direction": "vertical",
-      "x": 291,
-      "y": 200,
-      "gap": 4
+      "x": 204,
+      "y": 168,
+      "gap": 5
     },
     {
       "id": "stack-5",
+      "spread_id": "s-2",
+      "direction": "vertical",
+      "x": 291,
+      "y": 158,
+      "gap": 5
+    },
+    {
+      "id": "stack-6",
       "spread_id": "s-3",
       "direction": "vertical",
       "x": 14,
@@ -1011,15 +1067,15 @@
       "gap": 3
     },
     {
-      "id": "stack-6",
+      "id": "stack-7",
       "spread_id": "s-3",
       "direction": "vertical",
       "x": 14,
-      "y": 161,
+      "y": 192,
       "gap": 5
     },
     {
-      "id": "stack-7",
+      "id": "stack-8",
       "spread_id": "s-3",
       "direction": "vertical",
       "x": 284,
@@ -1027,7 +1083,7 @@
       "gap": 58
     },
     {
-      "id": "stack-8",
+      "id": "stack-9",
       "spread_id": "s-4",
       "direction": "vertical",
       "x": 14,
@@ -1035,7 +1091,7 @@
       "gap": 6
     },
     {
-      "id": "stack-9",
+      "id": "stack-10",
       "spread_id": "s-4",
       "direction": "vertical",
       "x": 204,
@@ -1043,7 +1099,7 @@
       "gap": 3
     },
     {
-      "id": "stack-10",
+      "id": "stack-11",
       "spread_id": "s-4",
       "direction": "vertical",
       "x": 291,
@@ -1051,5 +1107,9 @@
       "gap": 5
     }
   ],
-  "slots": []
+  "slots": [],
+  "palette": {
+    "accent": "#2f5d8a",
+    "accent-soft": "#dfe6ec"
+  }
 }

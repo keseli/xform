@@ -54,13 +54,18 @@
   --lh-deck: 28px;
   --opsz-deck: 24;
 
-  --size-body: 14.5px;
-  --lh-body: 20px;
+  --size-body: 12px;
+  --lh-body: 16px;
+  --indent: 1em; /* gövde paragrafının ilk satır girintisi */
   --opsz-body: 12;
 
   --size-quote: 22px;
   --lh-quote: 28px;
   --opsz-quote: 24;
+
+  --size-pull: 30px; /* sütun arasında büyük alıntı */
+  --lh-pull: 36px;
+  --opsz-pull: 36;
 
   --size-caption: 10.5px;
   --lh-caption: 16px;
@@ -84,16 +89,20 @@
 
   --size-label: 8.5px; /* caption ve note etiketleri */
   --track-label: 0.06em;
-  --size-credit: 7.5px; /* görsel kredisi */
+  --size-credit: 7.5px; /* künye (caption ya da notun sonunda) */
   --track-credit: 0.08em;
 
+  /* Palet: sayının paleti frame'e bu adlarla yazılır (src/style.ts); buradakiler
+     varsayılan. --ink-soft ve --rule paper temasının sabitleri. */
   --paper: #eeeadf;
-  --desk: #d8d2c5;
   --ink: #2a241e; /* sıcak koyu kahve-siyah; saf siyah değil */
-  --ink-soft: #3a3631;
   --muted: #6d675d;
+  --accent: #a6452e;
+  --accent-soft: #ecd8ce;
+  --ink-soft: #3a3631;
   --rule: #8f8778;
-  --light-ink: #f3efe6;
+  --light-ink: #f3efe6; /* görsel üstü yazı (tone: light) */
+  --desk: #d8d2c5;
 
   --serif: 'Literata', 'Iowan Old Style', Georgia, serif;
   --sans: 'Geist', 'Helvetica Neue', Arial, sans-serif;
@@ -134,7 +143,7 @@ body {
   left: 0;
   transform-origin: 0 0;
   background: var(--paper);
-  color: var(--ink);
+  color: var(--fg);
   overflow: hidden; /* okuma görünümünde taşma kesilir (bleed) */
   font-kerning: normal;
   text-rendering: optimizeLegibility;
@@ -165,6 +174,64 @@ body {
   );
 }
 
+/* ---------- Sayfa temaları ----------
+   Tema; zemini, varsayılan metni (--fg), ikincil metni (caption, not, chrome),
+   soluk metni, accent metni ve çizgiyi belirler. Blok ve chrome kendi sayfasının
+   tema sınıfını taşır; renkler o öğede çözülür. Paper bugünkü renkler. */
+
+.frame,
+.theme--paper {
+  --ground: var(--paper);
+  --fg: var(--ink);
+  --fg-soft: var(--ink-soft);
+  --fg-muted: var(--muted);
+  --fg-accent: var(--accent);
+  --fg-rule: var(--rule);
+}
+
+.theme--ink {
+  --ground: var(--ink);
+  --fg: var(--paper);
+  --fg-soft: color-mix(in srgb, var(--paper) 82%, var(--ink));
+  --fg-muted: color-mix(in srgb, var(--paper) 60%, var(--ink));
+  --fg-accent: var(--accent-soft);
+  --fg-rule: color-mix(in srgb, var(--paper) 45%, var(--ink));
+}
+
+.theme--soft {
+  --ground: var(--accent-soft);
+  --fg: var(--ink);
+  --fg-soft: var(--ink-soft);
+  --fg-muted: color-mix(in srgb, var(--muted) 85%, var(--accent));
+  --fg-accent: var(--accent);
+  --fg-rule: color-mix(in srgb, var(--ink) 40%, var(--accent-soft));
+}
+
+.theme--accent {
+  --ground: var(--accent);
+  --fg: var(--paper);
+  --fg-soft: color-mix(in srgb, var(--paper) 88%, var(--accent));
+  --fg-muted: color-mix(in srgb, var(--paper) 70%, var(--accent));
+  --fg-accent: var(--accent-soft);
+  --fg-rule: color-mix(in srgb, var(--paper) 55%, var(--accent));
+}
+
+.page {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: var(--ground);
+}
+
+.page--right {
+  left: 50%;
+}
+
+.defs {
+  position: absolute;
+}
+
 /* ---------- Chrome ---------- */
 
 .chrome {
@@ -174,13 +241,13 @@ body {
   z-index: 9500;
   display: grid;
   align-items: center;
-  border-bottom: var(--hairline) solid var(--rule);
+  border-bottom: var(--hairline) solid var(--fg-rule);
   font-family: var(--mono);
   font-size: var(--size-chrome);
   line-height: var(--lh-chrome);
   letter-spacing: var(--track-chrome);
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--fg-soft);
 }
 
 .chrome--left {
@@ -193,7 +260,7 @@ body {
 
 .chrome-mast {
   font-weight: 500;
-  color: var(--ink);
+  color: var(--fg);
 }
 
 .chrome-meta,
@@ -209,6 +276,7 @@ body {
 
 .block {
   position: absolute;
+  color: var(--fg);
 }
 
 .block .flow {
@@ -246,7 +314,7 @@ body {
   line-height: var(--lh-kicker);
   letter-spacing: var(--track-kicker);
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--fg-accent);
 }
 
 .block--heading-kicker.tone--light {
@@ -266,6 +334,20 @@ body {
   font-variant-numeric: oldstyle-nums;
 }
 
+/* Paragraf ayrımı: art arda gövde paragrafları arasında boşluk yok, girinti var
+   (src/style.ts indentedParagraphs). */
+.para--indent .flow {
+  text-indent: var(--indent);
+}
+
+/* Büyük baş harf: üç gövde satırı yüksekliğinde, satır aralığını bozmadan. */
+.drop-cap .flow::first-letter {
+  -webkit-initial-letter: 3;
+  initial-letter: 3;
+  margin-right: 0.1em;
+  font-variation-settings: 'opsz' 72;
+}
+
 .block--text-deck {
   font-family: var(--serif);
   font-size: var(--size-deck);
@@ -280,7 +362,7 @@ body {
   font-size: var(--size-caption);
   font-variation-settings: 'opsz' var(--opsz-caption);
   line-height: var(--lh-caption);
-  color: var(--ink-soft);
+  color: var(--fg-soft);
 }
 
 .block--text-caption.tone--light {
@@ -289,6 +371,7 @@ body {
 
 .caption-label {
   display: block;
+  color: var(--fg-accent);
   font-family: var(--mono);
   font-size: var(--size-label);
   font-weight: 600;
@@ -314,6 +397,13 @@ sup {
   line-height: var(--lh-quote);
 }
 
+/* Sütun arasında büyük alıntı. */
+.block--quote-pull {
+  font-size: var(--size-pull);
+  font-variation-settings: 'opsz' var(--opsz-pull);
+  line-height: var(--lh-pull);
+}
+
 /* Açılış tırnağı kutunun soluna asılır. */
 .block--quote blockquote {
   margin: 0;
@@ -327,7 +417,7 @@ sup {
   font-size: var(--size-note);
   font-variation-settings: 'opsz' var(--opsz-note);
   line-height: var(--lh-note);
-  color: var(--ink-soft);
+  color: var(--fg-soft);
 }
 
 .block--note .flow {
@@ -336,6 +426,7 @@ sup {
 }
 
 .note-label {
+  color: var(--fg-accent);
   font-family: var(--mono);
   font-size: var(--size-label);
   font-weight: 600;
@@ -347,7 +438,36 @@ sup {
 
 .block--divider .rule {
   height: var(--hairline);
-  background: var(--rule);
+  background: var(--fg-rule);
+}
+
+.color--accent .rule {
+  background: var(--fg-accent);
+}
+
+/* Metin rengi (color alanı); stilin kendi renginin önüne geçer. */
+.block.color--accent {
+  color: var(--fg-accent);
+}
+
+.block.color--muted {
+  color: var(--fg-muted);
+}
+
+/* Künye: caption ya da notun sonunda, küçük ve soluk. */
+.credit {
+  margin-left: 0.4em;
+  font-family: var(--sans);
+  font-size: var(--size-credit);
+  font-style: normal;
+  letter-spacing: var(--track-credit);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+/* Görsel üstündeki açık tonlu caption'da künye de açık. */
+.tone--light .credit {
+  color: color-mix(in srgb, var(--light-ink) 70%, transparent);
 }
 
 /* image */
@@ -365,19 +485,18 @@ sup {
   object-fit: cover; /* şeffaf PNG'de arka plan boyanmaz */
 }
 
-.image-credit {
-  position: absolute;
-  right: calc(var(--cell) * 2);
-  bottom: calc(var(--cell) * 2);
-  font-family: var(--sans);
-  font-size: var(--size-credit);
-  letter-spacing: var(--track-credit);
-  text-transform: uppercase;
-  color: var(--light-ink);
+/* Görsel işleme. Multiply bloğun kendisine uygulanır: blok kendi yığın
+   bağlamını kurduğu için karışım ancak böyle sayfa zeminiyle olur. */
+.treat--mono img {
+  filter: grayscale(1);
 }
 
-.tone--dark .image-credit {
-  color: var(--ink-soft);
+.treat--duotone img {
+  filter: url(#xform-duotone);
+}
+
+.block.treat--multiply {
+  mix-blend-mode: multiply;
 }
 
 /* ---------- Kılavuzlar (g tuşu) ---------- */

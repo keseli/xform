@@ -2,7 +2,7 @@
 // DOM'a dokunmaz; akış bloklarında saklanan h (son ölçüm) kullanılır.
 // Yığındaki blokların konumu her zaman yığından hesaplanır (saklanan x/y'ye bakılmaz).
 import { COLS, ROWS } from '../config.ts';
-import { isPlaced } from '../model.ts';
+import { isPlaced, LAYOUT_ONLY } from '../model.ts';
 import { stackPositions } from '../stacks.ts';
 import type { Block, Issue, PlacedBlock } from '../types.ts';
 
@@ -22,7 +22,10 @@ export function computeWarnings(data: Pick<Issue, 'spreads' | 'blocks' | 'stacks
 
   const spreadIndex = new Map(data.spreads.map((s, i) => [s.id, i]));
   const byId = new Map(data.blocks.map((b) => [b.id, b]));
-  const placed = data.blocks.filter((b): b is PlacedBlock => isPlaced(b) && spreadIndex.has(b.spread_id));
+  // Kutular içerik değildir: sıra ve ilişki uyarılarına girmez.
+  const placed = data.blocks.filter(
+    (b): b is PlacedBlock => isPlaced(b) && spreadIndex.has(b.spread_id) && !LAYOUT_ONLY.has(b.type),
+  );
 
   // Sıra: daha büyük order'lı blok, daha küçük order'lı bir bloktan önceki spread'de.
   // laterMin[i] = i ve sonraki spread'lerdeki en küçük order'lı blok.

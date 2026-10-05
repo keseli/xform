@@ -1,7 +1,7 @@
 // Şablonlar ve slotlar: "+ Spread" menüsü, şablondan spread, tepsiden ve
 // tuvalden slota bırakma, uymayan blok, geri alma, boş yığın (metin sütunu),
 // slot seçme/silme, okuma görünümü, şablon olarak kaydetme.
-import { existsSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { check, editorState, expect, issueCopy, openEditor, ROOT, test } from './fixtures.ts';
 
 const issue = issueCopy('e2e-templates');
@@ -49,7 +49,8 @@ test('şablonlar ve slotlar', async ({ page, errors }) => {
   // Menü: boş spread ve dört başlangıç şablonu.
   await page.click('[data-cmd="add-spread"]');
   const items = await page.locator('.spread-menu [role="menuitem"]').allTextContents();
-  check('menüde boş spread + 4 şablon', items.length === 5 && items[0] === 'Boş spread', items.join(' | '));
+  const templates = readdirSync(`${ROOT}data/templates`).filter((f) => f.endsWith('.json') && !f.startsWith('e2e-'));
+  check('menüde boş spread + şablonlar', items.length === templates.length + 1 && items[0] === 'Boş spread', items.join(' | '));
   await page.keyboard.press('Escape');
   check('Esc menüyü kapatır', (await page.locator('.spread-menu').count()) === 0);
 

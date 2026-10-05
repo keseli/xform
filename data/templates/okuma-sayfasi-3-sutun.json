@@ -1,0 +1,91 @@
+{
+  "name": "Okuma sayfası, 3 sütun",
+  "chrome_left": "full",
+  "chrome_right": "full",
+  "slots": [
+    {
+      "x": 14,
+      "y": 20,
+      "w": 51,
+      "h": 5,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "heading",
+        "variant": "subhead"
+      }
+    },
+    {
+      "x": 318,
+      "y": 212,
+      "w": 14,
+      "h": 1,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "divider"
+      }
+    },
+    {
+      "x": 318,
+      "y": 217,
+      "w": 51,
+      "h": 16,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "note"
+      }
+    }
+  ],
+  "stacks": [
+    {
+      "direction": "vertical",
+      "x": 14,
+      "y": 28,
+      "gap": 5,
+      "w": 51,
+      "h": 208
+    },
+    {
+      "direction": "vertical",
+      "x": 71,
+      "y": 20,
+      "gap": 5,
+      "w": 51,
+      "h": 216
+    },
+    {
+      "direction": "vertical",
+      "x": 128,
+      "y": 20,
+      "gap": 5,
+      "w": 51,
+      "h": 216
+    },
+    {
+      "direction": "vertical",
+      "x": 204,
+      "y": 20,
+      "gap": 5,
+      "w": 51,
+      "h": 216
+    },
+    {
+      "direction": "vertical",
+      "x": 261,
+      "y": 20,
+      "gap": 5,
+      "w": 51,
+      "h": 216
+    },
+    {
+      "direction": "vertical",
+      "x": 318,
+      "y": 20,
+      "gap": 5,
+      "w": 51,
+      "h": 186
+    }
+  ]
+}

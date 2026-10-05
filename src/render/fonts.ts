@@ -3,7 +3,7 @@ import { CELL } from '../config.ts';
 /** Satır yükseklikleri (styles/main.css'teki --lh-* token'ları) hücrenin tam katı olmalı. */
 export function checkLineHeights(): void {
   const style = getComputedStyle(document.documentElement);
-  for (const name of ['title', 'deck', 'body', 'quote', 'caption', 'note', 'subhead', 'kicker', 'chrome']) {
+  for (const name of ['title', 'deck', 'body', 'quote', 'pull', 'caption', 'note', 'subhead', 'kicker', 'chrome']) {
     const value = parseFloat(style.getPropertyValue(`--lh-${name}`));
     if (!(value > 0) || value % CELL) {
       console.warn(`[xform] --lh-${name} (${value}) hücrenin (${CELL}) tam katı değil`);

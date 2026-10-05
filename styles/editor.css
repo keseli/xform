@@ -913,3 +913,32 @@ body.editor {
 .slot--divider .slot-label {
   left: calc(100% + 4px / var(--scale));
 }
+
+/* Sayı paleti */
+
+.palette {
+  display: grid;
+  gap: 4px;
+}
+
+.palette-row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.palette-row input[type='color'] {
+  width: 32px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--ui-line);
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+.palette-row code {
+  color: var(--ui-muted);
+  font-size: 11px;
+}

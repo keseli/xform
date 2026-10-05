@@ -152,6 +152,15 @@
       "content": "A gauge cannot ask for perfection, because no part is ever exactly the size it is meant to be. So it asks for something achievable: not smaller than this, not larger than that. The gap between the two limits is the tolerance. It is a written statement of how wrong a part is allowed to be and still count as right."
     },
     {
+      "key": "pull",
+      "type": "quote",
+      "variant": "pull",
+      "content": "“It is a written statement of how wrong a part is allowed to be and still count as right.”",
+      "relates_to": [
+        "p4"
+      ]
+    },
+    {
       "key": "p5",
       "type": "text",
       "variant": "body",

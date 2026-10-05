@@ -10,7 +10,7 @@
 //   tepsi önizlemesi; `children` yuvası, en sonda
 import type { ReactNode } from 'react';
 import { CELL, FRAME, MARGINS, PAGE_COLS } from '../../config.ts';
-import { blocksOnSpread } from '../../model.ts';
+import { blocksOnSpread, LAYOUT_ONLY } from '../../model.ts';
 import { childrenOf, hasPlaceholder, stackBounds, stackById } from '../../stacks.ts';
 import { slotById, slotsOn } from '../../templates.ts';
 import type { PlacedBlock, Rect, Slot } from '../../types.ts';
@@ -143,12 +143,12 @@ export function EditorLayer({ session, warnings }: { session: Session; warnings:
     let dirs: string[];
     if (b.stack_id != null) {
       // Yığın içinde konum yığından gelir: yalnız sağ/alt kenar.
-      dirs = b.type === 'image' ? ['e', 's', 'se'] : ['e'];
+      dirs = b.type === 'image' || b.type === 'box' ? ['e', 's', 'se'] : ['e'];
       cls.push('selection--child');
     } else {
-      dirs = b.type === 'image' ? Object.keys(DIRS) : ['w', 'e'];
+      dirs = b.type === 'image' || b.type === 'box' ? Object.keys(DIRS) : ['w', 'e'];
     }
-    if (b.type !== 'image') cls.push('selection--sides');
+    if (b.type !== 'image' && b.type !== 'box') cls.push('selection--sides');
     return (
       <Box className={cls.join(' ')} r={controller.blockRect(b)}>
         <Handles dirs={dirs} />
@@ -194,6 +194,7 @@ export function EditorLayer({ session, warnings }: { session: Session; warnings:
         );
       })}
       {blocksOnSpread(data.blocks, spread.id).map((b) => {
+        if (LAYOUT_ONLY.has(b.type)) return null; // kutunun okuma sırası yok
         const list = warnings.get(b.id) ?? [];
         return (
           <div

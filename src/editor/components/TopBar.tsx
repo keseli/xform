@@ -106,6 +106,9 @@ export function TopBar({ session }: { session: Session }) {
         })}
       </nav>
       <AddSpread session={session} />
+      <button className="tab tab--add" data-cmd="add-box" title="Açık spread'e kutu ekle" onClick={() => actions.addBox()}>
+        + Kutu
+      </button>
       <div className="tools">
         <button className="toggle" data-cmd="grid" aria-pressed={state.showGrid} onClick={() => actions.toggleGrid()}>
           Izgara <kbd>G</kbd>

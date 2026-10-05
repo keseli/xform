@@ -5,20 +5,23 @@
 // - id = "<slug>/<key>"; relates_to key'leri aynı makaleye göre çözülür,
 //   "/" içeren değerler tam id kabul edilir.
 // - order baştan hesaplanır: manifest'teki makale sırası, sonra makale içindeki sıra.
-// - Hattan gelen alanlar güncellenir; yerleşim alanları (yığın üyeliği dahil) ve
-//   tone editöre aittir.
+// - Hattan gelen alanlar güncellenir; yerleşim alanları (yığın üyeliği dahil),
+//   tone, color, drop_cap, treatment editöre aittir.
+// - Kutular (box) editörde oluşur, pakette yoktur; içe aktarma onlara dokunmaz.
 //   focal_point yalnız yeni görsellerde hattan alınır.
 // - Paketten çıkan blok tepsideyse silinir; yerleşikse korunur ve
 //   removed_from_content ile işaretlenir.
 // - family (anchor | encounter | activity | interlude) yalnız pakette durur:
 //   denetlenir, sayıya ve sayfaya taşınmaz.
-import { VARIANTS } from '../model.ts';
+import { LAYOUT_ONLY, VARIANTS } from '../model.ts';
 import type { Block, BlockType, FocalPoint, Issue, IssueMeta, Variant } from '../types.ts';
 
 const KEY = /^[a-z0-9][a-z0-9-]*$/;
 const FILE = /^[A-Za-z0-9_][A-Za-z0-9_.-]*$/;
 const LAYOUT_KEYS = ['spread_id', 'x', 'y', 'w', 'h', 'z'] as const;
 const IMAGE_KEYS = ['source', 'credit', 'alt', 'source_url', 'license'] as const;
+/** Editöre ait alanlar: içe aktarma dokunmaz. */
+const EDITOR_KEYS = ['color', 'drop_cap', 'treatment', 'fill', 'opacity'] as const;
 const DEFAULT_FOCAL: FocalPoint = { x: 0.5, y: 0.5 };
 
 /** Paketteki blok (article.json). */
@@ -161,6 +164,8 @@ export function normalizeBlock(b: Partial<Block> & IncomingBlock): Block {
     out.focal_point = b.focal_point ?? DEFAULT_FOCAL;
     for (const k of IMAGE_KEYS) out[k] = b[k] ?? null;
   }
+  // Editöre ait görünüm alanları: varsa korunur.
+  for (const k of EDITOR_KEYS) if (b[k] != null) (out as unknown as Record<string, unknown>)[k] = b[k];
   if (b.removed_from_content) out.removed_from_content = true;
   return out;
 }
@@ -233,6 +238,11 @@ export function mergeIssue<T extends Pick<Issue, 'blocks'>>(
   let order = incoming.length;
   const gone = data.blocks.filter((b) => !incomingIds.has(b.id)).sort((a, b) => a.order - b.order);
   for (const cur of gone) {
+    // Editörde oluşturulan bloklar (kutu) içerikten gelmez; olduğu gibi kalır.
+    if (LAYOUT_ONLY.has(cur.type)) {
+      blocks.push(normalizeBlock(cur as Block & IncomingBlock));
+      continue;
+    }
     if (cur.spread_id == null) {
       report.deleted.push(cur.id);
       continue;

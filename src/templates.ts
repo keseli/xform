@@ -7,9 +7,10 @@
 // Şablon: slotlar, boş yığınlar (yer tutucu alanlı metin sütunları) ve chrome
 // ayarlarından oluşan spread iskeleti; data/templates/<ad>.json. Kimlikler
 // spread kurulurken verilir.
-import { slotProblems } from './model.ts';
+import { LAYOUT_ONLY, slotProblems } from './model.ts';
+import { PALETTE_NAMES, THEMES } from './style.ts';
 import { childrenOf, nextStackId, removeFromStack, stackBounds } from './stacks.ts';
-import type { Block, Issue, PlacedBlock, Point, Slot, Stack, Template } from './types.ts';
+import type { Block, Issue, PlacedBlock, Point, Slot, Stack, Template, TemplateBox } from './types.ts';
 
 /** Şablon işlemlerinin ihtiyaç duyduğu kısım (testler kısmi veriyle çağırır). */
 type Layout = Pick<Issue, 'blocks' | 'stacks' | 'slots'>;
@@ -75,9 +76,39 @@ function nextSlotId(data: Layout): string {
   return `slot-${n}`;
 }
 
-/** Şablonun slotlarını ve boş yığınlarını spread'e yeni kimliklerle koyar. */
-export function instantiateTemplate(data: Layout, template: Template, spreadId: string): { slots: string[]; stacks: string[] } {
-  const out = { slots: [] as string[], stacks: [] as string[] };
+/** Yeni kutu bloğu (editörde oluşur; içerik paketinde yok). */
+export function createBox(data: Pick<Issue, 'blocks'>, spreadId: string, box: TemplateBox): Block {
+  const ids = new Set(data.blocks.map((b) => b.id));
+  let n = 1;
+  while (ids.has(`box-${n}`)) n++;
+  const b: Block = {
+    id: `box-${n}`,
+    type: 'box',
+    variant: null,
+    content: null,
+    order: 0,
+    relates_to: [],
+    spread_id: spreadId,
+    x: box.x,
+    y: box.y,
+    w: box.w,
+    h: box.h,
+    z: box.z,
+    tone: 'dark',
+    fill: box.fill,
+    ...(box.opacity != null && box.opacity < 1 ? { opacity: box.opacity } : {}),
+  };
+  data.blocks.push(b);
+  return b;
+}
+
+/** Şablonun slotlarını, boş yığınlarını ve kutularını spread'e yeni kimliklerle koyar. */
+export function instantiateTemplate(
+  data: Layout,
+  template: Template,
+  spreadId: string,
+): { slots: string[]; stacks: string[]; boxes: string[] } {
+  const out = { slots: [] as string[], stacks: [] as string[], boxes: [] as string[] };
   for (const t of template.slots) {
     const slot: Slot = { ...structuredClone(t), id: nextSlotId(data), spread_id: spreadId };
     (data.slots ??= []).push(slot);
@@ -88,6 +119,7 @@ export function instantiateTemplate(data: Layout, template: Template, spreadId: 
     (data.stacks ??= []).push(stack);
     out.stacks.push(stack.id);
   }
+  for (const t of template.boxes ?? []) out.boxes.push(createBox(data, spreadId, t).id);
   return out;
 }
 
@@ -103,7 +135,20 @@ export function templateFromSpread(
 ): Template {
   const spread = data.spreads.find((s) => s.id === spreadId);
   if (!spread) throw new Error(`bilinmeyen spread ${spreadId}`);
-  const free = (data.blocks.filter((b) => b.spread_id === spreadId && b.stack_id == null) as PlacedBlock[]).map(
+  const onSpread = data.blocks.filter((b) => b.spread_id === spreadId) as PlacedBlock[];
+  const boxes: TemplateBox[] = onSpread
+    .filter((b) => b.type === 'box')
+    .sort((a, b) => a.z - b.z)
+    .map((b) => ({
+      x: b.x,
+      y: b.y,
+      w: b.w,
+      h: b.h,
+      z: b.z,
+      fill: b.fill ?? 'accent-soft',
+      ...(b.opacity != null ? { opacity: b.opacity } : {}),
+    }));
+  const free = onSpread.filter((b) => b.stack_id == null && !LAYOUT_ONLY.has(b.type)).map(
     (b) => ({
       x: b.x,
       y: b.y,
@@ -125,8 +170,11 @@ export function templateFromSpread(
     name,
     chrome_left: spread.chrome_left,
     chrome_right: spread.chrome_right,
+    ...(spread.theme_left && spread.theme_left !== 'paper' ? { theme_left: spread.theme_left } : {}),
+    ...(spread.theme_right && spread.theme_right !== 'paper' ? { theme_right: spread.theme_right } : {}),
     slots: [...kept, ...free].sort((a, b) => a.z - b.z),
     stacks,
+    ...(boxes.length ? { boxes } : {}),
   };
 }
 
@@ -152,6 +200,16 @@ export function validateTemplate(t: Template): string[] {
   }
   if (!Array.isArray(t?.slots) || !Array.isArray(t?.stacks)) return [...out, 'slots ve stacks dizi olmalı'];
   t.slots.forEach((s, i) => out.push(...slotProblems(s, `slot ${i + 1}`)));
+  for (const key of ['theme_left', 'theme_right'] as const) {
+    if (t[key] != null && !THEMES.includes(t[key])) out.push(`${key} geçersiz`);
+  }
+  (t.boxes ?? []).forEach((b, i) => {
+    if (![b.x, b.y, b.z].every(Number.isInteger) || !isSize(b.w) || !isSize(b.h)) {
+      out.push(`kutu ${i + 1}: x, y, z tam sayı; w, h pozitif tam sayı olmalı`);
+    }
+    if (!PALETTE_NAMES.includes(b.fill)) out.push(`kutu ${i + 1}: fill palet adı olmalı`);
+    if (b.opacity != null && !(b.opacity >= 0 && b.opacity <= 1)) out.push(`kutu ${i + 1}: opacity 0–1 olmalı`);
+  });
   t.stacks.forEach((s, i) => {
     if (!['vertical', 'horizontal'].includes(s.direction)) out.push(`yığın ${i + 1}: direction geçersiz`);
     if (![s.x, s.y].every(Number.isInteger) || !isCount(s.gap) || !isSize(s.w) || !isSize(s.h)) {

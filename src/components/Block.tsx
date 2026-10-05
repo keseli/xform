@@ -7,6 +7,7 @@ import { ImageBlock } from './blocks/ImageBlock.tsx';
 import { QuoteBlock } from './blocks/QuoteBlock.tsx';
 import { NoteBlock } from './blocks/NoteBlock.tsx';
 import { DividerBlock } from './blocks/DividerBlock.tsx';
+import { BoxBlock } from './blocks/BoxBlock.tsx';
 
 const BY_TYPE: Record<BlockType, ComponentType<BlockViewProps>> = {
   text: TextBlock,
@@ -15,6 +16,7 @@ const BY_TYPE: Record<BlockType, ComponentType<BlockViewProps>> = {
   quote: QuoteBlock,
   note: NoteBlock,
   divider: DividerBlock,
+  box: BoxBlock,
 };
 
 /** Tipine göre blok bileşeni. Yalnız veriden çizer. */

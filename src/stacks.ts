@@ -10,6 +10,7 @@
 // Yer tutucu (w, h): şablondan gelen metin sütunu. Alanı her zaman yığının
 // alanına katılır, yığın boşalınca silinmez; giren metin bloğu w'yi alır.
 import { FLOW_TYPES } from './config.ts';
+import { gapBetween } from './style.ts';
 import type { Block, Direction, Issue, PlacedBlock, Point, Rect, Stack } from './types.ts';
 
 /** Yığın işlemlerinin ihtiyaç duyduğu kısım (testler kısmi veriyle çağırır). */
@@ -29,6 +30,13 @@ export function childrenOf(data: Layout, stackId: string): PlacedBlock[] {
 const along = (s: { direction: Direction }): { pos: Axis; size: Size } =>
   s.direction === 'horizontal' ? { pos: 'x', size: 'w' } : { pos: 'y', size: 'h' };
 
+/**
+ * İki komşu çocuk arasındaki boşluk. Dikey yığında dizgi kuralları
+ * (src/style.ts gapBetween: gövde → gövde 0, ara başlık üstü/altı); yatayda gap.
+ */
+const spacing = (s: Stack, prev: Block | undefined, next: Block) =>
+  !prev ? 0 : s.direction === 'vertical' ? gapBetween(prev, next, s.gap) : s.gap;
+
 /** Yığın çocuklarının hesaplanan konumları; veriyi değiştirmez. */
 export function stackPositions(data: Layout): Map<string, Partial<Point>> {
   const out = new Map<string, Partial<Point>>();
@@ -36,9 +44,12 @@ export function stackPositions(data: Layout): Map<string, Partial<Point>> {
     const { pos, size } = along(s);
     const cross: Axis = pos === 'x' ? 'y' : 'x';
     let cursor = s[pos];
+    let prev: Block | undefined;
     for (const b of childrenOf(data, s.id)) {
+      cursor += spacing(s, prev, b);
       out.set(b.id, { [pos]: cursor, [cross]: s[cross] });
-      cursor += (b[size] ?? 0) + s.gap;
+      cursor += b[size] ?? 0;
+      prev = b;
     }
   }
   return out;
@@ -49,12 +60,15 @@ export function layoutStack(data: Layout, s: Stack): void {
   const { pos, size } = along(s);
   const cross: Axis = pos === 'x' ? 'y' : 'x';
   let cursor = s[pos];
+  let prev: Block | undefined;
   childrenOf(data, s.id).forEach((b, i) => {
+    cursor += spacing(s, prev, b);
     b.stack_index = i;
     b.spread_id = s.spread_id;
     b[pos] = cursor;
     b[cross] = s[cross];
-    cursor += (b[size] ?? 0) + s.gap;
+    cursor += b[size] ?? 0;
+    prev = b;
   });
 }
 

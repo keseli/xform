@@ -5,7 +5,8 @@ import { CELL } from '../../config.ts';
 import { blocksOnSpread, isPlaced } from '../../model.ts';
 import { childrenOf, hasPlaceholder, stackBounds, stackById } from '../../stacks.ts';
 import { slotById, slotsOn } from '../../templates.ts';
-import type { Block, Slot, Stack } from '../../types.ts';
+import { colorsFor, paletteOf, PALETTE_NAMES, THEMES, TREATMENTS } from '../../style.ts';
+import type { Block, PaletteName, Slot, Stack, TextColor, Theme, Treatment } from '../../types.ts';
 import type { Session } from '../session.ts';
 import { computeWarnings, type Warning } from '../warnings.ts';
 import { kindLabel, pageLabel, snippet } from '../labels.ts';
@@ -139,6 +140,7 @@ export function Inspector({ session }: { session: Session }) {
           </label>
         ) : null}
         {b.type === 'image' && placed && b.source ? focalPanel(b) : null}
+        {lookPanel(b)}
         <div className="buttons">
           <button data-action="front" disabled={!placed} onClick={() => actions.front(id)}>
             Öne getir <kbd>]</kbd>
@@ -147,7 +149,7 @@ export function Inspector({ session }: { session: Session }) {
             Arkaya gönder <kbd>[</kbd>
           </button>
           <button data-action="unplace" className="danger" disabled={!placed} onClick={() => actions.unplace(id)}>
-            Tepsiye gönder <kbd>Del</kbd>
+            {b.type === 'box' ? 'Kutuyu sil' : 'Tepsiye gönder'} <kbd>Del</kbd>
           </button>
         </div>
         {own.length ? (
@@ -159,6 +161,133 @@ export function Inspector({ session }: { session: Session }) {
             ))}
           </ul>
         ) : null}
+      </section>
+    );
+  }
+
+  /** Görünüm: metin rengi, büyük baş harf, görsel işleme, kutu dolgusu ve saydamlığı. */
+  function lookPanel(b: Block) {
+    const colors = colorsFor(b.type);
+    const COLOR_TEXT: Record<TextColor, string> = { default: 'Varsayılan', accent: 'Accent', muted: 'Soluk' };
+    const TREAT_TEXT: Record<Treatment, string> = {
+      none: 'Yok',
+      mono: 'Mono (gri)',
+      duotone: 'Duotone (ink + paper)',
+      multiply: 'Multiply (kâğıda karışır)',
+    };
+    return (
+      <>
+        {colors.length ? (
+          <label className="field">
+            Renk
+            <select
+              data-action="color"
+              value={b.color ?? 'default'}
+              onChange={(e) => {
+                const v = e.target.value as TextColor;
+                actions.updateBlock(id, { color: v === 'default' ? undefined : v });
+              }}
+            >
+              {colors.map((c) => (
+                <option key={c} value={c}>
+                  {COLOR_TEXT[c]}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+        {b.type === 'text' && b.variant === 'body' ? (
+          <label className="check">
+            <input
+              type="checkbox"
+              data-action="drop-cap"
+              checked={!!b.drop_cap}
+              onChange={(e) => actions.updateBlock(id, { drop_cap: e.target.checked || undefined })}
+            />{' '}
+            Büyük baş harf <span className="muted">(üç satır)</span>
+          </label>
+        ) : null}
+        {b.type === 'image' ? (
+          <label className="field">
+            İşleme
+            <select
+              data-action="treatment"
+              value={b.treatment ?? 'none'}
+              onChange={(e) => {
+                const v = e.target.value as Treatment;
+                actions.updateBlock(id, { treatment: v === 'none' ? undefined : v });
+              }}
+            >
+              {TREATMENTS.map((t) => (
+                <option key={t} value={t}>
+                  {TREAT_TEXT[t]}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+        {b.type === 'box' ? (
+          <div className="field-row">
+            <label className="field">
+              Dolgu
+              <select
+                data-action="fill"
+                value={b.fill ?? 'accent-soft'}
+                onChange={(e) => actions.updateBlock(id, { fill: e.target.value as PaletteName })}
+              >
+                {PALETTE_NAMES.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="field">
+              Saydamlık (%)
+              <CommitInput
+                key={`${b.id}:${b.opacity ?? 1}`}
+                type="number"
+                min="0"
+                max="100"
+                step="5"
+                data-action="opacity"
+                defaultValue={Math.round((b.opacity ?? 1) * 100)}
+                onCommit={(el) => {
+                  const v = Math.max(0, Math.min(100, Math.round(Number(el.value))));
+                  if (!Number.isFinite(v)) return void (el.value = String(Math.round((b.opacity ?? 1) * 100)));
+                  actions.updateBlock(id, { opacity: v >= 100 ? undefined : v / 100 });
+                }}
+              />
+            </label>
+          </div>
+        ) : null}
+      </>
+    );
+  }
+
+  /** Sayı ayarları: palet (bloklar renk kodu değil ad taşır). */
+  function issuePanel() {
+    const palette = paletteOf(data);
+    return (
+      <section className="panel">
+        <div className="panel-head">
+          Sayı <span className="count">palet</span>
+        </div>
+        <div className="palette">
+          {PALETTE_NAMES.map((n) => (
+            <label key={n} className="palette-row">
+              <CommitInput
+                key={`${n}:${palette[n]}`}
+                type="color"
+                data-action={`palette-${n}`}
+                defaultValue={palette[n]}
+                onCommit={(el) => actions.setPaletteColor(n, el.value)}
+              />
+              <span className="palette-name">{n}</span>
+              <code>{palette[n]}</code>
+            </label>
+          ))}
+        </div>
       </section>
     );
   }
@@ -242,7 +371,8 @@ export function Inspector({ session }: { session: Session }) {
             ))}
           </ol>
           <span className="muted">
-            Çift tık ya da listeden seç: içindeki bloğa gir.
+            Boşluk, art arda gövde paragrafları (boşluksuz, girintili) ve ara başlıklar (üstü 8, altı 3 hücre)
+            dışındaki bloklar arasına uygulanır. Çift tık ya da listeden seç: içindeki bloğa gir.
             {st.direction === 'vertical'
               ? ' Yan tutamaçlar tüm metin bloklarının genişliğini birlikte değiştirir.'
               : ''}
@@ -379,6 +509,27 @@ export function Inspector({ session }: { session: Session }) {
             onCommit={(el) => actions.updateSpread({ section: el.value.trim() })}
           />
         </label>
+        <div className="field-row">
+          {(['left', 'right'] as const).map((side) => (
+            <label key={side} className="field">
+              {side === 'left' ? 'Sol sayfa teması' : 'Sağ sayfa teması'}
+              <select
+                data-action={`theme-${side}`}
+                value={s[`theme_${side}`] ?? 'paper'}
+                onChange={(e) => {
+                  const v = e.target.value as Theme;
+                  actions.updateSpread({ [`theme_${side}`]: v === 'paper' ? undefined : v });
+                }}
+              >
+                {THEMES.map((t) => (
+                  <option key={t} value={t}>
+                    {{ paper: 'Kâğıt', ink: 'Koyu (ink)', soft: 'Açık vurgu (soft)', accent: 'Vurgu (accent)' }[t]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ))}
+        </div>
         <label className="check">
           <input
             type="checkbox"
@@ -474,7 +625,13 @@ export function Inspector({ session }: { session: Session }) {
   else if (stack) panel = stackPanel(stack);
   else if (slot) panel = slotPanel(slot);
   else if (selected) panel = blockPanel(selected);
-  else panel = spreadPanel();
+  else
+    panel = (
+      <>
+        {spreadPanel()}
+        {issuePanel()}
+      </>
+    );
 
   return (
     <aside id="inspector">

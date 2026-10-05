@@ -97,7 +97,8 @@ test('yer tutucu yığın: boşalınca kalır, alanı korunur; giren metin sütu
   assert.deepEqual([get(data, 'p').x, get(data, 'p').y, get(data, 'p').w], [204, 28, 79]);
   insertIntoStack(data, 'q', 'col', 1);
   insertIntoStack(data, 'i', 'col', 2);
-  assert.deepEqual([get(data, 'q').y, get(data, 'q').w], [43, 79], 'ikinci metin de sütun genişliğinde');
+  // Art arda gövde paragrafları arasında boşluk yok (src/style.ts gapBetween).
+  assert.deepEqual([get(data, 'q').y, get(data, 'q').w], [38, 79], 'ikinci metin de sütun genişliğinde');
   assert.equal(get(data, 'i').w, 30, 'görselin genişliği korunur');
   removeFromStack(data, 'i');
   removeFromStack(data, 'q');

@@ -89,7 +89,8 @@ test('kılavuzlar, çoklu seçim ve auto layout', async ({ page, errors }) => {
   check('sıra konumdan', (await stackOrder(stack.id, false)).join() === [E('sub-materiality'), E('p3'), E('p4')].join());
   const p3s = await blk(E('p3'));
   const p4s = await blk(E('p4'));
-  check('aralıklar eşit (gap)', p4s.y - (p3s.y + p3s.h) === stack.gap, `gap=${stack.gap}`);
+  // Dizgi kuralı: art arda gövde paragrafları arasında boşluk yok (src/style.ts).
+  check('gövde paragrafları arası boşluksuz', p4s.y - (p3s.y + p3s.h) === 0, `${p3s.y}+${p3s.h} → ${p4s.y}`);
 
   // 5. Tık yığını, çift tık içteki bloğu seçer.
   await page.keyboard.press('Escape');
@@ -137,7 +138,8 @@ test('kılavuzlar, çoklu seçim ve auto layout', async ({ page, errors }) => {
   const g = await st();
   const k3 = g.data.blocks.find((b: any) => b.id === E('p3'));
   const k4 = g.data.blocks.find((b: any) => b.id === E('p4'));
-  check('boşluk paneli', g.data.stacks[0].gap === 2 && k4.y - (k3.y + k3.h) === 2);
+  // Boşluk alanı gövde → gövde arasına uygulanmaz; değer yine kaydedilir.
+  check('boşluk paneli', g.data.stacks[0].gap === 2 && k4.y - (k3.y + k3.h) === 0);
 
   // 9b. Yığın genişliği: sağ tutamaç tüm metinleri birlikte daraltır; sol tutamaç x'i kaydırır.
   const texts = async () =>

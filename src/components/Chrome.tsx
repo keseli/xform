@@ -2,6 +2,7 @@
 // sayfa numarası. Görünürlük sayfa bazında spread verisinden (chrome_left/right).
 import { CELL, MARGINS, PAGE_COLS } from '../config.ts';
 import { pageNumbers } from '../model.ts';
+import { themeOf } from '../style.ts';
 import type { IssueMeta, Spread } from '../types.ts';
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -23,7 +24,7 @@ export function Chrome({ side, issue, spread, index }: ChromeProps) {
   };
   if (side === 'left') {
     return (
-      <header className="chrome chrome--left" style={style}>
+      <header className={`chrome chrome--left theme--${themeOf(spread, 'left')}`} style={style}>
         <span className="chrome-mast">{issue.title}</span>
         <span className="chrome-meta">
           {`${MONTHS[issue.month - 1]} ${issue.year}`}
@@ -34,7 +35,7 @@ export function Chrome({ side, issue, spread, index }: ChromeProps) {
     );
   }
   return (
-    <header className="chrome chrome--right" style={style}>
+    <header className={`chrome chrome--right theme--${themeOf(spread, 'right')}`} style={style}>
       <span></span>
       <span className="chrome-section">{spread.section ?? ''}</span>
       <span className="chrome-folio">{String(pageNumbers(issue, index).right).padStart(3, '0')}</span>

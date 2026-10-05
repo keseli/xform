@@ -8,7 +8,7 @@ npm install
 npm run dev        # http://localhost:5173 — okuma görünümü ve editör (Vite)
 npm test           # node:test, DOM'suz modüller (TypeScript doğrudan çalışır)
 npm run typecheck  # tsc --noEmit (strict)
-npm run e2e        # Playwright: tarayıcı senaryoları (editör, odak, yerleşim, içe aktarma, şablonlar)
+npm run e2e        # Playwright: tarayıcı senaryoları (editör, odak, yerleşim, içe aktarma, şablonlar, renk)
 npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini sayıya aktar
 ```
 
@@ -28,6 +28,7 @@ npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini say
 | --- | --- |
 | Tepsiden sürükle | Bloğu spread'e yerleştirir (varsayılan genişlik, görselde doğal oran); bir yığının üstüne bırakılırsa yığına girer, uygun bir slotun üstüne bırakılırsa slotu doldurur |
 | **+ Spread** | Boş spread ya da `data/templates/` altındaki bir şablon |
+| **+ Kutu** | Seçili spread'e renkli kutu (`box`); taşınır, 8 yönden boyutlanır, **Delete** siler |
 | Tık / **Shift+tık** / boş alanda sürükle | Seç / seçime ekle-çıkar / alan seçimi. Seçilenler birlikte taşınır |
 | Akıllı kılavuzlar | Taşırken ve resize ederken diğer blokların kenar/merkezlerine ve sayfa çizgilerine (kenar boşlukları, sayfa ortaları, kat) yakalar; pembe çizgi. **Ctrl/⌘** basılıyken kapalı |
 | **Shift+A** | Auto layout: seçili serbest bloklardan dikey ya da yatay yığın (yön dizilişten, boşluk mevcut aralıklardan) |
@@ -36,7 +37,7 @@ npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini say
 | Tutamaçlar | Metin/çizgi: yalnız genişlik. Görsel: 8 yön, oran kilidi **L** (Shift geçici tersine çevirir) |
 | **← ↑ → ↓** | Seçili bloğu snap adımı kadar kaydır (**Alt** ile 1) |
 | **]** / **[** | Öne getir / arkaya gönder |
-| **Delete** | Bloğu tepsiye geri gönder; seçili slotu ya da boş sütunu sil |
+| **Delete** | Bloğu tepsiye geri gönder; seçili slotu, kutuyu ya da boş sütunu sil |
 | Çift tık / **F** | Seçili görselde odak modu: kutu içinde sürüklemek görseli kaydırır (`focal_point`), kırpılan kısım soluk görünür. **Esc** çıkar |
 | **Ctrl+Z** / **Ctrl+Shift+Z** | Geri al / yinele (Mac'te ⌘; Ctrl+Y de yineler). Sürükleme tek adımdır, geçmiş 100 adım |
 | **G** | Izgara ve kılavuzlar |
@@ -53,7 +54,28 @@ Görsel seçilince `relates_to` paragrafları tuvalde ve tepside vurgulanır.
 aralarında `gap`, çapraz eksende başa hizalı. Bir paragraf uzarsa (düzenleme ya da içe
 aktarma) alttakiler kayar; okuma görünümü de aynı hesabı yapar. Tık yığını, çift tık
 içindeki bloğu seçer. İçteki blok seçiliyken sürüklemek ya da ok tuşları sırasını
-değiştirir; yığından uzağa sürüklenirse çıkar. Yön ve boşluk sağ panelden.
+değiştirir; yığından uzağa sürüklenirse çıkar. Yön ve boşluk sağ panelden. Dikey
+yığında dizgi kuralları `gap`'in önüne geçer: art arda gövde paragrafları arasında
+boşluk yok; ara başlığın üstünde 8, altında 3 hücre. `gap` geri kalan çiftler içindir.
+
+### Renk
+
+- **Palet** (`palette`, sayı düzeyinde): `paper`, `ink`, `muted`, `accent`,
+  `accent-soft`; eksik adlar varsayılandan. Frame'e CSS değişkeni olarak bağlanır.
+  Seçim yokken sağ panelde **Sayı / palet**.
+- **Sayfa teması** (`theme_left`, `theme_right`): `paper` | `ink` | `soft` | `accent`.
+  Zemin, metin, çizgi ve chrome renkleri temadan; blok, sol kenarının düştüğü sayfanın
+  temasını alır. Spread panelinden.
+- **Metin rengi** (`color`): `default` | `accent` | `muted`; çizgide `default` |
+  `accent`. Varsayılan: kicker, caption ve not etiketleri accent, gerisi metin rengi.
+- **Kutu** (`type: "box"`): `fill` bir palet adı, `opacity` 0–1. Yalnız editörde
+  yaratılır; içe aktarma dokunmaz, tepsiye düşmez, sıra rozeti ve uyarısı yok.
+- **Büyük baş harf** (`drop_cap`, yalnız gövde): üç satırlık baş harf; paragraf girintisiz.
+- **Görsel işleme** (`treatment`): `none` | `mono` (gri) | `duotone` (paletin ink ve
+  paper'ı) | `multiply` (görselin açık zemini kâğıda karışır).
+
+`color`, `drop_cap`, `treatment`, `fill`, `opacity` editöre aittir; tekrar içe aktarmada
+korunur. Sağ panelde seçili bloğun **Görünüm** bölümünden.
 
 ### Şablonlar ve slotlar
 
@@ -73,7 +95,7 @@ Boşken de mor kesikli çerçeveyle görünür ve seçilip taşınabilir. İçin
 bloğu sütunun genişliğini alır. Son bloğu çıksa da kalır; Shift+A ile kurulan, yer
 tutucusuz yığınlar eskisi gibi boşalınca silinir.
 
-**Şablon**, slotlar, boş yığınlar ve chrome ayarlarından oluşan iskelettir
+**Şablon**, slotlar, boş yığınlar, kutular, chrome ve tema ayarlarından oluşan iskelettir
 (`data/templates/<ad>.json`). Kimlikler spread kurulurken verilir.
 
 - **+ Spread** bir şablon seçtirir; **Boş spread** seçeneği de vardır.
@@ -82,7 +104,8 @@ tutucusuz yığınlar eskisi gibi boşalınca silinir.
   çevrilir. Spread'de duran slotlar da şablona girer. Aynı adda şablon varsa üzerine
   yazmak için onay ister.
 - Başlangıç şablonları: tam görselli açılış, nesne sayfası, okuma sayfası (dört metin
-  sütunu, örnek spread'in sütunları) ve tipografik sayfa.
+  sütunu, örnek spread'in sütunları), okuma sayfası 3 sütun (sayfa başına üç sütun,
+  51 hücre) ve tipografik sayfa.
 
 ```json
 {
@@ -109,15 +132,17 @@ content/
 - **Blok:** `key` (makale içinde benzersiz: küçük harf, rakam, `-`), `type`, `variant`,
   `content`, `label`, `relates_to` (aynı makalenin key'leri ya da `diger-slug/key`).
   Görselde `file`, `alt`, `credit`, `focal_point`; `file` yoksa düz kutu görünür.
-  Künye: `source_url` (arşivdeki açıklama sayfası) ve `license`; sayfada görünmez.
+  `credit` görselin üstünde değil, ona bağlı caption'ın (yoksa görselin `relates_to`'sundaki
+  notun) sonunda küçük ve soluk görünür. `source_url` (arşivdeki açıklama sayfası) ve
+  `license` sayfada görünmez.
   Sayıdaki `source` alanı görsel dosyasının yoludur, içe aktarma yazar.
 - **family** (isteğe bağlı): `anchor`, `encounter`, `activity` ya da `interlude`. Yalnız
   pakette durur, denetlenir; sayıya ve sayfaya taşınmaz.
 - **id** = `slug/key`. **order** yazılmaz: manifest'teki makale sırası ve makale içindeki
   sıradan her aktarmada baştan hesaplanır.
 - Görseller `assets/<issue>/<slug>/` altına kopyalanır.
-- Tekrar aktarmada içerik alanları güncellenir; yerleşim, `tone` ve mevcut görsellerin
-  `focal_point`'i korunur. Paketten çıkan blok tepsideyse silinir, yerleşikse korunur ve
+- Tekrar aktarmada içerik alanları güncellenir; yerleşim, `tone`, görünüm alanları
+  (`color`, `drop_cap`, `treatment`) ve mevcut görsellerin `focal_point`'i korunur. Paketten çıkan blok tepsideyse silinir, yerleşikse korunur ve
   editörde "içerikte yok" uyarısı alır.
 - Hatalı paket (çözülemeyen `relates_to`, yinelenen key, eksik dosya…) hiçbir şey yazmaz.
 
@@ -187,7 +212,8 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `src/model.ts` | Doğrulama, yardımcılar |
 | `src/stacks.ts` | Auto layout hesabı (editör ve okuma görünümü ortak, DOM'suz) |
 | `src/templates.ts` | Slot kabul ve doldurma, şablondan spread, spread'den şablon (DOM'suz) |
-| `src/components/` | Saf bileşenler: `Spread`, `Chrome`, `TextBlock`, `HeadingBlock`, `ImageBlock`, `QuoteBlock`, `NoteBlock`, `DividerBlock`. Yalnız veriden çizer; okuma görünümü ve editör aynısını kullanır |
+| `src/style.ts` | Palet, tema, paragraf girintisi, yığın aralıkları, künye yeri, duotone (DOM'suz) |
+| `src/components/` | Saf bileşenler: `Spread`, `Chrome`, `TextBlock`, `HeadingBlock`, `ImageBlock`, `QuoteBlock`, `NoteBlock`, `DividerBlock`, `BoxBlock`. Yalnız veriden çizer; okuma görünümü ve editör aynısını kullanır |
 | `src/render/` | Yükseklik ölçümü, frame'i sığdırma, fontlar (DOM) |
 | `src/read/` | Okuma görünümü (`index.html`) |
 | `src/editor/` | Editör (`editor.html`). DOM'suz: `store`, `geometry`, `snapping`, `focal`, `warnings`, `labels`. `session.ts` durum ve işlemler, `controller.ts` tuval etkileşimleri, `components/` arayüz; editöre özgü her şey `EditorLayer`/`GridGuides` katmanında |
@@ -206,7 +232,7 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 
 - Hücre 4 birim, ızgara 384×256. Konumlar hücre cinsinden; `x` spread'in sol
   kenarından sayılır (0–383). Editör snap adımı 2 hücre, değiştirici tuşla 1 (`SNAP`).
-- Tüm `--lh-*` satır yükseklikleri 4'ün katı; gövde 14.5/20.
+- Tüm `--lh-*` satır yükseklikleri 4'ün katı; gövde 12/16 (1536 frame'de).
 - Fontlar projeyle gelir (`styles/fonts/`), dış servisten yüklenmez:
   - **Literata** (değişken, optik boyut ekseni): gövde, başlık, deck, alıntı,
     caption, not.
@@ -217,12 +243,18 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
   | --- | --- | --- |
   | title | Literata, hafif sıkı aralık | 64/64 |
   | deck | Literata italik | 22/28 |
-  | body | Literata, sola yaslı, eski stil rakam | 14.5/20 |
+  | body | Literata, sola yaslı, eski stil rakam, ilk satır girintisi 1em | 12/16 |
   | quote | Literata italik, asılı tırnak | 22/28 |
+  | quote / pull | Literata italik, sütun arasında büyük alıntı | 30/36 |
   | caption, note | Literata | 10.5/16 |
   | subhead | Geist yarı kalın, büyük harf, aralıklı | 12/20 |
   | kicker | Geist, büyük harf, daha geniş aralıklı | 11/16 |
   | chrome | Geist Mono, büyük harf | 10/16 |
+  | künye | Geist, büyük harf, soluk | 7.5 |
+- Paragraf: yığında art arda gövde paragrafları boşluksuz; okuma sırasında (aynı
+  parça, görsel/caption/not/alıntı atlanarak) önceki metni gövde olan paragraf
+  girintili. Başlık, deck ya da ara başlıktan sonraki ilk paragraf ve büyük baş
+  harfli paragraf girintisiz.
 - `text`, `heading`, `quote`, `note` yüksekliği içerikten ölçülür ve bir üst hücreye
   yuvarlanır; saklanan `h` önbellektir. Ölçüm fontlar yüklendikten sonra yapılır; bir
   font geç gelirse iki görünüm de yeniden ölçer ve yığınları yeniden dizer.
