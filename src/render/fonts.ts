@@ -16,8 +16,8 @@ export function checkLineHeights(): void {
 // beklemez. Bu yüzden ilk ölçümden önce açıkça yüklenir. Fontlar değişken:
 // her dosya tüm kalınlıkları kapsar, liste dosya başına bir kesit yeter.
 const FACES = [
-  '400 16px Newsreader', // gövde, başlık, caption, note
-  'italic 400 16px Newsreader', // deck, quote
+  '400 16px Literata', // gövde, başlık, caption, note
+  'italic 400 16px Literata', // deck, quote
   '400 16px Geist', // kicker, subhead (600)
   '400 16px "Geist Mono"', // chrome, etiketler
 ];
