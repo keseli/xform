@@ -50,6 +50,7 @@ test('içe aktarma ve revizyon', async ({ page, errors }) => {
     );
 
   const r0 = issue.read().revision;
+  const p4y = issue.read().blocks.find((b: any) => b.id === 'empire-of-paper/p4').y;
   await openEditor(page, issue.name);
 
   // Editörde geri alınabilir bir değişiklik yap ve kaydedilsin.
@@ -78,7 +79,7 @@ test('içe aktarma ve revizyon', async ({ page, errors }) => {
   check('"içerikte yok" uyarısı', (await page.locator('.badge--warn[data-id="empire-of-paper/cap-tablet"]').count()) === 1);
   const p1 = await page.locator('.block[data-id="empire-of-paper/p1"]').textContent();
   check('yerleşik paragrafın metni güncellendi', p1!.includes('only people'));
-  check('yerleşim korundu', (await blk('empire-of-paper/p4')).y === 179, String((await blk('empire-of-paper/p4')).y));
+  check('yerleşim korundu', (await blk('empire-of-paper/p4')).y === p4y + 2, String((await blk('empire-of-paper/p4')).y));
 
   // Çakışma: bekleyen yerel değişiklik varken içe aktarma yazar.
   edit('empire-of-paper', (a) => {
@@ -89,7 +90,7 @@ test('içe aktarma ve revizyon', async ({ page, errors }) => {
   await waitRevision(r0 + 3, true);
   const note = (await page.locator('.save').textContent()) ?? '';
   check('çakışmada güncel sürüm yüklendi, bildirim', note.includes('kaydedilmedi'), note);
-  check('yerel değişiklik dosyaya yazılmadı', issue.read().blocks.find((b: any) => b.id === 'empire-of-paper/p4').y === 179);
+  check('yerel değişiklik dosyaya yazılmadı', issue.read().blocks.find((b: any) => b.id === 'empire-of-paper/p4').y === p4y + 2);
   check('içe aktarmanın değişikliği duruyor', (await blk('empire-of-paper/p2')).content.endsWith('(revised)'));
 
   // Sonra normal düzenleme yine kaydedilir.
