@@ -19,9 +19,7 @@ npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini say
 - `?issue=issue-001&spread=s-tablets`: dosya ve spread seçimi (iki görünümde de).
 - **Tarayıcı senaryoları** `e2e/`: her senaryo `data/issue-001.json`'un geçici bir
   kopyasında (`data/e2e-*.json`) çalışır ve bitince siler; dev sunucusu açık değilse
-  kendisi başlatır. İlk kurulumda `npx playwright install chromium`. Google Fonts'a
-  tarayıcıdan erişilemeyen (vekil sunuculu) ortamlarda fontları Node üzerinden
-  çekmek için: `E2E_FONTS_VIA_NODE=1 NODE_USE_ENV_PROXY=1 npm run e2e`.
+  kendisi başlatır. İlk kurulumda `npx playwright install chromium`.
 
 ### Editör
 
@@ -148,7 +146,8 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `src/read/` | Okuma görünümü (`index.html`) |
 | `src/editor/` | Editör (`editor.html`). DOM'suz: `store`, `geometry`, `snapping`, `focal`, `warnings`, `labels`. `session.ts` durum ve işlemler, `controller.ts` tuval etkileşimleri, `components/` arayüz; editöre özgü her şey `EditorLayer`/`GridGuides` katmanında |
 | `src/content/merge.ts` | İçe aktarma kuralları (DOM'suz, dosya sistemsiz) |
-| `styles/main.css` | Renkler ve tipografi; `--lh-*` satır yükseklikleri hücrenin katı olmalı |
+| `styles/main.css` | Renkler ve tipografi; bütün yazı ölçüleri `:root`'taki tipografi token'larında (`--size-*`, `--lh-*`, `--track-*`, `--opsz-*`) |
+| `styles/fonts/` | Gömülü değişken fontlar (woff2) ve lisansları (SIL OFL 1.1) |
 | `scripts/api.mjs` | Kayıt ve revizyon uçları (Vite eklentisi) |
 | `scripts/import.mjs` | İçe aktarma komutu |
 | `e2e/`, `playwright.config.ts` | Tarayıcı senaryoları (`npm run e2e`) |
@@ -160,6 +159,24 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 - Hücre 4 birim, ızgara 384×256. Konumlar hücre cinsinden; `x` spread'in sol
   kenarından sayılır (0–383). Editör snap adımı 2 hücre, değiştirici tuşla 1 (`SNAP`).
 - Tüm `--lh-*` satır yükseklikleri 4'ün katı; gövde 14.5/20.
+- Fontlar projeyle gelir (`styles/fonts/`), dış servisten yüklenmez:
+  - **Newsreader** (değişken, optik boyut ekseni): gövde, başlık, deck, alıntı,
+    caption, not.
+  - **Geist**: subhead, kicker (ve editör arayüzü).
+  - **Geist Mono**: chrome satırları, sayfa numarası, caption ve not etiketleri.
+
+  | Stil | Font | Boyut / satır |
+  | --- | --- | --- |
+  | title | Newsreader, hafif sıkı aralık | 64/64 |
+  | deck | Newsreader italik | 22/28 |
+  | body | Newsreader, sola yaslı | 14.5/20 |
+  | quote | Newsreader italik, asılı tırnak | 22/28 |
+  | caption, note | Newsreader | 10.5/16 |
+  | subhead | Geist yarı kalın, büyük harf, aralıklı | 12/20 |
+  | kicker | Geist, büyük harf, daha geniş aralıklı | 11/16 |
+  | chrome | Geist Mono, büyük harf | 10/16 |
+- Gövdede eski stil rakam istenir (`oldstyle-nums`), ama Newsreader 1.003'te bu
+  özellik yok; rakamlar şimdilik düz (lining) görünür.
 - `text`, `heading`, `quote`, `note` yüksekliği içerikten ölçülür ve bir üst hücreye
   yuvarlanır; saklanan `h` önbellektir. Ölçüm fontlar yüklendikten sonra yapılır; bir
   font geç gelirse iki görünüm de yeniden ölçer ve yığınları yeniden dizer.

@@ -1,29 +1,103 @@
 /* Ölçüler tasarım birimindedir (1 birim = 1px, frame ölçeklenmeden önce).
-   --cell, --frame-w, --frame-h src/config.js'ten gelir.
-   --lh-* satır yükseklikleri hücrenin tam katı olmalı; main.js açılışta
-   kontrol eder ve uymayanları konsola yazar. */
+   --cell, --frame-w, --frame-h src/config.ts'ten gelir.
+   --lh-* satır yükseklikleri hücrenin tam katı olmalı; src/render/fonts.ts
+   açılışta kontrol eder ve uymayanları konsola yazar. */
+
+/* Fontlar projeyle gelir (styles/fonts/, SIL OFL 1.1); dış servis yok.
+   Hepsi değişken font: tek dosya bütün kalınlıkları (Newsreader'da optik
+   boyutu da) kapsar. */
+@font-face {
+  font-family: 'Newsreader';
+  src: url('fonts/newsreader-roman.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Newsreader';
+  src: url('fonts/newsreader-italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 200 800;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('fonts/geist.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('fonts/geist-mono.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+}
 
 :root {
   --cell: 4px;
-  --hairline: 1px; /* main.js ölçeğe göre günceller */
+  --hairline: 1px; /* src/render/fit.ts ölçeğe göre günceller */
 
-  --lh-title: 56px;
+  /* ---------- Tipografi: bütün ölçüler burada ----------
+     --size-* boyut, --lh-* satır yüksekliği (4'ün katı), --track-* harf
+     aralığı, --opsz-* Newsreader optik boyutu. */
+  --size-title: 64px;
+  --lh-title: 64px;
+  --track-title: -0.02em;
+  --opsz-title: 72;
+
+  --size-deck: 22px;
   --lh-deck: 28px;
+  --opsz-deck: 24;
+
+  --size-body: 14.5px;
   --lh-body: 20px;
+  --opsz-body: 12;
+
+  --size-quote: 22px;
   --lh-quote: 28px;
+  --opsz-quote: 24;
+
+  --size-caption: 10.5px;
+  --lh-caption: 16px;
+  --opsz-caption: 8;
+
+  --size-note: 10.5px;
+  --lh-note: 16px;
+  --opsz-note: 8;
+
+  --size-subhead: 12px;
   --lh-subhead: 20px;
-  --lh-small: 16px; /* kicker, note, caption */
+  --track-subhead: 0.14em;
+
+  --size-kicker: 11px;
+  --lh-kicker: 16px;
+  --track-kicker: 0.2em;
+
+  --size-chrome: 10px;
+  --lh-chrome: 16px;
+  --track-chrome: 0.08em;
+
+  --size-label: 8.5px; /* caption ve note etiketleri */
+  --track-label: 0.06em;
+  --size-credit: 7.5px; /* görsel kredisi */
+  --track-credit: 0.08em;
 
   --paper: #eeeadf;
   --desk: #d8d2c5;
-  --ink: #1c1a17;
+  --ink: #2a241e; /* sıcak koyu kahve-siyah; saf siyah değil */
   --ink-soft: #3a3631;
   --muted: #6d675d;
   --rule: #8f8778;
   --light-ink: #f3efe6;
 
   --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
-  --sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --sans: 'Geist', 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, Menlo, monospace;
 }
 
 * {
@@ -101,9 +175,10 @@ body {
   display: grid;
   align-items: center;
   border-bottom: var(--hairline) solid var(--rule);
-  font-family: var(--sans);
-  font-size: 9.5px;
-  letter-spacing: 0.16em;
+  font-family: var(--mono);
+  font-size: var(--size-chrome);
+  line-height: var(--lh-chrome);
+  letter-spacing: var(--track-chrome);
   text-transform: uppercase;
   color: var(--ink-soft);
 }
@@ -117,10 +192,7 @@ body {
 }
 
 .chrome-mast {
-  font-family: var(--serif);
-  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.14em;
   color: var(--ink);
 }
 
@@ -151,28 +223,28 @@ body {
 
 .block--heading-title {
   font-family: var(--serif);
-  font-size: 56px;
+  font-size: var(--size-title);
   font-weight: 400;
-  font-variation-settings: 'opsz' 72;
+  font-variation-settings: 'opsz' var(--opsz-title);
   line-height: var(--lh-title);
-  letter-spacing: -0.025em;
+  letter-spacing: var(--track-title);
 }
 
 .block--heading-subhead {
   font-family: var(--sans);
-  font-size: 11.5px;
+  font-size: var(--size-subhead);
   font-weight: 600;
   line-height: var(--lh-subhead);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--track-subhead);
   text-transform: uppercase;
 }
 
 .block--heading-kicker {
   font-family: var(--sans);
-  font-size: 10.5px;
+  font-size: var(--size-kicker);
   font-weight: 400;
-  line-height: var(--lh-small);
-  letter-spacing: 0.2em;
+  line-height: var(--lh-kicker);
+  letter-spacing: var(--track-kicker);
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -185,27 +257,31 @@ body {
 
 .block--text-body {
   font-family: var(--serif);
-  font-size: 14.5px;
+  font-size: var(--size-body);
   font-weight: 400;
-  font-variation-settings: 'opsz' 12;
+  font-variation-settings: 'opsz' var(--opsz-body);
   line-height: var(--lh-body);
+  text-align: left; /* iki yana yaslı değil */
   hyphens: manual;
+  /* Eski stil rakam. Newsreader 1.003'te onum yok; font bu özelliği
+     taşıyana dek rakamlar düz (lining) görünür. */
+  font-variant-numeric: oldstyle-nums;
 }
 
 .block--text-deck {
   font-family: var(--serif);
-  font-size: 21px;
+  font-size: var(--size-deck);
   font-style: italic;
   font-weight: 400;
-  font-variation-settings: 'opsz' 24;
+  font-variation-settings: 'opsz' var(--opsz-deck);
   line-height: var(--lh-deck);
 }
 
 .block--text-caption {
   font-family: var(--serif);
-  font-size: 11px;
-  font-variation-settings: 'opsz' 8;
-  line-height: var(--lh-small);
+  font-size: var(--size-caption);
+  font-variation-settings: 'opsz' var(--opsz-caption);
+  line-height: var(--lh-caption);
   color: var(--ink-soft);
 }
 
@@ -215,10 +291,10 @@ body {
 
 .caption-label {
   display: block;
-  font-family: var(--sans);
-  font-size: 8.5px;
+  font-family: var(--mono);
+  font-size: var(--size-label);
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--track-label);
 }
 
 sup {
@@ -233,10 +309,10 @@ sup {
 
 .block--quote {
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: var(--size-quote);
   font-style: italic;
   font-weight: 400;
-  font-variation-settings: 'opsz' 24;
+  font-variation-settings: 'opsz' var(--opsz-quote);
   line-height: var(--lh-quote);
 }
 
@@ -250,9 +326,9 @@ sup {
 
 .block--note {
   font-family: var(--serif);
-  font-size: 11px;
-  font-variation-settings: 'opsz' 8;
-  line-height: var(--lh-small);
+  font-size: var(--size-note);
+  font-variation-settings: 'opsz' var(--opsz-note);
+  line-height: var(--lh-note);
   color: var(--ink-soft);
 }
 
@@ -262,8 +338,8 @@ sup {
 }
 
 .note-label {
-  font-family: var(--sans);
-  font-size: 8.5px;
+  font-family: var(--mono);
+  font-size: var(--size-label);
   font-weight: 600;
   min-width: calc(var(--cell) * 4);
   padding-right: calc(var(--cell) * 2);
@@ -296,8 +372,8 @@ sup {
   right: calc(var(--cell) * 2);
   bottom: calc(var(--cell) * 2);
   font-family: var(--sans);
-  font-size: 7.5px;
-  letter-spacing: 0.08em;
+  font-size: var(--size-credit);
+  letter-spacing: var(--track-credit);
   text-transform: uppercase;
   color: var(--light-ink);
 }
