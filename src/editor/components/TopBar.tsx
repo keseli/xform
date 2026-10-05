@@ -1,4 +1,6 @@
-// Üst çubuk: geri al/yinele, spread sekmeleri, ızgara ve oran kilidi, kayıt durumu.
+// Üst çubuk: geri al/yinele, spread sekmeleri, yeni spread (boş ya da şablondan),
+// ızgara ve oran kilidi, kayıt durumu.
+import { useEffect, useRef, useState } from 'react';
 import { SNAP } from '../../config.ts';
 import type { Session } from '../session.ts';
 import { ISSUE } from '../session.ts';
@@ -11,6 +13,58 @@ const SAVE_TEXT = {
   saving: 'Kaydediliyor…',
   error: 'Kaydedilemedi — npm run dev ile mi açtın?',
 };
+
+/** "+ Spread": boş spread ya da data/templates/ altındaki bir şablon. */
+function AddSpread({ session }: { session: Session }) {
+  const { state, actions } = session;
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: Event) => {
+      if (e instanceof KeyboardEvent ? e.key === 'Escape' : !ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    addEventListener('pointerdown', close);
+    addEventListener('keydown', close);
+    return () => {
+      removeEventListener('pointerdown', close);
+      removeEventListener('keydown', close);
+    };
+  }, [open]);
+  const choose = (template?: (typeof state.templates)[number]['template']) => {
+    setOpen(false);
+    actions.addSpread(template);
+  };
+  return (
+    <div className="spread-add" ref={ref}>
+      <button
+        className="tab tab--add"
+        data-cmd="add-spread"
+        title="Yeni spread"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        + Spread
+      </button>
+      {open ? (
+        <div className="spread-menu" role="menu">
+          <button role="menuitem" data-template="" onClick={() => choose()}>
+            Boş spread
+          </button>
+          {state.templates.length ? <div className="menu-sep" /> : null}
+          {state.templates.map(({ key, template }) => (
+            <button key={key} role="menuitem" data-template={key} onClick={() => choose(template)}>
+              {template.name}
+              <span className="menu-meta">
+                {template.slots.length} slot{template.stacks.length ? ` · ${template.stacks.length} sütun` : ''}
+              </span>
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 export function TopBar({ session }: { session: Session }) {
   const { state, store, actions, block, currentSpread } = session;
@@ -50,10 +104,8 @@ export function TopBar({ session }: { session: Session }) {
             </button>
           );
         })}
-        <button className="tab tab--add" data-cmd="add-spread" title="Yeni spread" onClick={() => actions.addSpread()}>
-          + Spread
-        </button>
       </nav>
+      <AddSpread session={session} />
       <div className="tools">
         <button className="toggle" data-cmd="grid" aria-pressed={state.showGrid} onClick={() => actions.toggleGrid()}>
           Izgara <kbd>G</kbd>

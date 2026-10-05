@@ -1,0 +1,85 @@
+{
+  "name": "Nesne sayfası",
+  "chrome_left": "full",
+  "chrome_right": "full",
+  "slots": [
+    {
+      "x": 26,
+      "y": 30,
+      "w": 142,
+      "h": 180,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "image"
+      }
+    },
+    {
+      "x": 26,
+      "y": 214,
+      "w": 80,
+      "h": 16,
+      "z": 2,
+      "tone": "dark",
+      "accepts": {
+        "type": "text",
+        "variant": "caption"
+      }
+    },
+    {
+      "x": 204,
+      "y": 30,
+      "w": 79,
+      "h": 5,
+      "z": 2,
+      "tone": "dark",
+      "accepts": {
+        "type": "heading",
+        "variant": "subhead"
+      }
+    },
+    {
+      "x": 291,
+      "y": 40,
+      "w": 79,
+      "h": 42,
+      "z": 2,
+      "tone": "dark",
+      "accepts": {
+        "type": "quote"
+      }
+    },
+    {
+      "x": 291,
+      "y": 210,
+      "w": 14,
+      "h": 1,
+      "z": 2,
+      "tone": "dark",
+      "accepts": {
+        "type": "divider"
+      }
+    },
+    {
+      "x": 291,
+      "y": 216,
+      "w": 79,
+      "h": 12,
+      "z": 2,
+      "tone": "dark",
+      "accepts": {
+        "type": "note"
+      }
+    }
+  ],
+  "stacks": [
+    {
+      "direction": "vertical",
+      "x": 204,
+      "y": 40,
+      "gap": 5,
+      "w": 79,
+      "h": 196
+    }
+  ]
+}

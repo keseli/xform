@@ -1,9 +1,11 @@
 // Editörün kayıt uçları; Vite dev sunucusu (vite.config.ts) bunları kullanır.
 //   PUT /api/data/<issue>      { revision, ...issue }  →  data/<issue>.json
 //   GET /api/revision/<issue>  →  { revision }
+//   GET /api/templates         →  [{ key, template }]  (data/templates/*.json, ada göre)
+//   PUT /api/templates/<key>   template  →  data/templates/<key>.json (varsa üzerine)
 // Kayıt yalnız gönderilen revision dosyadakiyle aynıysa yazılır (yoksa 409);
 // böylece editör, içe aktarmanın ya da başka bir sekmenin yazdığını ezemez.
-import { readFile, rename, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
@@ -11,6 +13,7 @@ const MAX_BODY = 5 * 1024 * 1024;
 const NAME = /^[a-z0-9-]+$/;
 
 const dataFile = (name) => join(ROOT, 'data', `${name}.json`);
+const TEMPLATES = join(ROOT, 'data', 'templates');
 
 async function currentRevision(name) {
   try {
@@ -66,11 +69,55 @@ async function saveIssue(req, res, name) {
   return run;
 }
 
+async function listTemplates(res) {
+  let files = [];
+  try {
+    files = (await readdir(TEMPLATES)).filter((f) => f.endsWith('.json'));
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err;
+  }
+  const list = [];
+  for (const file of files) {
+    try {
+      list.push({ key: file.slice(0, -5), template: JSON.parse(await readFile(join(TEMPLATES, file), 'utf8')) });
+    } catch (err) {
+      console.warn(`[xform] data/templates/${file} okunamadı: ${err.message}`);
+    }
+  }
+  list.sort((a, b) => String(a.template.name).localeCompare(String(b.template.name), 'tr'));
+  return json(res, 200, list);
+}
+
+async function saveTemplate(req, res, key) {
+  const body = await readBody(req);
+  if (body === null) return json(res, 413, { error: 'çok büyük' });
+  let template;
+  try {
+    template = JSON.parse(body);
+  } catch {
+    return json(res, 400, { error: 'JSON okunamadı' });
+  }
+  if (!template || typeof template.name !== 'string' || !Array.isArray(template.slots) || !Array.isArray(template.stacks)) {
+    return json(res, 400, { error: 'Beklenen yapı: { name, chrome_left, chrome_right, slots, stacks }' });
+  }
+  const run = writes.then(async () => {
+    await mkdir(TEMPLATES, { recursive: true });
+    const file = join(TEMPLATES, `${key}.json`);
+    await writeFile(`${file}.tmp`, JSON.stringify(template, null, 2) + '\n');
+    await rename(`${file}.tmp`, file);
+    json(res, 200, { key });
+  });
+  writes = run.catch(() => {});
+  return run;
+}
+
 async function api(req, res, url) {
   const [, , kind, name] = url.pathname.split('/');
+  if (kind === 'templates' && name == null && req.method === 'GET') return listTemplates(res);
   if (!NAME.test(name ?? '')) return json(res, 400, { error: 'Geçersiz ad' });
   if (kind === 'data' && req.method === 'PUT') return saveIssue(req, res, name);
   if (kind === 'revision' && req.method === 'GET') return json(res, 200, { revision: await currentRevision(name) });
+  if (kind === 'templates' && req.method === 'PUT') return saveTemplate(req, res, name);
   return json(res, 405, { error: 'desteklenmiyor' });
 }
 

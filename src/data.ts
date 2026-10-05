@@ -1,6 +1,7 @@
 import { validate } from './model.ts';
 import { layoutStacks, toFileForm } from './stacks.ts';
-import type { Issue } from './types.ts';
+import { validateTemplate } from './templates.ts';
+import type { Issue, Template } from './types.ts';
 
 export async function loadIssue(name: string): Promise<Issue> {
   const res = await fetch(`data/${name}.json`, { cache: 'no-store' });
@@ -40,4 +41,25 @@ export async function fetchRevision(name: string): Promise<number> {
   const res = await fetch(`api/revision/${name}`, { cache: 'no-store' });
   if (!res.ok) throw new Error(`revision okunamadı (${res.status})`);
   return (await res.json()).revision;
+}
+
+/** data/templates/ altındaki şablonlar, ada göre sıralı (scripts/api.mjs). */
+export async function fetchTemplates(): Promise<{ key: string; template: Template }[]> {
+  const res = await fetch('api/templates', { cache: 'no-store' });
+  if (!res.ok) throw new Error(`şablonlar okunamadı (${res.status})`);
+  const list = (await res.json()) as { key: string; template: Template }[];
+  for (const { key, template } of list) {
+    for (const p of validateTemplate(template)) console.warn(`[xform] şablon ${key}:`, p);
+  }
+  return list;
+}
+
+/** Şablonu data/templates/<key>.json olarak yazar (varsa üzerine). */
+export async function saveTemplate(key: string, template: Template): Promise<void> {
+  const res = await fetch(`api/templates/${key}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(template),
+  });
+  if (!res.ok) throw new Error(`şablon kaydedilemedi (${res.status})`);
 }

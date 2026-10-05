@@ -805,3 +805,111 @@ body.editor {
   pointer-events: none;
   white-space: nowrap;
 }
+
+/* Şablon slotları ve boş yığınlar (okuma görünümünde yok) */
+
+.slots {
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* blokların altında: üstüne bırakılan blok slotu örter */
+  pointer-events: none;
+}
+
+.slot {
+  position: absolute;
+  outline: calc(1px / var(--scale)) dashed rgb(42 39 35 / 0.45);
+  outline-offset: calc(-1px / var(--scale));
+  background: rgb(42 39 35 / 0.035);
+}
+
+.slot--image {
+  background:
+    linear-gradient(to top right, transparent calc(50% - 0.5px / var(--scale)), rgb(42 39 35 / 0.12) 50%, transparent calc(50% + 0.5px / var(--scale))),
+    rgb(42 39 35 / 0.05);
+}
+
+.slot.is-target {
+  outline: calc(2px / var(--scale)) solid var(--accent);
+  background: rgb(47 111 222 / 0.1);
+}
+
+.slot-label {
+  position: absolute;
+  top: calc(4px / var(--scale));
+  left: calc(4px / var(--scale));
+  padding: 0 calc(4px / var(--scale));
+  border-radius: calc(3px / var(--scale));
+  background: rgb(245 242 235 / 0.9);
+  color: var(--ui-muted);
+  font: 500 calc(10px / var(--scale)) / calc(16px / var(--scale)) var(--sans);
+  white-space: nowrap;
+}
+
+.selection--slot {
+  outline-style: dashed;
+}
+
+.stack-outline--empty {
+  outline-color: rgb(124 77 255 / 0.7);
+  outline-offset: 0;
+  background: rgb(124 77 255 / 0.04);
+}
+
+.stack-outline--empty .slot-label {
+  color: var(--stack);
+}
+
+/* "+ Spread" menüsü */
+
+.spread-add {
+  position: relative;
+}
+
+.spread-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 20;
+  display: grid;
+  min-width: 220px;
+  padding: 4px;
+  border: 1px solid var(--ui-line);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgb(40 30 10 / 0.14);
+}
+
+.spread-menu button {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.spread-menu button:hover {
+  background: var(--ui-bg);
+}
+
+.spread-menu .menu-sep {
+  height: 1px;
+  margin: 4px 6px;
+  background: var(--ui-line);
+}
+
+.spread-menu .menu-meta {
+  margin-left: 8px;
+  color: var(--ui-muted);
+  font-size: 11px;
+}
+
+.slot--thin .slot-label {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.slot--divider .slot-label {
+  left: calc(100% + 4px / var(--scale));
+}

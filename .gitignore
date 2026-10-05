@@ -5,4 +5,5 @@ test-results/
 playwright-report/
 # Tarayıcı senaryolarının geçici sayı kopyaları
 data/e2e-*.json
+data/templates/e2e-*.json
 assets/e2e-*/

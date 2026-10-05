@@ -128,6 +128,7 @@ test('editör', async ({ page, errors }) => {
 
   // Yeni spread + tepsiden bırakma
   await page.click('[data-cmd="add-spread"]');
+  await page.click('.spread-menu [data-template=""]');
   check('yeni spread', (await st()).data.spreads.length === 2 && (await st()).spreadIndex === 1);
   let [tx, ty] = await designToScreen(56, 140);
   await dragTo('.tray-item[data-id="strange-document/title"]', tx, ty);

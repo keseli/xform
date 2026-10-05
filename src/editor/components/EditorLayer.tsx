@@ -1,6 +1,8 @@
 // Editör katmanları; Spread'e genel yuvalarla verilir, blok bileşenleri bunlardan
 // habersizdir. Üst üste diziliş styles/*.css'teki z-index'lerle ve DOM sırasıyla
 // belirlenir (eşit z'de boyama sırasını DOM sırası belirler):
+// - SlotLayer (.slots, z 0): şablon slotları; `underlay` yuvası, blokların
+//   altında (slotu dolduran ya da üstüne bırakılan blok onu örter)
 // - GridGuides (.guides, z 9800): ızgara ve kenar kılavuzları; `underlay` yuvası,
 //   bloklardan önce
 // - EditorLayer (.overlay, z 9900): yığın çerçeveleri, rozetler, seçim ve
@@ -9,8 +11,9 @@
 import type { ReactNode } from 'react';
 import { CELL, FRAME, MARGINS, PAGE_COLS } from '../../config.ts';
 import { blocksOnSpread } from '../../model.ts';
-import { stackBounds, stackById } from '../../stacks.ts';
-import type { PlacedBlock, Rect } from '../../types.ts';
+import { childrenOf, hasPlaceholder, stackBounds, stackById } from '../../stacks.ts';
+import { slotById, slotsOn } from '../../templates.ts';
+import type { PlacedBlock, Rect, Slot } from '../../types.ts';
 import { Block } from '../../components/Block.tsx';
 import { DIRS, union } from '../controller.ts';
 import { imageRect } from '../focal.ts';
@@ -31,6 +34,37 @@ function Box({ className, r, children }: { className: string; r: Rect; children?
 
 function Handles({ dirs }: { dirs: string[] }) {
   return dirs.map((dir) => <div key={dir} className={`handle handle--${dir}`} data-dir={dir} />);
+}
+
+const slotLabel = (s: Slot) =>
+  s.accepts.variant == null && (s.accepts.type === 'heading' || s.accepts.type === 'text')
+    ? { heading: 'Başlık (her tür)', text: 'Metin (her tür)' }[s.accepts.type]
+    : kindLabel({ type: s.accepts.type, variant: s.accepts.variant ?? null });
+
+/** Şablon slotları: kesikli çerçeve ve kabul ettiği tür (yalnız editör). */
+export function SlotLayer({ session }: { session: Session }) {
+  const { state, controller } = session;
+  const spread = state.data.spreads[state.spreadIndex];
+  return (
+    <div className="slots">
+      {slotsOn(state.data, spread.id).map((s) => {
+        const cls = ['slot', `slot--${s.accepts.type}`];
+        if (s.h < 8) cls.push('slot--thin'); // etiket kutuya sığmaz: ortada ya da yanında
+        if (controller.layer.slotTarget === s.id) cls.push('is-target');
+        if (state.selectedIds.includes(s.id)) cls.push('is-selected');
+        return (
+          <div
+            key={s.id}
+            className={cls.join(' ')}
+            data-slot-id={s.id}
+            style={{ left: px(s.x), top: px(s.y), width: px(s.w), height: px(s.h) }}
+          >
+            <span className="slot-label">{slotLabel(s)}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 /** Izgara ve kenar boşluğu kılavuzları (yalnız editör). */
@@ -71,7 +105,10 @@ export function EditorLayer({ session, warnings }: { session: Session; warnings:
       const s = stackById(data, id);
       return s ? s.spread_id === spread.id : blockById(id)?.spread_id === spread.id;
     });
-    if (!ids.length) return null;
+    const slots = state.selectedIds.map((id) => slotById(data, id)).filter((s) => s?.spread_id === spread.id);
+    if (!ids.length) {
+      return slots.map((s) => <Box key={s!.id} className="selection selection--slot" r={s!} />);
+    }
     if (ids.length > 1) {
       const rects = ids.map(controller.unitRect);
       return (
@@ -146,9 +183,16 @@ export function EditorLayer({ session, warnings }: { session: Session; warnings:
 
   return (
     <div className="overlay">
-      {stacks.map((s) => (
-        <Box key={s.id} className="stack-outline" r={stackBounds(data, s)} />
-      ))}
+      {stacks.map((s) => {
+        const empty = !childrenOf(data, s.id).length;
+        return (
+          <Box key={s.id} className={empty ? 'stack-outline stack-outline--empty' : 'stack-outline'} r={stackBounds(data, s)}>
+            {empty && hasPlaceholder(s) ? (
+              <span className="slot-label">{s.direction === 'vertical' ? 'Metin sütunu ↓' : 'Metin dizisi →'}</span>
+            ) : null}
+          </Box>
+        );
+      })}
       {blocksOnSpread(data.blocks, spread.id).map((b) => {
         const list = warnings.get(b.id) ?? [];
         return (

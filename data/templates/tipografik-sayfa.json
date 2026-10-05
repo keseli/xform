@@ -1,0 +1,95 @@
+{
+  "name": "Tipografik sayfa",
+  "chrome_left": "full",
+  "chrome_right": "full",
+  "slots": [
+    {
+      "x": 14,
+      "y": 60,
+      "w": 80,
+      "h": 4,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "heading",
+        "variant": "kicker"
+      }
+    },
+    {
+      "x": 14,
+      "y": 66,
+      "w": 166,
+      "h": 48,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "heading",
+        "variant": "title"
+      }
+    },
+    {
+      "x": 14,
+      "y": 122,
+      "w": 120,
+      "h": 21,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "text",
+        "variant": "deck"
+      }
+    },
+    {
+      "x": 14,
+      "y": 150,
+      "w": 32,
+      "h": 1,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "divider"
+      }
+    },
+    {
+      "x": 204,
+      "y": 20,
+      "w": 79,
+      "h": 5,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "heading",
+        "variant": "subhead"
+      }
+    },
+    {
+      "x": 291,
+      "y": 20,
+      "w": 79,
+      "h": 49,
+      "z": 1,
+      "tone": "dark",
+      "accepts": {
+        "type": "quote"
+      }
+    }
+  ],
+  "stacks": [
+    {
+      "direction": "vertical",
+      "x": 204,
+      "y": 28,
+      "gap": 5,
+      "w": 79,
+      "h": 208
+    },
+    {
+      "direction": "vertical",
+      "x": 291,
+      "y": 76,
+      "gap": 5,
+      "w": 79,
+      "h": 160
+    }
+  ]
+}
