@@ -8,8 +8,9 @@ npm install
 npm run dev        # http://localhost:5173 — okuma görünümü ve editör (Vite)
 npm test           # node:test, DOM'suz modüller (TypeScript doğrudan çalışır)
 npm run typecheck  # tsc --noEmit (strict)
-npm run e2e        # Playwright: tarayıcı senaryoları (editör, odak, yerleşim, içe aktarma, şablonlar, renk)
+npm run e2e        # Playwright: tarayıcı senaryoları (editör, odak, yerleşim, içe aktarma, şablonlar, renk, MCP)
 npm run import -- content/issue-001.json [--dry-run]   # içerik paketlerini sayıya aktar
+npm run --silent mcp   # MCP araç sunucusu (stdio): bkz. "MCP sunucusu"
 ```
 
 - **Okuma görünümü** `index.html`: **← / →** spread'ler arası, **e** editöre geçer.
@@ -203,6 +204,53 @@ paragrafa yeni bir key ver (`p2b` ya da içerikten türeyen bir kısaltma).
 `data/<issue>.json` içindeki `revision` her yazmada artar. Sunucu eski revizyondan gelen
 kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 
+## MCP sunucusu
+
+Bir modelin editörü arayüzsüz kullanması için yerel araç sunucusu (stdio): sayıyı
+okur, spread'i çizer. Araçlar mevcut DOM'suz modülleri (`src/model.ts`, `stacks`,
+`templates`, `editor/warnings`…) çağıran ince bir katmandır (`mcp/`).
+
+```
+npm run --silent mcp     # ya da: node mcp/server.ts
+```
+
+stdout yalnız protokole aittir; `npm run` başlık satırı basmasın diye `--silent`.
+Çizim için sunucu ilk çağrıda kendi Vite sunucusunu (5190'dan başlayan boş bir port,
+loglar kapalı) ve başsız Chromium'u açar; `npx playwright install chromium` bir kez
+gerekir. İlk çizim birkaç saniye, sonrakiler bir saniyenin altında.
+
+**Claude Code'a bağlama.** Depodaki `.mcp.json` sunucuyu proje kapsamında tanımlar;
+Claude Code bu klasörde açılınca onay ister. Elle eklemek için:
+
+```
+claude mcp add xform -- node /yol/xform/mcp/server.ts
+```
+
+**Masaüstü uygulamasına bağlama.** `claude_desktop_config.json` (Ayarlar → Geliştirici
+→ Yapılandırmayı düzenle) içine, mutlak yolla; `node` 22.18+ olmalı:
+
+```json
+{
+  "mcpServers": {
+    "xform": { "command": "node", "args": ["/yol/xform/mcp/server.ts"] }
+  }
+}
+```
+
+**Araçlar** (konum ve boyut hücre cinsinden; `issue` bir sayı ya da taslak adı):
+
+| Araç | Ne zaman | Döner |
+| --- | --- | --- |
+| `get_guide` | Soğuk başlarken ilk | Izgara, kenar boşlukları, içerik alanları, stiller ve ölçüleri, palet, kurallar, sayılar ve şablonlar (değerler koddan ve CSS token'larından) |
+| `get_issue` | Plan yapmadan önce | Spread'ler (sayfa, bölüm, chrome, tema, sayılar), parçalar, tepsi sayısı, doğrulama sorunları |
+| `list_tray` | Ne yerleştirileceğini seçerken | Tepsideki bloklar order sırasıyla: tür, metnin başı, `relates_to`; görselde piksel boyutu ve oran |
+| `get_spread` | Bir spread'i düzenlemeden önce | Spread ayarları, bloklar (konum, görünüm, yığın), yığınlar, slotlar, uyarılar |
+| `list_templates` | İskelet seçerken; `key` ile tek şablon | Şablon özetleri ya da şablonun tamamı |
+| `render_spread` | Sonucu görmek için | PNG (varsayılan 1200 px, en çok 2000; `region` ile bir bölge yakından; `view: editor` ızgara ve rozetlerle) ve ölçülen yükseklikler, konumlar, uyarılar |
+
+Hatalar `isError` ile döner ve neyin yanlış olduğunu ve geçerli seçenekleri söyler
+(ör. bilinmeyen spread → spread listesi). Çizim veriyi bellekten verir, dosyaya yazmaz.
+
 ## Yapı
 
 | Dosya | İçerik |
@@ -222,6 +270,8 @@ kaydı reddeder (409); editör o durumda güncel dosyayı yükler ve bildirir.
 | `styles/fonts/` | Gömülü değişken fontlar (woff2) ve lisansları (SIL OFL 1.1) |
 | `scripts/api.mjs` | Kayıt, revizyon ve şablon uçları (Vite eklentisi) |
 | `scripts/import.mjs` | İçe aktarma komutu |
+| `mcp/` | MCP araç sunucusu: `server.ts` araç tanımları, `read.ts` işleyiciler, `guide.ts` kılavuz, `render.ts` çizim (Vite + Chromium) |
+| `.mcp.json` | Claude Code için proje kapsamlı sunucu tanımı |
 | `e2e/`, `playwright.config.ts` | Tarayıcı senaryoları (`npm run e2e`) |
 | `content/` | İçerik paketleri (hattın çıktısı); örnek sayının kaynağı |
 | `data/issue-001.json` | Sayı: bloklar ve yerleşim |

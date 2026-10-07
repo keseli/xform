@@ -5,13 +5,16 @@
   "scripts": {
     "dev": "vite",
     "import": "node scripts/import.mjs",
+    "mcp": "node mcp/server.ts",
     "test": "node --test test/*.test.ts",
     "typecheck": "tsc --noEmit",
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
