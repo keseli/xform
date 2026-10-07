@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "xform": {
+      "command": "node",
+      "args": [
+        "mcp/server.ts"
+      ]
+    }
+  }
+}
